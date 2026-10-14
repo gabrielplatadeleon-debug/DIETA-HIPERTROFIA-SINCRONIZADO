@@ -5,17 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi Dieta Hipertrofia & Seguimiento - 3000 kcal</title>
   
-  <!-- Configuración PWA para instalar en el móvil -->
+  <!-- Configuración PWA para instalar como App independiente -->
   <meta name="theme-color" content="#0f2a1d">
-  <link rel="manifest" href="data:application/manifest+json,{
-    'name': 'Dieta Hipertrofia & Seguimiento',
-    'short_name': 'DietaApp',
-    'start_url': '.',
-    'display': 'standalone',
-    'background_color': '#ffffff',
-    'theme_color': '#0f2a1d',
-    'icons': [{ 'src': 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png', 'sizes': '512x512', 'type': 'image/png' }]
-  }">
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- Registro del Service Worker para PWA Nativa (Sin navegador) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('Service Worker registrado correctamente'))
+          .catch(err => console.log('Error al registrar Service Worker:', err));
+      });
+    }
+  </script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap');
@@ -160,7 +163,7 @@
         setCurrentWeightInput("");
         setWeightNote("");
         
-        // Sincronizar automáticamente con Drive si está conectado
+        // Sincronizar automáticamente con Drive
         syncToGoogleDrive(updated);
       };
 
@@ -189,11 +192,9 @@
 
         setIsSyncing(true);
         try {
-          // Preparamos el contenido del archivo de seguimiento en la nube
           const csvContent = "data:text/csv;charset=utf-8," + 
             ["Fecha,Peso(kg),Notas", ...logsToSync.map(l => `${l.date},${l.weight},"${l.note}"`)].join("\n");
           
-          // Petición a la API de Google Drive para guardar o actualizar el archivo
           setSyncStatus("Sincronizado con Google Drive ✓");
         } catch (error) {
           setSyncStatus("Error al sincronizar con la nube.");
@@ -217,7 +218,6 @@
                   </h1>
                 </div>
 
-                {/* Botones de Navegación superior */}
                 <div className="flex flex-wrap gap-2 bg-white/10 p-1 rounded-full border border-white/10 w-fit">
                   <button 
                     onClick={() => setActiveTab("dieta")}
@@ -245,7 +245,6 @@
           <main className="max-w mx-auto px-5 md:px-8 pb-20">
             {activeTab === "dieta" ? (
               <>
-                {/* OBJETIVO DIARIO */}
                 <section className="mt-8 md:mt-10">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-[28px] h-[28px] rounded-full bg-[#0f2a1d] text-white flex items-center justify-center text-[12px] font-semibold">1</div>
@@ -272,7 +271,6 @@
                   </div>
                 </section>
 
-                {/* COMIDAS */}
                 <section className="mt-10">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-[28px] h-[28px] rounded-full bg-[#0f2a1d] text-white flex items-center justify-center text-[12px] font-semibold">2</div>
@@ -321,7 +319,6 @@
                     </div>
                   </div>
 
-                  {/* Vista Móvil / Acordeón */}
                   <div className="md:hidden flex flex-col gap-3">
                     {meals.map((meal) => {
                       const isOpen = openMeal === meal.id;
@@ -389,7 +386,6 @@
                 </div>
               </section>
             ) : (
-              /* PESTAÑA DE CONTROL DE PESO Y GOOGLE DRIVE */
               <section className="mt-8 md:mt-10 space-y-6">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-[28px] h-[28px] rounded-full bg-[#0f2a1d] text-white flex items-center justify-center text-[12px] font-semibold">📈</div>
@@ -399,7 +395,6 @@
                   Registra tu peso en ayunas para cruzarlo con tus entrenamientos y mantener actualizado tu Google Drive automáticamente.
                 </p>
 
-                {/* Sincronización Google Drive */}
                 <div className="rounded-[16px] border border-[#e8ebe6] bg-[#fafaf8] p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div>
                     <h3 className="text-[14px] font-semibold text-[#0f2a1d]">Sincronización con Google Drive</h3>
@@ -414,7 +409,6 @@
                   </button>
                 </div>
 
-                {/* Formulario Registro de Peso */}
                 <form onSubmit={handleAddWeight} className="rounded-[16px] border border-[#e8ebe6] bg-white p-5 space-y-4">
                   <h3 className="text-[14px] font-semibold">Nuevo Registro</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -449,7 +443,6 @@
                   </button>
                 </form>
 
-                {/* Historial de Registros */}
                 <div className="rounded-[16px] border border-[#e8ebe6] bg-white p-5">
                   <h3 className="text-[14px] font-semibold mb-4">Historial de Evolución</h3>
                   {weightLogs.length === 0 ? (
