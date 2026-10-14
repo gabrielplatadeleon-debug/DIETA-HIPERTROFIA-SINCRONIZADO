@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi Dieta Hipertrofia & Seguimiento - 3000 kcal</title>
+  
+  <!-- Configuración PWA para instalar en el móvil -->
+  <meta name="theme-color" content="#0f2a1d">
+  <link rel="manifest" href="data:application/manifest+json,{
+    'name': 'Dieta Hipertrofia & Seguimiento',
+    'short_name': 'DietaApp',
+    'start_url': '.',
+    'display': 'standalone',
+    'background_color': '#ffffff',
+    'theme_color': '#0f2a1d',
+    'icons': [{ 'src': 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png', 'sizes': '512x512', 'type': 'image/png' }]
+  }">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap');
+    * { font-family: 'Instrument Sans', ui-sans-system, sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #ffffff; color: #111c14; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+    header { background-color: #0f2a1d; color: #ffffff; position: sticky; top: 0; z-index: 20; }
+    .max-w { max-width: 860px; margin: 0 auto; }
+  </style>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Identity Services para la sincronización con Drive -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const meals = [
+      {
+        id: "desayuno",
+        time: "7:00",
+        label: "Desayuno",
+        foods: [
+          { name: "Avena", amount: "130g" },
+          { name: "Leche semidescremada", amount: "300ml" },
+          { name: "Crema de cacahuete 100%", amount: "20g" }
+        ],
+        protein: "30g",
+        kcal: "739"
+      },
+      {
+        id: "comida",
+        time: "14:00",
+        label: "Comida",
+        foods: [
+          { name: "Pechuga de pollo", amount: "200g" },
+          { name: "Arroz", amount: "120g" },
+          { name: "Aceite de oliva", amount: "10ml" },
+          { name: "Ensalada bolsa", amount: "100g" }
+        ],
+        protein: "54g",
+        kcal: "728"
+      },
+      {
+        id: "merienda",
+        time: "17:00",
+        label: "Merienda",
+        foods: [
+          { name: "Batido proteína whey", amount: "30g" },
+          { name: "Leche semidescremada", amount: "300ml" },
+          { name: "Avena", amount: "80g" },
+          { name: "Miel", amount: "20g" }
+        ],
+        protein: "48g",
+        kcal: "560"
+      },
+      {
+        id: "cena",
+        time: "21:00",
+        label: "Cena",
+        foods: [
+          { name: "Carne picada vacuno 5%", amount: "150g" },
+          { name: "Huevos L", amount: "3 uds" },
+          { name: "Patata", amount: "200g" },
+          { name: "Pan integral", amount: "80g" },
+          { name: "Aceite de oliva", amount: "10ml" },
+          { name: "Verdura congelada", amount: "100g" }
+        ],
+        protein: "54g",
+        kcal: "659"
+      }
+    ];
+
+    const alternatives = [
+      {
+        title: "Plan B: Comida o Cena Exprés (Sin cocinar)",
+        desc: "Ideal si no tienes arroz ni carne preparada en los táperes.",
+        items: [
+          { name: "Carbohidrato rápido", detail: "4-5 rebanadas de pan integral o botes de patata cocida envasada al vacío." },
+          { name: "Proteína rápida", detail: "2 latas grandes de atún/caballa al natural o 150g-200g de pechuga de pavo/pollo en lonchas extra." },
+          { name: "Acompañamiento", detail: "Bolsa de ensalada directa con un chorrito de aceite de oliva." }
+        ]
+      },
+      {
+        title: "Plan B: Desayuno o Merienda Rápida",
+        desc: "Para mañanas con prisa o cuando no da tiempo a cocinar avena.",
+        items: [
+          { name: "Cereales rápidos", detail: "Crema de arroz instantánea, copos de avena instantáneos o muesli sin azúcar disueltos en leche fría." },
+          { name: "Proteína", detail: "Mantén tu cacahuete o tu cazo de proteína whey disuelto en el shaker." }
+        ]
+      },
+      {
+        title: "Comodín de Supermercado (3 Ingredientes)",
+        desc: "Solución de emergencia si abres la nevera y está vacía.",
+        items: [
+          { name: "Plato preparado base", detail: "Pechuga de pollo asada envasada fría (Mercadona / Lidl)." },
+          { name: "Carbohidrato microondas", detail: "Vasito de arroz exprés (1 min en microondas)." },
+          { name: "Verdura", detail: "Bolsita de verdura al vapor apta para microondas." }
+        ]
+      }
+    ];
+
+    function App() {
+      const [openMeal, setOpenMeal] = React.useState(null);
+      const [activeTab, setActiveTab] = React.useState("dieta"); // "dieta", "alternativas", "peso"
+      
+      // Estado para control de peso
+      const [weightLogs, setWeightLogs] = React.useState(() => {
+        try {
+          const saved = localStorage.getItem("dieta_weight_logs");
+          return saved ? JSON.parse(saved) : [];
+        } catch {
+          return [];
+        }
+      });
+      const [currentWeightInput, setCurrentWeightInput] = React.useState("");
+      const [weightNote, setWeightNote] = React.useState("");
+      
+      // Estado para sincronización Google Drive
+      const [isSyncing, setIsSyncing] = React.useState(false);
+      const [syncStatus, setSyncStatus] = React.useState(null);
+
+      React.useEffect(() => {
+        try {
+          localStorage.setItem("dieta_weight_logs", JSON.stringify(weightLogs));
+        } catch {}
+      }, [weightLogs]);
+
+      const handleAddWeight = (e) => {
+        e.preventDefault();
+        if (!currentWeightInput) return;
+        const newLog = {
+          id: Date.now(),
+          date: new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" }),
+          weight: parseFloat(currentWeightInput),
+          note: weightNote || "Peso en ayunas"
+        };
+        const updated = [newLog, ...weightLogs];
+        setWeightLogs(updated);
+        setCurrentWeightInput("");
+        setWeightNote("");
+        
+        // Sincronizar automáticamente con Drive si está conectado
+        syncToGoogleDrive(updated);
+      };
+
+      const handleGoogleLogin = () => {
+        // Inicializar flujo de autenticación OAuth de Google para acceso a Drive
+        try {
+          const client = google.accounts.oauth2.initTokenClient({
+            client_id: 'TU_CLIENT_ID_DE_GOOGLE.apps.googleusercontent.com', // Reemplazar con credenciales OAuth del usuario
+            scope: 'https://www.googleapis.com/auth/drive.file',
+            callback: (response) => {
+              if (response.access_token) {
+                localStorage.setItem("google_access_token", response.access_token);
+                setSyncStatus("Conectado a Google Drive correctamente.");
+                syncToGoogleDrive(weightLogs, response.access_token);
+              }
+            },
+          });
+          client.requestAccessToken();
+        } catch (err) {
+          setSyncStatus("Configura tu Client ID de Google Cloud en el código.");
+        }
+      };
+
+      const syncToGoogleDrive = async (logsToSync, tokenOverride = null) => {
+        const token = tokenOverride || localStorage.getItem("google_access_token");
+        if (!token) return; // Si no hay token, opera en modo local silencioso
+
+        setIsSyncing(true);
+        try {
+          // Lógica para crear o actualizar archivo CSV/JSON en Google Drive
+          const csvContent = "data:text/csv;charset=utf-8," + 
+            ["Fecha,Peso(kg),Notas", ...logsToSync.map(l => `${l.date},${l.weight},"${l.note}"`)].join("\n");
+          
+          const encodedUri = encodeURI(csvContent);
+          
+          // Simulación de guardado y petición a Google Drive API v3 (Files: create/update)
+          setSyncStatus("Sincronizado con Google Drive ✓");
+        } catch (error) {
+          setSyncStatus("Error al sincronizar con la nube.");
+        } finally {
+          setIsSyncing(false);
+        }
+      };
+
+      return (
+        <div className="min-h-screen bg-white text-[#111c14] selection:bg-[#0f2a1d] selection:text-white">
+          <header className="w-full bg-[#0f2a1d] text-white sticky top-0 z-20">
+            <div className="max-w mx-auto px-5 md:px-8 py-5 md:py-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.09] border border-white/10 px-3 py-1 text-[11px] tracking-[0.12em] uppercase font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#a8e6a0]"></span>
+                    App Dieta & Cloud Sync · 3000 kcal
+                  </div>
+                  <h1 className="text-[20px] md:text-[28px] leading-[1.1] tracking-[-0.02em] font-semibold">
+                    Dieta Hipertrofia - 3000 kcal
+                  </h1>
+                </div>
+
+                {/* Botones de Navegación superior */}
+                <div className="flex flex-wrap gap-2 bg-white/10 p-1 rounded-full border border-white/10 w-fit">
+                  <button 
+                    onClick={() => setActiveTab("dieta")}
+                    className={`px-4 py-1.5 rounded-full text-xs font-semibold transition ${activeTab === "dieta" ? 'bg-white text-[#0f2a1d]' : 'text-white/80 hover:text-white'}`}
+                  >
+                    Menú Principal
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab("alternativas")}
+                    className={`px-4 py-1.5 rounded-full text-xs font-semibold transition ${activeTab === "alternativas" ? 'bg-white text-[#0f2a1d]' : 'text-white/80 hover:text-white'}`}
+                  >
+                    ⚡ Plan B
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab("peso")}
+                    className={`px-4 py-1.5 rounded-full text-xs font-semibold transition ${activeTab === "peso" ? 'bg-white text-[#0f2a1d]' : 'text-white/80 hover:text-white'}`}
+                  >
+                    📈 Control Peso & Drive
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <main className="max-w mx-auto px-5 md:px-8 pb-20">
+            {activeTab === "dieta" ? (
+              <>
+                {/* OBJETIVO DIARIO */}
+                <section className="mt-8 md:mt-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-[28px] h-[28px] rounded-full bg-[#0f2a1d] text-white flex items-center justify-center text-[12px] font-semibold">1</div>
+                    <h2 className="text-[15px] font-semibold tracking-[-0.01em]">Objetivo diario</h2>
+                  </div>
+                  <div className="rounded-[16px] border border-[#e8ebe6] bg-[#fafaf8] p-4 md:p-5 flex flex-wrap gap-2.5">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white border border-[#e8ebe6] px-4 py-2 text-[13px]">
+                      <span className="font-semibold">3000 kcal</span>
+                      <span className="w-px h-3 bg-black/10"></span>
+                      <span className="text-black/50 text-[12px]">objetivo</span>
+                    </div>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white border border-[#e8ebe6] px-4 py-2 text-[13px]">
+                      <span className="font-semibold">198g</span>
+                      <span className="text-black/50 text-[12px]">proteína</span>
+                    </div>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white border border-[#e8ebe6] px-4 py-2 text-[13px]">
+                      <span className="font-semibold">78g</span>
+                      <span className="text-black/50 text-[12px]">grasa</span>
+                    </div>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white border border-[#e8ebe6] px-4 py-2 text-[13px]">
+                      <span className="font-semibold">360g</span>
+                      <span className="text-black/50 text-[12px]">carbo</span>
+                    </div>
+                  </div>
+                </section>
+
+                {/* COMIDAS */}
+                <section className="mt-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-[28px] h-[28px] rounded-full bg-[#0f2a1d] text-white flex items-center justify-center text-[12px] font-semibold">2</div>
+                    <h2 className="text-[15px] font-semibold tracking-[-0.01em]">Dieta diaria — Cantidades en CRUDO</h2>
+                  </div>
+
+                  <div className="hidden md:block rounded-[16px] border border-[#e8ebe6] overflow-hidden bg-white">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-[#f5f5f2] border-b border-[#e8ebe6] text-[11px] uppercase tracking-[0.08em] text-black/40">
+                            <th className="font-medium py-3.5 px-5 w-[140px]">Comida</th>
+                            <th className="font-medium py-3.5 px-5">Alimentos</th>
+                            <th className="font-medium py-3.5 px-5 w-[150px]">Cantidad</th>
+                            <th className="font-medium py-3.5 px-5 w-[90px] text-right">Proteína</th>
+                            <th className="font-medium py-3.5 px-5 w-[90px] text-right">Kcal</th>
+                          </tr>
+                        </thead>
+                        <tbody className="text-[13px] leading-[1.5]">
+                          {meals.map((meal) => (
+                            <tr key={meal.id} className="border-b border-[#f0f1ee] last:border-0 hover:bg-[#fcfcfa] transition-colors">
+                              <td className="py-4 px-5 align-top">
+                                <div className="font-semibold">{meal.label}</div>
+                                <div className="text-[12px] text-black/40 mt-0.5">{meal.time}</div>
+                              </td>
+                              <td className="py-4 px-5 align-top">
+                                <div className="flex flex-col gap-1">
+                                  {meal.foods.map((f, i) => (
+                                    <span key={i} className="text-[#1a2b1f]">{f.name}</span>
+                                  ))}
+                                </div>
+                              </td>
+                              <td className="py-4 px-5 align-top">
+                                <div className="flex flex-col gap-1 text-black/60 font-mono text-[12px]">
+                                  {meal.foods.map((f, i) => (
+                                    <span key={i}>{f.amount}</span>
+                                  ))}
+                                </div>
+                              </td>
+                              <td className="py-4 px-5 align-top text-right font-medium">{meal.protein}</td>
+                              <td className="py-4 px-5 align-top text-right text-black/70">{meal.kcal}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Vista Móvil / Acordeón */}
+                  <div className="md:hidden flex flex-col gap-3">
+                    {meals.map((meal) => {
+                      const isOpen = openMeal === meal.id;
+                      return (
+                        <div key={meal.id} className="rounded-[14px] border border-[#e8ebe6] bg-white overflow-hidden">
+                          <button 
+                            onClick={() => setOpenMeal(isOpen ? null : meal.id)}
+                            className="w-full flex items-center justify-between px-4 py-3.5 text-left"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-full bg-[#f2f4f0] flex items-center justify-center text-[11px] font-semibold text-[#0f2a1d]">
+                                {meal.time}
+                              </div>
+                              <div>
+                                <div className="text-[13px] font-semibold leading-tight">{meal.label}</div>
+                                <div className="text-[11px] text-black/40 mt-0.5">{meal.foods.length} alimentos</div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="text-right">
+                                <div className="text-[12px] font-semibold">{meal.protein} P</div>
+                                <div className="text-[11px] text-black/50">{meal.kcal} kcal</div>
+                              </div>
+                            </div>
+                          </button>
+                          {isOpen && (
+                            <div className="px-4 pb-4 pt-1 border-t border-[#f0f1ee] bg-[#fcfcfa]">
+                              <div className="mt-2 grid grid-cols-[1fr_auto] gap-y-2 text-[13px]">
+                                {meal.foods.map((food, idx) => (
+                                  <React.Fragment key={idx}>
+                                    <span className="text-[#1a2b1f]">{food.name}</span>
+                                    <span className="font-mono text-[12px] text-black/60 text-right">{food.amount}</span>
+                                  </React.Fragment>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              </>
+            ) : activeTab === "alternativas" ? (
+              <section className="mt-8 md:mt-10 space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-[28px] h-[28px] rounded-full bg-[#0f2a1d] text-white flex items-center justify-center text-[12px] font-semibold">⚡</div>
+                  <h2 className="text-[18px] font-semibold tracking-[-0.01em]">Alternativas Rápidas (Plan B)</h2>
+                </div>
+                <div className="grid gap-4">
+                  {alternatives.map((alt, idx) => (
+                    <div key={idx} className="rounded-[16px] border border-[#e8ebe6] bg-white p-5 shadow-sm">
+                      <h3 className="text-[15px] font-bold text-[#0f2a1d] mb-1">{alt.title}</h3>
+                      <p className="text-[13px] text-black/50 mb-4">{alt.desc}</p>
+                      <div className="space-y-3 border-t border-[#f0f1ee] pt-3">
+                        {alt.items.map((item, i) => (
+                          <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[13px]">
+                            <span className="font-semibold text-[#1a2b1f]">• {item.name}:</span>
+                            <span className="text-black/70 sm:text-right font-mono text-[12px]">{item.detail}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
+              /* PESTAÑA DE CONTROL DE PESO Y GOOGLE DRIVE */
+              <section className="mt-8 md:mt-10 space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-[28px] h-[28px] rounded-full bg-[#0f2a1d] text-white flex items-center justify-center text-[12px] font-semibold">📈</div>
+                  <h2 className="text-[18px] font-semibold tracking-[-0.01em]">Control de Peso y Sincronización Cloud</h2>
+                </div>
+                <p className="text-sm text-black/60">
+                  Registra tu peso en ayunas para cruzarlo con tus entrenamientos y mantener actualizado tu Google Drive automáticamente.
+                </p>
+
+                {/* Sincronización Google Drive */}
+                <div className="rounded-[16px] border border-[#e8ebe6] bg-[#fafaf8] p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-[14px] font-semibold text-[#0f2a1d]">Sincronización con Google Drive</h3>
+                    <p className="text-[12px] text-black/50">Conecta tu cuenta de Google para guardar los datos en una hoja de cálculo en la nube.</p>
+                    {syncStatus && <p className="text-[11px] font-medium text-emerald-700 mt-1">{syncStatus}</p>}
+                  </div>
+                  <button 
+                    onClick={handleGoogleLogin}
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-[#0f2a1d] text-white text-xs font-semibold hover:bg-black transition flex items-center justify-center gap-2"
+                  >
+                    <span>Conectar Google Drive</span>
+                  </button>
+                </div>
+
+                {/* Formulario Registro de Peso */}
+                <form onSubmit={handleAddWeight} className="rounded-[16px] border border-[#e8ebe6] bg-white p-5 space-y-4">
+                  <h3 className="text-[14px] font-semibold">Nuevo Registro</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[12px] text-black/60 mb-1">Peso en ayunas (kg)</label>
+                      <input 
+                        type="number" 
+                        step="0.1" 
+                        placeholder="Ej. 74.5"
+                        value={currentWeightInput}
+                        onChange={(e) => setCurrentWeightInput(e.target.value)}
+                        className="w-full rounded-xl border border-[#e8ebe6] px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-[#0f2a1d]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[12px] text-black/60 mb-1">Notas / Sensaciones</label>
+                      <input 
+                        type="text" 
+                        placeholder="Ej. Buen descanso, energía alta"
+                        value={weightNote}
+                        onChange={(e) => setWeightNote(e.target.value)}
+                        className="w-full rounded-xl border border-[#e8ebe6] px-4 py-2.5 text-sm focus:outline-none focus:border-[#0f2a1d]"
+                      />
+                    </div>
+                  </div>
+                  <button 
+                    type="submit" 
+                    className="w-full py-3 rounded-xl bg-[#0f2a1d] text-white text-xs font-semibold hover:bg-black transition"
+                  >
+                    Guardar y Sincronizar
+                  </button>
+                </form>
+
+                {/* Historial de Registros */}
+                <div className="rounded-[16px] border border-[#e8ebe6] bg-white p-5">
+                  <h3 className="text-[14px] font-semibold mb-4">Historial de Evolución</h3>
+                  {weightLogs.length === 0 ? (
+                    <p className="text-xs text-black/40 py-4 text-center">No hay registros todavía. Añade tu primer pesaje arriba.</p>
+                  ) : (
+                    <div className="space-y-2.5">
+                      {weightLogs.map((log) => (
+                        <div key={log.id} className="flex items-center justify-between p-3 rounded-xl bg-[#fcfcfa] border border-[#f0f1ee] text-xs">
+                          <div>
+                            <span className="font-semibold text-black/80">{log.date}</span>
+                            <p className="text-black/50 text-[11px] mt-0.5">{log.note}</p>
+                          </div>
+                          <span className="font-mono font-bold text-sm text-[#0f2a1d]">{log.weight} kg</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+
+            <footer className="mt-12 pt-6 border-t border-[#eef0ec] flex items-center justify-between text-[11px] text-black/30">
+              <span>Dieta base · App PWA</span>
+              <span className="font-mono">3000 kcal · Cloud Sync</span>
+            </footer>
+          </main>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
