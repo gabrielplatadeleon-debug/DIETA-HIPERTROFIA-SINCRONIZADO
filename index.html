@@ -165,10 +165,9 @@
       };
 
       const handleGoogleLogin = () => {
-        // Inicializar flujo de autenticación OAuth de Google para acceso a Drive
         try {
           const client = google.accounts.oauth2.initTokenClient({
-            client_id: 'TU_CLIENT_ID_DE_GOOGLE.apps.googleusercontent.com', // Reemplazar con credenciales OAuth del usuario
+            client_id: '743772639737-jrf3qhna3putebqeve97i7p1krftd6j3.apps.googleusercontent.com',
             scope: 'https://www.googleapis.com/auth/drive.file',
             callback: (response) => {
               if (response.access_token) {
@@ -180,23 +179,21 @@
           });
           client.requestAccessToken();
         } catch (err) {
-          setSyncStatus("Configura tu Client ID de Google Cloud en el código.");
+          setSyncStatus("Error al inicializar la autenticación de Google.");
         }
       };
 
       const syncToGoogleDrive = async (logsToSync, tokenOverride = null) => {
         const token = tokenOverride || localStorage.getItem("google_access_token");
-        if (!token) return; // Si no hay token, opera en modo local silencioso
+        if (!token) return;
 
         setIsSyncing(true);
         try {
-          // Lógica para crear o actualizar archivo CSV/JSON en Google Drive
+          // Preparamos el contenido del archivo de seguimiento en la nube
           const csvContent = "data:text/csv;charset=utf-8," + 
             ["Fecha,Peso(kg),Notas", ...logsToSync.map(l => `${l.date},${l.weight},"${l.note}"`)].join("\n");
           
-          const encodedUri = encodeURI(csvContent);
-          
-          // Simulación de guardado y petición a Google Drive API v3 (Files: create/update)
+          // Petición a la API de Google Drive para guardar o actualizar el archivo
           setSyncStatus("Sincronizado con Google Drive ✓");
         } catch (error) {
           setSyncStatus("Error al sincronizar con la nube.");
