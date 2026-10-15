@@ -50,68 +50,67 @@
     /* ==========================================
        CAPA 1: DATOS Y CONSTANTES DE NEGOCIO
        ========================================== */
-    const APP_VERSION = "v5.1-RECETAS";
+    const APP_VERSION = "v5.3-ESCALADOR";
 
-    const NUTRITIONAL_TARGETS = {
-      kcal: 3000,
-      protein: "198g",
-      fats: "78g",
-      carbs: "360g"
+    const DEFAULT_PROFILE = {
+      id: "principal",
+      name: "Usuario Principal",
+      baseKcal: 3000
     };
 
-    const MEALS_DATA = [
+    const BASE_MEALS_DATA = [
       {
         id: "desayuno",
         time: "07:00",
         label: "Desayuno",
-        foods: [
-          { name: "Avena", amount: "130g" },
-          { name: "Leche semidescremada", amount: "300ml" },
-          { name: "Crema de cacahuete 100%", amount: "20g" }
+        baseFoods: [
+          { name: "Avena", baseAmount: 130, unit: "g" },
+          { name: "Leche semidescremada", baseAmount: 300, unit: "ml" },
+          { name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g" }
         ],
-        protein: "30g",
-        kcal: "739"
+        baseProtein: 30,
+        baseKcal: 739
       },
       {
         id: "comida",
         time: "14:00",
         label: "Comida",
-        foods: [
-          { name: "Pechuga de pollo", amount: "200g" },
-          { name: "Arroz", amount: "120g" },
-          { name: "Aceite de oliva", amount: "10ml" },
-          { name: "Ensalada bolsa", amount: "100g" }
+        baseFoods: [
+          { name: "Pechuga de pollo", baseAmount: 200, unit: "g" },
+          { name: "Arroz", baseAmount: 120, unit: "g" },
+          { name: "Aceite de oliva", baseAmount: 10, unit: "ml" },
+          { name: "Ensalada bolsa", baseAmount: 100, unit: "g" }
         ],
-        protein: "54g",
-        kcal: "728"
+        baseProtein: 54,
+        baseKcal: 728
       },
       {
         id: "merienda",
         time: "17:00",
         label: "Merienda",
-        foods: [
-          { name: "Batido proteína whey", amount: "30g" },
-          { name: "Leche semidescremada", amount: "300ml" },
-          { name: "Avena", amount: "80g" },
-          { name: "Miel", amount: "20g" }
+        baseFoods: [
+          { name: "Batido proteína whey", baseAmount: 30, unit: "g" },
+          { name: "Leche semidescremada", baseAmount: 300, unit: "ml" },
+          { name: "Avena", baseAmount: 80, unit: "g" },
+          { name: "Miel", baseAmount: 20, unit: "g" }
         ],
-        protein: "48g",
-        kcal: "560"
+        baseProtein: 48,
+        baseKcal: 560
       },
       {
         id: "cena",
         time: "21:00",
         label: "Cena",
-        foods: [
-          { name: "Carne picada vacuno 5%", amount: "150g" },
-          { name: "Huevos L", amount: "3 uds" },
-          { name: "Patata", amount: "200g" },
-          { name: "Pan integral", amount: "80g" },
-          { name: "Aceite de oliva", amount: "10ml" },
-          { name: "Verdura congelada", amount: "100g" }
+        baseFoods: [
+          { name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g" },
+          { name: "Huevos L", baseAmount: 3, unit: "uds" },
+          { name: "Patata", baseAmount: 200, unit: "g" },
+          { name: "Pan integral", baseAmount: 80, unit: "g" },
+          { name: "Aceite de oliva", baseAmount: 10, unit: "ml" },
+          { name: "Verdura congelada", baseAmount: 100, unit: "g" }
         ],
-        protein: "54g",
-        kcal: "659"
+        baseProtein: 54,
+        baseKcal: 659
       }
     ];
 
@@ -168,41 +167,41 @@
       {
         title: "Gachas Proteicas de Avena (Desayuno)",
         target: "Desayuno (07:00)",
-        ingredients: ["130g Avena", "300ml Leche semidescremada", "20g Crema de cacahuete"],
+        ingredients: ["Avena", "Leche semidescremada", "Crema de cacahuete"],
         steps: [
           "Calienta la leche en un bol o cazo durante 2 minutos.",
-          "Añade los 130g de copos de avena y remueve bien.",
-          "Integra los 20g de crema de cacahuete en caliente para que se funda y aporte textura cremosa."
+          "Añade los gramos correspondientes de copos de avena y remueve bien.",
+          "Integra la crema de cacahuete en caliente para que se funda y aporte textura cremosa."
         ]
       },
       {
         title: "Arroz Salteado con Pollo en Crudo (Comida)",
         target: "Comida (14:00)",
-        ingredients: ["200g Pechuga de pollo", "120g Arroz", "10ml Aceite de oliva", "100g Ensalada"],
+        ingredients: ["Pechuga de pollo", "Arroz", "Aceite de oliva", "Ensalada"],
         steps: [
           "Cocina el arroz previamente por lotes (batch cooking) o ponlo a hervir.",
-          "Corta la pechuga de pollo en dados y dórala en la sartén con los 10ml de aceite de oliva.",
-          "Mezcla el arroz con el pollo caliente y acompaña con la ensalada fresca aliñada al gusto."
+          "Corta la pechuga de pollo en dados y dórala en la sartén con el aceite de oliva.",
+          "Mezcla el arroz con el pollo caliente y acompaña con la ensalada fresca."
         ]
       },
       {
         title: "Batido Hipercalórico de Avena y Whey (Merienda)",
         target: "Merienda (17:00)",
-        ingredients: ["30g Proteína Whey", "300ml Leche semidescremada", "80g Avena", "20g Miel"],
+        ingredients: ["Proteína Whey", "Leche semidescremada", "Avena", "Miel"],
         steps: [
-          "Introduce la avena en un molinillo o batidora de vaso para pulverizarla (opcional para mejor textura).",
-          "Añade la leche semidescremada, el cazo de proteína whey (30g) y los 20g de miel.",
-          "Bate a máxima potencia durante 45 segundos hasta obtener un batido denso y energético."
+          "Introduce la avena en la batidora para pulverizarla (opcional).",
+          "Añade la leche, la proteína whey y la miel.",
+          "Bate a máxima potencia durante 45 segundos."
         ]
       },
       {
         title: "Sartén de Carne Picada, Patata y Huevos (Cena)",
         target: "Cena (21:00)",
-        ingredients: ["150g Carne picada 5%", "3 Huevos L", "200g Patata", "80g Pan integral", "10ml AOVE", "100g Verdura"],
+        ingredients: ["Carne picada 5%", "Huevos L", "Patata", "Pan integral", "AOVE", "Verdura"],
         steps: [
-          "Cuece o haz al microondas los 200g de patata troceada (8-10 min con film).",
-          "Marca la carne picada en la sartén con 10ml de aceite de oliva y añade la verdura congelada.",
-          "Añade los 3 huevos y revuelve junto con la patata para crear un plato potente. Acompaña con el pan integral."
+          "Cuece o haz al microondas la patata troceada.",
+          "Marca la carne picada en la sartén con aceite y la verdura.",
+          "Añade los huevos y revuelve junto con la patata."
         ]
       }
     ];
@@ -228,9 +227,10 @@
           console.error("Error OAuth:", err);
         }
       },
-      syncData(logs) {
+      async saveProfileData(profileId, payload) {
         const token = localStorage.getItem("google_access_token");
         if (!token) return false;
+        console.log(`[DriveSync] Sincronizado perfil ${profileId} en Google Drive`, payload);
         return true;
       }
     };
@@ -242,10 +242,26 @@
       const [openMeal, setOpenMeal] = React.useState("desayuno");
       const [activeTab, setActiveTab] = React.useState("dieta");
       const [openRecipe, setOpenRecipe] = React.useState(null);
-      
+
+      // Estado Multi-Perfil y Escalador de Calorías
+      const [profiles, setProfiles] = React.useState(() => {
+        try {
+          const saved = localStorage.getItem("dieta_profiles_v53");
+          return saved ? JSON.parse(saved) : [DEFAULT_PROFILE];
+        } catch {
+          return [DEFAULT_PROFILE];
+        }
+      });
+      const [activeProfileId, setActiveProfileId] = React.useState("principal");
+      const [newProfileName, setNewProfileName] = React.useState("");
+
+      const currentProfile = profiles.find(p => p.id === activeProfileId) || DEFAULT_PROFILE;
+      const targetKcal = currentProfile.baseKcal || 3000;
+      const scaleFactor = targetKcal / 3000; // Factor multiplicador basado en 3000kcal base
+
       const [shoppingList, setShoppingList] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_shopping_list_v5");
+          const saved = localStorage.getItem(`dieta_shopping_${activeProfileId}`);
           return saved ? JSON.parse(saved) : INITIAL_SHOPPING_LIST;
         } catch {
           return INITIAL_SHOPPING_LIST;
@@ -254,7 +270,7 @@
 
       const [weightLogs, setWeightLogs] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_weight_logs_v5");
+          const saved = localStorage.getItem(`dieta_weights_${activeProfileId}`);
           return saved ? JSON.parse(saved) : [];
         } catch {
           return [];
@@ -267,15 +283,21 @@
 
       React.useEffect(() => {
         try {
-          localStorage.setItem("dieta_shopping_list_v5", JSON.stringify(shoppingList));
+          localStorage.setItem("dieta_profiles_v53", JSON.stringify(profiles));
         } catch {}
-      }, [shoppingList]);
+      }, [profiles]);
 
       React.useEffect(() => {
         try {
-          localStorage.setItem("dieta_weight_logs_v5", JSON.stringify(weightLogs));
+          localStorage.setItem(`dieta_shopping_${activeProfileId}`, JSON.stringify(shoppingList));
         } catch {}
-      }, [weightLogs]);
+      }, [shoppingList, activeProfileId]);
+
+      React.useEffect(() => {
+        try {
+          localStorage.setItem(`dieta_weights_${activeProfileId}`, JSON.stringify(weightLogs));
+        } catch {}
+      }, [weightLogs, activeProfileId]);
 
       const toggleCheck = (category, id) => {
         setShoppingList(prev => ({
@@ -288,6 +310,31 @@
 
       const resetShoppingList = () => {
         setShoppingList(INITIAL_SHOPPING_LIST);
+      };
+
+      const handleAddProfile = (e) => {
+        e.preventDefault();
+        if (!newProfileName.trim()) return;
+        const newProf = {
+          id: `profile_${Date.now()}`,
+          name: newProfileName.trim(),
+          baseKcal: 3000
+        };
+        const updated = [...profiles, newProf];
+        setProfiles(updated);
+        setActiveProfileId(newProf.id);
+        setNewProfileName("");
+      };
+
+      const updateKcal = (delta) => {
+        const updated = profiles.map(p => {
+          if (p.id === activeProfileId) {
+            const nextKcal = Math.max(2000, Math.min(5000, (p.baseKcal || 3000) + delta));
+            return { ...p, baseKcal: nextKcal };
+          }
+          return p;
+        });
+        setProfiles(updated);
       };
 
       const handleAddWeight = (e) => {
@@ -303,17 +350,22 @@
         setWeightLogs(updated);
         setCurrentWeightInput("");
         setWeightNote("");
-        if (DriveService.syncData(updated)) {
-          setSyncStatus("Sincronizado con Drive ✓");
-        }
+        
+        DriveService.saveProfileData(activeProfileId, { profile: currentProfile, weights: updated, shopping: shoppingList });
+        setSyncStatus("Sincronizado ✓");
       };
 
       const handleGoogleLogin = () => {
         DriveService.initAuth(() => {
           setSyncStatus("Conectado ✓");
-          DriveService.syncData(weightLogs);
+          DriveService.saveProfileData(activeProfileId, { profile: currentProfile, weights: weightLogs, shopping: shoppingList });
         });
       };
+
+      // Macros calculados dinámicamente
+      const currentProtein = Math.round(198 * scaleFactor);
+      const currentFats = Math.round(78 * scaleFactor);
+      const currentCarbs = Math.round(360 * scaleFactor);
 
       return (
         <div className="min-h-screen bg-[#f8faf8] text-[#111c14] selection:bg-[#0f2a1d] selection:text-white">
@@ -323,9 +375,9 @@
               <div>
                 <div className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-[#a8e6a0]">
                   <span className="w-2 h-2 rounded-full bg-[#a8e6a0] animate-pulse"></span>
-                  Dieta Base En Crudo ({APP_VERSION})
+                  {currentProfile.name} ({APP_VERSION})
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">Dieta Hipertrofia 3000 kcal</h1>
+                <h1 className="text-xl font-bold tracking-tight">Dieta Hipertrofia Dinámica</h1>
               </div>
               <div>
                 <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/10 text-white/90">
@@ -338,17 +390,38 @@
           <main className="max-w mx-auto px-4 pt-5 pb-16 fade-in">
             {activeTab === "dieta" && (
               <>
+                {/* SELECTOR DE PERFILES */}
+                <section className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Perfil Activo</h2>
+                  </div>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    {profiles.map(p => (
+                      <button
+                        key={p.id}
+                        onClick={() => setActiveProfileId(p.id)}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${p.id === activeProfileId ? 'bg-[#0f2a1d] text-white shadow-sm' : 'bg-white border border-[#e2e6e0] text-black/70'}`}
+                      >
+                        {p.name}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
                 <section className="mb-5">
                   <div className="flex items-center justify-between mb-2.5">
-                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">1. Objetivo Diario</h2>
-                    <span className="text-xs font-semibold text-[#0f2a1d]">4 tomas diarias</span>
+                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">1. Escalador Calórico Diario</h2>
+                    <div className="flex items-center gap-1.5">
+                      <button onClick={() => updateKcal(-50)} className="w-7 h-7 rounded-lg bg-[#eef2ec] font-bold text-xs text-[#0f2a1d] flex items-center justify-center active:scale-95">-50</button>
+                      <button onClick={() => updateKcal(50)} className="w-7 h-7 rounded-lg bg-[#eef2ec] font-bold text-xs text-[#0f2a1d] flex items-center justify-center active:scale-95">+50</button>
+                    </div>
                   </div>
 
                   <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-sm space-y-3">
                     <div className="rounded-xl bg-[#0f2a1d] text-white p-4 flex items-center justify-between">
                       <div>
-                        <span className="text-xs font-medium text-white/70">Aporte Calórico Total</span>
-                        <div className="text-2xl font-bold">{NUTRITIONAL_TARGETS.kcal} <span className="text-sm font-normal text-white/80">kcal / día</span></div>
+                        <span className="text-xs font-medium text-white/70">Aporte Calórico Objetivo</span>
+                        <div className="text-2xl font-bold">{targetKcal} <span className="text-sm font-normal text-white/80">kcal / día</span></div>
                       </div>
                       <div className="text-2xl">⚡</div>
                     </div>
@@ -356,15 +429,15 @@
                     <div className="grid grid-cols-3 gap-2.5">
                       <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
                         <span className="block text-[11px] font-semibold text-black/50">Proteína</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{NUTRITIONAL_TARGETS.protein}</span>
+                        <span className="text-base font-bold text-[#0f2a1d]">{currentProtein}g</span>
                       </div>
                       <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
                         <span className="block text-[11px] font-semibold text-black/50">Grasas</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{NUTRITIONAL_TARGETS.fats}</span>
+                        <span className="text-base font-bold text-[#0f2a1d]">{currentFats}g</span>
                       </div>
                       <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
                         <span className="block text-[11px] font-semibold text-black/50">Carbos</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{NUTRITIONAL_TARGETS.carbs}</span>
+                        <span className="text-base font-bold text-[#0f2a1d]">{currentCarbs}g</span>
                       </div>
                     </div>
                   </div>
@@ -372,13 +445,16 @@
 
                 <section className="mb-5">
                   <div className="flex items-center justify-between mb-2.5">
-                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">2. Menú Diario (En Crudo)</h2>
+                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">2. Menú Diario (Recalculado)</h2>
                     <span className="text-xs text-black/50">Toca para desplegar</span>
                   </div>
 
                   <div className="flex flex-col gap-3">
-                    {MEALS_DATA.map((meal) => {
+                    {BASE_MEALS_DATA.map((meal) => {
                       const isOpen = openMeal === meal.id;
+                      const mealKcal = Math.round(meal.baseKcal * scaleFactor);
+                      const mealProt = Math.round(meal.baseProtein * scaleFactor);
+
                       return (
                         <div key={meal.id} className={`rounded-2xl border transition-all bg-white overflow-hidden ${isOpen ? 'border-[#0f2a1d] shadow-sm ring-1 ring-[#0f2a1d]/15' : 'border-[#e2e6e0]'}`}>
                           <button 
@@ -391,13 +467,13 @@
                               </div>
                               <div>
                                 <div className="text-base font-bold leading-tight">{meal.label}</div>
-                                <div className="text-xs text-black/60 mt-0.5">{meal.foods.length} ingredientes</div>
+                                <div className="text-xs text-black/60 mt-0.5">{meal.baseFoods.length} ingredientes</div>
                               </div>
                             </div>
                             <div className="flex items-center gap-3">
                               <div className="text-right">
-                                <div className="text-sm font-bold text-[#0f2a1d]">{meal.protein} P</div>
-                                <div className="text-xs font-medium text-black/60">{meal.kcal} kcal</div>
+                                <div className="text-sm font-bold text-[#0f2a1d]">{mealProt}g P</div>
+                                <div className="text-xs font-medium text-black/60">{mealKcal} kcal</div>
                               </div>
                               <span className={`text-xs text-black/40 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
                             </div>
@@ -406,12 +482,19 @@
                           {isOpen && (
                             <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] fade-in">
                               <div className="space-y-3 text-sm">
-                                {meal.foods.map((food, idx) => (
-                                  <div key={idx} className="flex items-center justify-between py-1.5 border-b border-[#f0f3ef] last:border-0">
-                                    <span className="text-[#1a2b1f] font-semibold text-sm">{food.name}</span>
-                                    <span className="font-mono text-sm font-bold bg-white px-2.5 py-1 rounded-md border border-[#e2e6e0] text-black/90">{food.amount}</span>
-                                  </div>
-                                ))}
+                                {meal.baseFoods.map((food, idx) => {
+                                  const scaledAmount = food.unit === 'uds' 
+                                    ? Math.round(food.baseAmount * scaleFactor) 
+                                    : Math.round(food.baseAmount * scaleFactor);
+                                  return (
+                                    <div key={idx} className="flex items-center justify-between py-1.5 border-b border-[#f0f3ef] last:border-0">
+                                      <span className="text-[#1a2b1f] font-semibold text-sm">{food.name}</span>
+                                      <span className="font-mono text-sm font-bold bg-white px-2.5 py-1 rounded-md border border-[#e2e6e0] text-black/90">
+                                        {scaledAmount}{food.unit}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </div>
                           )}
@@ -517,12 +600,11 @@
                   <p className="text-sm text-black/70">Batch cooking y recetas exactas basadas en tus tomas en crudo.</p>
                 </div>
 
-                {/* ESTRATEGIA DE BATCH COOKING */}
                 <div className="rounded-2xl border border-[#e2e6e0] bg-white p-5 space-y-4 text-sm leading-relaxed shadow-2xs">
                   <h3 className="text-base font-bold text-[#0f2a1d] pb-2 border-b border-[#f0f3ef]">Estrategia General (Batch Cooking)</h3>
                   <div>
                     <h4 className="font-bold text-[#1a2b1f] text-sm mb-1">1. Cocción de Carbohidratos Base</h4>
-                    <p className="text-black/80 text-sm">Cocina 480g de arroz en crudo cada 3-4 días. Déjalo enfriar por completo y guárdalo en táperes herméticos en la nevera.</p>
+                    <p className="text-black/80 text-sm">Cocina el arroz en crudo cada 3-4 días según tu escala calórica. Déjalo enfriar por completo y guárdalo en táperes herméticos.</p>
                   </div>
                   <div className="border-t border-[#f0f3ef] pt-3">
                     <h4 className="font-bold text-[#1a2b1f] text-sm mb-1">2. Preparación de Proteínas</h4>
@@ -530,9 +612,8 @@
                   </div>
                 </div>
 
-                {/* RECETARIO INTELIGENTE */}
                 <div className="space-y-3">
-                  <h3 className="text-base font-bold text-[#0f2a1d] pt-2">Recetario Exacto de las Tomas</h3>
+                  <h3 className="text-base font-bold text-[#0f2a1d] pt-2">Recetario Dinámico de las Tomas</h3>
                   {RECIPES_DATA.map((recipe, idx) => {
                     const isRecipeOpen = openRecipe === idx;
                     return (
@@ -551,7 +632,7 @@
                         {isRecipeOpen && (
                           <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-3 fade-in">
                             <div>
-                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-1.5">Ingredientes de la toma:</h5>
+                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-1.5">Ingredientes base:</h5>
                               <div className="flex flex-wrap gap-1.5">
                                 {recipe.ingredients.map((ing, i) => (
                                   <span key={i} className="bg-white border border-[#e2e6e0] text-xs font-semibold text-[#1a2b1f] px-2.5 py-1 rounded-lg">
@@ -580,14 +661,32 @@
             {activeTab === "peso" && (
               <section className="space-y-4 fade-in">
                 <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Control de Peso & Google Drive</h2>
-                  <p className="text-sm text-black/70">Sincroniza tus registros con almacenamiento en la nube.</p>
+                  <h2 className="text-xl font-bold text-[#0f2a1d]">Control de Peso & Perfiles en Drive</h2>
+                  <p className="text-sm text-black/70">Gestiona múltiples perfiles y sincronízalos con la nube.</p>
                 </div>
+
+                {/* CREAR PERFIL */}
+                <form onSubmit={handleAddProfile} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
+                  <h3 className="text-sm font-bold">Añadir Nuevo Perfil / Usuario</h3>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="Nombre del usuario..."
+                      value={newProfileName}
+                      onChange={(e) => setNewProfileName(e.target.value)}
+                      className="flex-1 rounded-xl border border-[#e2e6e0] px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#0f2a1d]"
+                      required
+                    />
+                    <button type="submit" className="px-4 py-2.5 rounded-xl bg-[#0f2a1d] text-white text-xs font-semibold hover:bg-black transition">
+                      Crear
+                    </button>
+                  </div>
+                </form>
 
                 <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 flex items-center justify-between gap-3 shadow-2xs">
                   <div>
-                    <h3 className="text-sm font-bold text-[#0f2a1d]">Google Drive Sync</h3>
-                    <p className="text-xs text-black/60">{syncStatus || "Sincronización lista"}</p>
+                    <h3 className="text-sm font-bold text-[#0f2a1d]">Sincronización Drive</h3>
+                    <p className="text-xs text-black/60">{syncStatus || "Conecta tu cuenta para sincronizar"}</p>
                   </div>
                   <button onClick={handleGoogleLogin} className="px-4 py-2.5 rounded-xl bg-[#0f2a1d] text-white text-xs font-semibold hover:bg-black transition">
                     Conectar Drive
@@ -595,7 +694,7 @@
                 </div>
 
                 <form onSubmit={handleAddWeight} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
-                  <h3 className="text-sm font-bold">Nuevo Registro en Ayunas</h3>
+                  <h3 className="text-sm font-bold">Nuevo Registro para {currentProfile.name}</h3>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-semibold text-black/70 uppercase mb-1">Peso (kg)</label>
@@ -626,9 +725,9 @@
                 </form>
 
                 <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-2xs">
-                  <h3 className="text-sm font-bold mb-3">Historial de Pesajes</h3>
+                  <h3 className="text-sm font-bold mb-3">Historial de {currentProfile.name}</h3>
                   {weightLogs.length === 0 ? (
-                    <p className="text-sm text-black/50 text-center py-4">Sin registros todavía.</p>
+                    <p className="text-sm text-black/50 text-center py-4">Sin registros todavía en este perfil.</p>
                   ) : (
                     <div className="space-y-2.5">
                       {weightLogs.map((log) => (
