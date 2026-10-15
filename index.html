@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V6.1</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V6.2</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -48,9 +48,9 @@
 
   <script type="text/babel">
     /* ==========================================
-       CAPA 1: CATÁLOGO Y VARIANTES DE RECETAS
+       CAPA 1: CATÁLOGO DE DATOS Y PLAN B
        ========================================== */
-    const APP_VERSION = "v6.1-AUTO-PERFILES";
+    const APP_VERSION = "v6.2-GOOGLE-AUTH-ISOLATED";
 
     const DIET_CATALOG = {
       volumen_3000: {
@@ -151,95 +151,84 @@
       }
     };
 
-    const ALTERNATIVES_DATA = [
+    const PLAN_B_DATA = [
       {
-        title: "Plan B: Comida / Cena Exprés",
-        desc: "Ideal si no tienes táperes listos.",
-        items: [
-          { name: "Carbohidrato", detail: "4-5 rebanadas de pan integral o patata al vacío." },
-          { name: "Proteína", detail: "2 latas de atún al natural o 200g pechuga en lonchas." }
+        id: "planb_comida",
+        title: "Comida / Cena Exprés (Sin Cocinar)",
+        desc: "Opción rápida para días sin táperes ni tiempo de cocinar.",
+        options: [
+          { name: "Carbohidrato directo", detail: "4 rebanadas de pan integral o 1 bote de garbanzos/alubias cocidas lavadas." },
+          { name: "Proteína limpia", detail: "2 latas de atún/caballa al natural o 200g de pechuga de pavo/pollo en lonchas >90%." },
+          { name: "Grasas y Verdura", detail: "Bolsa de ensalada lista para comer + 1 cucharada sopera de aceite de oliva virgen extra." }
+        ]
+      },
+      {
+        id: "planb_desayuno",
+        title: "Desayuno / Merienda On-The-Go",
+        desc: "Para consumir en 3 minutos antes de salir de casa o entrenar.",
+        options: [
+          { name: "Base proteica", detail: "1 cazo (30g) de proteína Whey disuelto en 300ml de leche o agua." },
+          { name: "Carbohidrato rápido", detail: "2 plátanos maduros o 50g de crema de arroz instantánea." },
+          { name: "Grasas saludables", detail: "1 puñado (25g) de almendras o nueces crudas." }
         ]
       }
     ];
 
     /* ==========================================
-       CAPA 2: SERVICIOS GOOGLE DRIVE API (AUTODETECCIÓN)
+       CAPA 2: GOOGLE REST API CON USUARIO & CARPETA ESPECÍFICA
        ========================================== */
     const DriveService = {
       initAuth(onSuccess) {
         try {
           const client = google.accounts.oauth2.initTokenClient({
             client_id: '743772639737-jrf3qhna3putebqeve97i7p1krftd6j3.apps.googleusercontent.com',
-            scope: 'https://www.googleapis.com/auth/drive.file',
-            callback: (response) => {
+            scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+            callback: async (response) => {
               if (response.access_token) {
                 localStorage.setItem("google_access_token", response.access_token);
-                onSuccess(response.access_token);
+                // Obtener info del usuario de Google
+                const userRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                  headers: { Authorization: `Bearer ${response.access_token}` }
+                });
+                const userInfo = await userRes.json();
+                onSuccess(response.access_token, userInfo);
               }
             },
           });
           client.requestAccessToken();
-        } catch (err) {}
+        } catch (err) {
+          console.error("Error OAuth:", err);
+        }
       },
 
-      async getFolderId(token) {
+      async getOrCreateUserFolder(token, folderName) {
         try {
-          const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='Mi_Dieta_PWA' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+          const cleanName = folderName || "Mi_Dieta_PWA_Personal";
+          const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='${cleanName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
           const res = await fetch(searchUrl, { headers: { Authorization: `Bearer ${token}` } });
           const data = await res.json();
           if (data.files && data.files.length > 0) return data.files[0].id;
-          return null;
+
+          const createRes = await fetch("https://www.googleapis.com/drive/v3/files", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ name: cleanName, mimeType: "application/vnd.google-apps.folder" })
+          });
+          const folderData = await createRes.json();
+          return folderData.id;
         } catch {
           return null;
         }
       },
 
-      async scanCloudProfiles(token) {
-        try {
-          const folderId = await this.getFolderId(token);
-          if (!folderId) return [];
-
-          const query = `q='${folderId}' in parents and name contains 'perfil_' and trashed=false`;
-          const res = await fetch(`https://www.googleapis.com/drive/v3/files?${query}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          const data = await res.json();
-          if (!data.files) return [];
-
-          const profiles = [];
-          for (const file of data.files) {
-            const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`, {
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            const profileData = await fileRes.json();
-            if (profileData && profileData.profile) {
-              profiles.push(profileData.profile);
-            }
-          }
-          return profiles;
-        } catch (err) {
-          console.error("Error escaneando perfiles:", err);
-          return [];
-        }
-      },
-
-      async syncCloudProfile(profileId, payload) {
-        const token = localStorage.getItem("google_access_token");
+      async syncCloudProfile(token, userFolder, profilePayload) {
         if (!token) return { success: false };
         try {
-          let folderId = await this.getFolderId(token);
-          if (!folderId) {
-            const createRes = await fetch("https://www.googleapis.com/drive/v3/files", {
-              method: "POST",
-              headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-              body: JSON.stringify({ name: "Mi_Dieta_PWA", mimeType: "application/vnd.google-apps.folder" })
-            });
-            const folderData = await createRes.json();
-            folderId = folderData.id;
-          }
+          const folderId = await this.getOrCreateUserFolder(token, userFolder);
+          if (!folderId) return { success: false };
 
-          const fileName = `perfil_${profileId}.json`;
-          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+          const fileName = `datos_dieta_${profilePayload.profile.id}.json`;
+          const blob = new Blob([JSON.stringify(profilePayload, null, 2)], { type: "application/json" });
 
           const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='${fileName}' and '${folderId}' in parents and trashed=false`;
           const searchRes = await fetch(searchUrl, { headers: { Authorization: `Bearer ${token}` } });
@@ -270,11 +259,11 @@
     };
 
     /* ==========================================
-       CAPA 3: GRÁFICA SVG NATIVA
+       CAPA 3: GRÁFICA DE PESO SVG NATIVA
        ========================================== */
     function WeightChart({ logs }) {
       if (!logs || logs.length < 2) {
-        return <div className="p-4 text-center text-xs text-black/50 bg-[#f8faf8] rounded-xl border border-[#f0f3ef]">Registra al menos 2 pesajes.</div>;
+        return <div className="p-4 text-center text-xs text-black/50 bg-[#f8faf8] rounded-xl border border-[#f0f3ef]">Registra al menos 2 pesajes para ver gráfica.</div>;
       }
       const sortedLogs = [...logs].reverse();
       const weights = sortedLogs.map(l => l.weight);
@@ -315,30 +304,74 @@
     }
 
     /* ==========================================
-       CAPA 4: NÚCLEO DE APLICACIÓN
+       CAPA 4: COMPONENTE PRINCIPAL (REACT)
        ========================================== */
     function App() {
-      const [openMeal, setOpenMeal] = React.useState("d_desayuno");
       const [activeTab, setActiveTab] = React.useState("dieta");
+      const [openMeal, setOpenMeal] = React.useState("d_desayuno");
       const [openRecipe, setOpenRecipe] = React.useState(null);
+
+      // Estado de Cuenta de Google / Gmail
+      const [googleUser, setGoogleUser] = React.useState(() => {
+        try {
+          const saved = localStorage.getItem("dieta_google_user_v62");
+          return saved ? JSON.parse(saved) : null;
+        } catch { return null; }
+      });
 
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v61");
+          const saved = localStorage.getItem("dieta_profiles_v62");
           return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {} }];
         } catch {
           return [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {} }];
         }
       });
-      const [activeProfileId, setActiveProfileId] = React.useState("gabriel");
-      const [newProfileName, setNewProfileName] = React.useState("");
 
+      const [activeProfileId, setActiveProfileId] = React.useState("gabriel");
       const currentProfile = profiles.find(p => p.id === activeProfileId) || profiles[0];
       const baseDiet = DIET_CATALOG.volumen_3000;
-      
+
       const targetKcal = currentProfile.customKcal || 3000;
       const scaleFactor = targetKcal / 3000;
       const activeVariants = currentProfile.activeVariants || {};
+
+      const [checkedItems, setCheckedItems] = React.useState(() => {
+        try {
+          const saved = localStorage.getItem(`dieta_checked_${activeProfileId}`);
+          return saved ? JSON.parse(saved) : {};
+        } catch { return {}; }
+      });
+
+      const [weightLogs, setWeightLogs] = React.useState(() => {
+        try {
+          const saved = localStorage.getItem(`dieta_weights_${activeProfileId}`);
+          return saved ? JSON.parse(saved) : [];
+        } catch { return []; }
+      });
+
+      const [currentWeightInput, setCurrentWeightInput] = React.useState("");
+      const [weightNote, setWeightNote] = React.useState("");
+      const [syncStatus, setSyncStatus] = React.useState(null);
+
+      React.useEffect(() => {
+        try { localStorage.setItem("dieta_profiles_v62", JSON.stringify(profiles)); } catch {}
+      }, [profiles]);
+
+      React.useEffect(() => {
+        try { if (googleUser) localStorage.setItem("dieta_google_user_v62", JSON.stringify(googleUser)); } catch {}
+      }, [googleUser]);
+
+      React.useEffect(() => {
+        try { localStorage.setItem(`dieta_checked_${activeProfileId}`, JSON.stringify(checkedItems)); } catch {}
+      }, [checkedItems, activeProfileId]);
+
+      React.useEffect(() => {
+        try { localStorage.setItem(`dieta_weights_${activeProfileId}`, JSON.stringify(weightLogs)); } catch {}
+      }, [weightLogs, activeProfileId]);
+
+      const toggleCheck = (itemId) => setCheckedItems(prev => ({ ...prev, [itemId]: !prev[itemId] }));
+      const resetShoppingList = () => setCheckedItems({});
 
       const setVariantForMeal = (mealId, variantIndex) => {
         setProfiles(prev => prev.map(p => {
@@ -352,66 +385,6 @@
         }));
       };
 
-      const [checkedItems, setCheckedItems] = React.useState(() => {
-        try {
-          const saved = localStorage.getItem(`dieta_checked_${activeProfileId}`);
-          return saved ? JSON.parse(saved) : {};
-        } catch {
-          return {};
-        }
-      });
-
-      const [weightLogs, setWeightLogs] = React.useState(() => {
-        try {
-          const saved = localStorage.getItem(`dieta_weights_${activeProfileId}`);
-          return saved ? JSON.parse(saved) : [];
-        } catch {
-          return [];
-        }
-      });
-
-      const [currentWeightInput, setCurrentWeightInput] = React.useState("");
-      const [weightNote, setWeightNote] = React.useState("");
-      const [syncStatus, setSyncStatus] = React.useState(null);
-
-      React.useEffect(() => {
-        try {
-          localStorage.setItem("dieta_profiles_v61", JSON.stringify(profiles));
-        } catch {}
-      }, [profiles]);
-
-      React.useEffect(() => {
-        try {
-          localStorage.setItem(`dieta_checked_${activeProfileId}`, JSON.stringify(checkedItems));
-        } catch {}
-      }, [checkedItems, activeProfileId]);
-
-      React.useEffect(() => {
-        try {
-          localStorage.setItem(`dieta_weights_${activeProfileId}`, JSON.stringify(weightLogs));
-        } catch {}
-      }, [weightLogs, activeProfileId]);
-
-      const toggleCheck = (itemId) => {
-        setCheckedItems(prev => ({ ...prev, [itemId]: !prev[itemId] }));
-      };
-
-      const resetShoppingList = () => setCheckedItems({});
-
-      const handleAddProfile = (e) => {
-        e.preventDefault();
-        if (!newProfileName.trim()) return;
-        const newProf = {
-          id: `profile_${Date.now()}`,
-          name: newProfileName.trim(),
-          customKcal: 3000,
-          activeVariants: {}
-        };
-        setProfiles([...profiles, newProf]);
-        setActiveProfileId(newProf.id);
-        setNewProfileName("");
-      };
-
       const updateKcal = (delta) => {
         setProfiles(prev => prev.map(p => {
           if (p.id === activeProfileId) {
@@ -422,6 +395,64 @@
         }));
       };
 
+      // Vincular con Cuenta de Google & Crear Perfil + Carpeta Personal
+      const handleGoogleLogin = () => {
+        DriveService.initAuth(async (token, userInfo) => {
+          setGoogleUser(userInfo);
+          const folderName = `Mi_Dieta_PWA_${userInfo.given_name || userInfo.name || 'Usuario'}`;
+          
+          // Crear o asignar perfil único para esta cuenta de Google
+          const profileId = `user_${userInfo.sub || Date.now()}`;
+          const newProfile = {
+            id: profileId,
+            name: userInfo.name || userInfo.email,
+            email: userInfo.email,
+            folderName: folderName,
+            customKcal: 3000,
+            activeVariants: {}
+          };
+
+          setProfiles([newProfile]);
+          setActiveProfileId(profileId);
+          setSyncStatus(`Conectado: ${userInfo.email}`);
+
+          await DriveService.syncCloudProfile(token, folderName, {
+            user: userInfo,
+            profile: newProfile,
+            weights: weightLogs,
+            checked: checkedItems
+          });
+        });
+      };
+
+      const handleAddWeight = async (e) => {
+        e.preventDefault();
+        if (!currentWeightInput) return;
+        const newLog = {
+          id: Date.now(),
+          date: new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" }),
+          weight: parseFloat(currentWeightInput),
+          note: weightNote || "Ayunas"
+        };
+        const updated = [newLog, ...weightLogs];
+        setWeightLogs(updated);
+        setCurrentWeightInput("");
+        setWeightNote("");
+
+        const token = localStorage.getItem("google_access_token");
+        if (token && currentProfile.folderName) {
+          setSyncStatus("Sincronizando Drive...");
+          const res = await DriveService.syncCloudProfile(token, currentProfile.folderName, {
+            user: googleUser,
+            profile: currentProfile,
+            weights: updated,
+            checked: checkedItems
+          });
+          setSyncStatus(res.success ? "Drive Personal ✓" : "Local");
+        }
+      };
+
+      // Lista de compra dinámicamente agregada
       const computedShoppingList = React.useMemo(() => {
         const mapMercadona = {};
         const mapDespensa = {};
@@ -474,48 +505,6 @@
         };
       }, [baseDiet, activeVariants, scaleFactor]);
 
-      const handleAddWeight = async (e) => {
-        e.preventDefault();
-        if (!currentWeightInput) return;
-        const newLog = {
-          id: Date.now(),
-          date: new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" }),
-          weight: parseFloat(currentWeightInput),
-          note: weightNote || "Ayunas"
-        };
-        const updated = [newLog, ...weightLogs];
-        setWeightLogs(updated);
-        setCurrentWeightInput("");
-        setWeightNote("");
-
-        setSyncStatus("Sincronizando...");
-        const res = await DriveService.syncCloudProfile(activeProfileId, {
-          profile: currentProfile,
-          weights: updated,
-          checked: checkedItems
-        });
-        setSyncStatus(res.success ? "Cloud ✓" : "Local");
-      };
-
-      const handleGoogleLogin = () => {
-        DriveService.initAuth(async (token) => {
-          setSyncStatus("Escaneando Drive...");
-          const cloudProfiles = await DriveService.scanCloudProfiles(token);
-          if (cloudProfiles && cloudProfiles.length > 0) {
-            setProfiles(cloudProfiles);
-            setActiveProfileId(cloudProfiles[0].id);
-            setSyncStatus("Perfiles Detectados ✓");
-          } else {
-            setSyncStatus("Vinculado ✓");
-            await DriveService.syncCloudProfile(activeProfileId, {
-              profile: currentProfile,
-              weights: weightLogs,
-              checked: checkedItems
-            });
-          }
-        });
-      };
-
       const currentProtein = Math.round(baseDiet.baseProtein * scaleFactor);
       const currentFats = Math.round(baseDiet.baseFats * scaleFactor);
       const currentCarbs = Math.round(baseDiet.baseCarbs * scaleFactor);
@@ -528,35 +517,22 @@
               <div>
                 <div className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-[#a8e6a0]">
                   <span className="w-2 h-2 rounded-full bg-[#a8e6a0] animate-pulse"></span>
-                  {currentProfile.name} • {baseDiet.name} ({APP_VERSION})
+                  {googleUser ? googleUser.name : currentProfile.name} • ({APP_VERSION})
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">Gestor Cloud Autodidacta</h1>
+                <h1 className="text-xl font-bold tracking-tight">Mi Dieta & Drive Personal</h1>
               </div>
               <div>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/10 text-white/90">
-                  {syncStatus || "Local"}
+                <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/90">
+                  {syncStatus || (googleUser ? "Conectado" : "Local")}
                 </span>
               </div>
             </div>
           </header>
 
           <main className="max-w mx-auto px-4 pt-5 pb-16 fade-in">
+            {/* SECCIÓN 1: MENÚ Y DIETA */}
             {activeTab === "dieta" && (
               <>
-                <section className="mb-4 space-y-3">
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                    {profiles.map(p => (
-                      <button
-                        key={p.id}
-                        onClick={() => setActiveProfileId(p.id)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${p.id === activeProfileId ? 'bg-[#0f2a1d] text-white shadow-sm' : 'bg-white border border-[#e2e6e0] text-black/70'}`}
-                      >
-                        👤 {p.name}
-                      </button>
-                    ))}
-                  </div>
-                </section>
-
                 <section className="mb-5">
                   <div className="flex items-center justify-between mb-2.5">
                     <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Escalador Calórico Diario</h2>
@@ -594,8 +570,8 @@
 
                 <section className="mb-5">
                   <div className="flex items-center justify-between mb-2.5">
-                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Menú Diario con Variantes</h2>
-                    <span className="text-xs text-black/50">Elige la variante de plato</span>
+                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Tomas Diarias e Ingredientes</h2>
+                    <span className="text-xs text-black/50">Despliega para rotar platos</span>
                   </div>
 
                   <div className="flex flex-col gap-3">
@@ -633,7 +609,7 @@
                           {isOpen && (
                             <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-3.5 fade-in">
                               <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-[#e2e6e0]">
-                                <span className="text-xs font-bold text-black/60 uppercase">Variante de Plato:</span>
+                                <span className="text-xs font-bold text-black/60 uppercase">Variante:</span>
                                 <div className="flex gap-1.5">
                                   {meal.variants.map((v, vIdx) => (
                                     <button
@@ -670,21 +646,27 @@
               </>
             )}
 
+            {/* SECCIÓN 2: PLAN B RESTAURADO */}
             {activeTab === "alternativas" && (
               <section className="space-y-4 fade-in">
                 <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Plan B Exprés</h2>
-                  <p className="text-sm text-black/70">Soluciones rápidas sin cocinar.</p>
+                  <h2 className="text-xl font-bold text-[#0f2a1d]">Plan B: Soluciones Exprés</h2>
+                  <p className="text-sm text-black/70">Alternativas rápidas sin cocinar para días con prisa.</p>
                 </div>
-                {ALTERNATIVES_DATA.map((alt, idx) => (
-                  <div key={idx} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-2xs space-y-3">
-                    <h3 className="text-base font-bold text-[#0f2a1d]">{alt.title}</h3>
-                    <p className="text-sm text-black/70 leading-relaxed">{alt.desc}</p>
-                    <div className="space-y-2.5 border-t border-[#f0f3ef] pt-3 mt-2">
-                      {alt.items.map((item, i) => (
-                        <div key={i} className="text-sm leading-relaxed">
-                          <span className="font-bold text-[#1a2b1f]">• {item.name}: </span>
-                          <span className="text-black/85">{item.detail}</span>
+
+                {PLAN_B_DATA.map((plan) => (
+                  <div key={plan.id} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-2xs space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">⚡</span>
+                      <h3 className="text-base font-bold text-[#0f2a1d]">{plan.title}</h3>
+                    </div>
+                    <p className="text-xs text-black/60 leading-relaxed">{plan.desc}</p>
+                    
+                    <div className="space-y-2 border-t border-[#f0f3ef] pt-3">
+                      {plan.options.map((opt, oIdx) => (
+                        <div key={oIdx} className="p-2.5 rounded-xl bg-[#f8faf8] border border-[#f0f3ef] text-xs">
+                          <span className="font-bold text-[#0f2a1d] block mb-0.5">• {opt.name}</span>
+                          <span className="text-black/80">{opt.detail}</span>
                         </div>
                       ))}
                     </div>
@@ -693,12 +675,13 @@
               </section>
             )}
 
+            {/* SECCIÓN 3: COMPRA */}
             {activeTab === "compra" && (
               <section className="space-y-4 fade-in">
                 <div className="flex items-center justify-between mb-1">
                   <div>
                     <h2 className="text-xl font-bold text-[#0f2a1d]">Lista de Compra Automática</h2>
-                    <p className="text-sm text-black/70">Actualizada según las variantes seleccionadas.</p>
+                    <p className="text-sm text-black/70">Cálculo de 7 días según tus variantes activas.</p>
                   </div>
                   <button onClick={resetShoppingList} className="text-xs font-semibold text-[#0f2a1d] underline bg-[#eef2ec] px-3.5 py-2 rounded-xl">
                     Desmarcar todo
@@ -763,11 +746,12 @@
               </section>
             )}
 
+            {/* SECCIÓN 4: COCINA */}
             {activeTab === "logistica" && (
               <section className="space-y-5 fade-in">
                 <div className="mb-2">
                   <h2 className="text-xl font-bold text-[#0f2a1d]">Recetario Dinámico Activo</h2>
-                  <p className="text-sm text-black/70">Pasos de cocina para las variantes elegidas.</p>
+                  <p className="text-sm text-black/70">Paso a paso para las variantes elegidas.</p>
                 </div>
 
                 <div className="space-y-3">
@@ -818,42 +802,37 @@
               </section>
             )}
 
+            {/* SECCIÓN 5: VINCULACIÓN DRIVE & PESO */}
             {activeTab === "peso" && (
               <section className="space-y-4 fade-in">
                 <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Control de Peso & Autodetección Cloud</h2>
-                  <p className="text-sm text-black/70">Escaneo automático de perfiles en la carpeta Mi_Dieta_PWA.</p>
+                  <h2 className="text-xl font-bold text-[#0f2a1d]">Vinculación Gmail & Google Drive</h2>
+                  <p className="text-sm text-black/70">Inicia sesión con tu cuenta de Google para guardar tus datos en tu propia carpeta.</p>
                 </div>
 
-                <form onSubmit={handleAddProfile} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
-                  <h3 className="text-sm font-bold">Añadir Nuevo Perfil Local</h3>
-                  <div className="flex gap-2">
-                    <input 
-                      type="text" 
-                      placeholder="Nombre..."
-                      value={newProfileName}
-                      onChange={(e) => setNewProfileName(e.target.value)}
-                      className="flex-1 rounded-xl border border-[#e2e6e0] px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#0f2a1d]"
-                      required
-                    />
-                    <button type="submit" className="px-4 py-2.5 rounded-xl bg-[#0f2a1d] text-white text-xs font-semibold hover:bg-black transition">
-                      Crear
+                <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
+                  <h3 className="text-sm font-bold text-[#0f2a1d]">Cuenta de Google Activa</h3>
+                  {googleUser ? (
+                    <div className="p-3 bg-[#f4f7f3] rounded-xl border border-[#e2e6e0] flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[#0f2a1d] text-white font-bold flex items-center justify-center text-sm">
+                        {googleUser.given_name ? googleUser.given_name[0] : 'G'}
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold">{googleUser.name}</div>
+                        <div className="text-xs text-black/60">{googleUser.email}</div>
+                        <div className="text-[10px] text-[#0f2a1d] font-semibold mt-0.5">Carpeta: Mi_Dieta_PWA_{googleUser.given_name || 'Personal'}</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <button onClick={handleGoogleLogin} className="w-full py-3.5 rounded-xl bg-[#0f2a1d] text-white text-sm font-semibold hover:bg-black transition flex items-center justify-center gap-2">
+                      <span>🔑</span>
+                      <span>Vincular con Cuenta de Google / Gmail</span>
                     </button>
-                  </div>
-                </form>
-
-                <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 flex items-center justify-between gap-3 shadow-2xs">
-                  <div>
-                    <h3 className="text-sm font-bold text-[#0f2a1d]">Sincronizar y Autodetectar Drive</h3>
-                    <p className="text-xs text-black/60">{syncStatus || "Desconectado"}</p>
-                  </div>
-                  <button onClick={handleGoogleLogin} className="px-4 py-2.5 rounded-xl bg-[#0f2a1d] text-white text-xs font-semibold hover:bg-black transition">
-                    Vincular / Escanear
-                  </button>
+                  )}
                 </div>
 
                 <form onSubmit={handleAddWeight} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
-                  <h3 className="text-sm font-bold">Registrar Peso para {currentProfile.name}</h3>
+                  <h3 className="text-sm font-bold">Registrar Peso Diario</h3>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-semibold text-black/70 uppercase mb-1">Peso (kg)</label>
@@ -879,12 +858,12 @@
                     </div>
                   </div>
                   <button type="submit" className="w-full py-3.5 rounded-xl bg-[#0f2a1d] text-white text-sm font-semibold hover:bg-black transition">
-                    Guardar y Sincronizar
+                    Guardar y Sincronizar en Drive Personal
                   </button>
                 </form>
 
                 <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-4 shadow-2xs">
-                  <h3 className="text-sm font-bold">Tendencia de Peso</h3>
+                  <h3 className="text-sm font-bold">Evolución de Peso</h3>
                   <WeightChart logs={weightLogs} />
                   {weightLogs.length === 0 ? (
                     <p className="text-sm text-black/50 text-center py-2">Sin registros aún.</p>
