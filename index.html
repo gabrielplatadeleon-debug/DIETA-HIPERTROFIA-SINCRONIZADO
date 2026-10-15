@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V6.2</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V6.3</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -48,9 +48,40 @@
 
   <script type="text/babel">
     /* ==========================================
-       CAPA 1: CATÁLOGO DE DATOS Y PLAN B
+       CAPA 1: CATÁLOGOS Y MATRIZ DE EQUIVALENCIAS
        ========================================== */
-    const APP_VERSION = "v6.2-GOOGLE-AUTH-ISOLATED";
+    const APP_VERSION = "v6.3-SUSTITUCION-INTELIGENTE";
+
+    // Matriz de sustitución por grupos de alimentos con factores de densidad
+    const FOOD_SUBSTITUTES = {
+      protein: [
+        { name: "Pechuga de pollo", factor: 1.0, unit: "g", category: "mercadona" },
+        { name: "Pechuga de pavo", factor: 1.0, unit: "g", category: "mercadona" },
+        { name: "Merluza / Pescado blanco", factor: 1.25, unit: "g", category: "mercadona" },
+        { name: "Lomo magro de cerdo", factor: 0.95, unit: "g", category: "mercadona" },
+        { name: "Tofu firme", factor: 1.4, unit: "g", category: "mercadona" },
+        { name: "Latas de atún al natural", factor: 0.9, unit: "g", category: "despensa" }
+      ],
+      carbs: [
+        { name: "Arroz", factor: 1.0, unit: "g", category: "mercadona" },
+        { name: "Patata", factor: 3.5, unit: "g", category: "despensa" },
+        { name: "Pan integral", factor: 1.2, unit: "g", category: "mercadona" },
+        { name: "Avena", factor: 0.9, unit: "g", category: "despensa" },
+        { name: "Quinoa", factor: 1.0, unit: "g", category: "despensa" },
+        { name: "Pasta integral", factor: 1.0, unit: "g", category: "despensa" }
+      ],
+      fats: [
+        { name: "Aceite de oliva", factor: 1.0, unit: "ml", category: "despensa" },
+        { name: "Crema de cacahuete 100%", factor: 1.3, unit: "g", category: "despensa" },
+        { name: "Aguacate", factor: 3.0, unit: "g", category: "mercadona" },
+        { name: "Almendras / Frutos secos", factor: 1.1, unit: "g", category: "despensa" }
+      ],
+      dairy: [
+        { name: "Leche semidescremada", factor: 1.0, unit: "ml", category: "mercadona" },
+        { name: "Bebida de soja", factor: 1.1, unit: "ml", category: "mercadona" },
+        { name: "Yogur griego 0%", factor: 1.2, unit: "g", category: "mercadona" }
+      ]
+    };
 
     const DIET_CATALOG = {
       volumen_3000: {
@@ -69,18 +100,18 @@
               {
                 title: "Gachas Clásicas de Avena",
                 foods: [
-                  { name: "Avena", baseAmount: 130, unit: "g", category: "despensa" },
-                  { name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona" },
-                  { name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", category: "despensa" }
+                  { id: "des_avena", name: "Avena", baseAmount: 130, unit: "g", category: "despensa", group: "carbs" },
+                  { id: "des_leche", name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona", group: "dairy" },
+                  { id: "des_cacahuete", name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", category: "despensa", group: "fats" }
                 ],
                 steps: ["Calentar leche 2 min.", "Añadir avena y remover.", "Integrar crema de cacahuete."]
               },
               {
                 title: "Tortitas de Avena y Huevo",
                 foods: [
-                  { name: "Avena", baseAmount: 130, unit: "g", category: "despensa" },
-                  { name: "Claras de huevo", baseAmount: 200, unit: "ml", category: "mercadona" },
-                  { name: "Plátano", baseAmount: 120, unit: "g", category: "mercadona" }
+                  { id: "des_avena_2", name: "Avena", baseAmount: 130, unit: "g", category: "despensa", group: "carbs" },
+                  { id: "des_claras", name: "Claras de huevo", baseAmount: 200, unit: "ml", category: "mercadona", group: "protein" },
+                  { id: "des_platano", name: "Plátano", baseAmount: 120, unit: "g", category: "mercadona", group: "carbs" }
                 ],
                 steps: ["Triturar avena con claras y plátano.", "Cocinar en sartén antiadherente."]
               }
@@ -96,10 +127,10 @@
               {
                 title: "Arroz con Pollo y Ensalada",
                 foods: [
-                  { name: "Pechuga de pollo", baseAmount: 200, unit: "g", category: "mercadona" },
-                  { name: "Arroz", baseAmount: 120, unit: "g", category: "mercadona" },
-                  { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa" },
-                  { name: "Ensalada bolsa", baseAmount: 100, unit: "g", category: "mercadona" }
+                  { id: "com_pollo", name: "Pechuga de pollo", baseAmount: 200, unit: "g", category: "mercadona", group: "protein" },
+                  { id: "com_arroz", name: "Arroz", baseAmount: 120, unit: "g", category: "mercadona", group: "carbs" },
+                  { id: "com_aceite", name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa", group: "fats" },
+                  { id: "com_ensalada", name: "Ensalada bolsa", baseAmount: 100, unit: "g", category: "mercadona", group: "veg" }
                 ],
                 steps: ["Cocinar arroz y pollo a la plancha.", "Mezclar con aceite y ensalada."]
               }
@@ -115,10 +146,10 @@
               {
                 title: "Batido Energético de Avena y Whey",
                 foods: [
-                  { name: "Batido proteína whey", baseAmount: 30, unit: "g", category: "despensa" },
-                  { name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona" },
-                  { name: "Avena", baseAmount: 80, unit: "g", category: "despensa" },
-                  { name: "Miel", baseAmount: 20, unit: "g", category: "mercadona" }
+                  { id: "mer_whey", name: "Batido proteína whey", baseAmount: 30, unit: "g", category: "despensa", group: "protein" },
+                  { id: "mer_leche", name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona", group: "dairy" },
+                  { id: "mer_avena", name: "Avena", baseAmount: 80, unit: "g", category: "despensa", group: "carbs" },
+                  { id: "mer_miel", name: "Miel", baseAmount: 20, unit: "g", category: "mercadona", group: "carbs" }
                 ],
                 steps: ["Pulverizar avena en batidora.", "Añadir leche, whey y miel. Batir."]
               }
@@ -134,12 +165,12 @@
               {
                 title: "Sartén de Carne, Patata y Huevos",
                 foods: [
-                  { name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g", category: "despensa" },
-                  { name: "Huevos L", baseAmount: 3, unit: "uds", category: "mercadona" },
-                  { name: "Patata", baseAmount: 200, unit: "g", category: "despensa" },
-                  { name: "Pan integral", baseAmount: 80, unit: "g", category: "mercadona" },
-                  { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa" },
-                  { name: "Verdura congelada", baseAmount: 100, unit: "g", category: "mercadona" }
+                  { id: "cen_carne", name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g", category: "despensa", group: "protein" },
+                  { id: "cen_huevos", name: "Huevos L", baseAmount: 3, unit: "uds", category: "mercadona", group: "protein" },
+                  { id: "cen_patata", name: "Patata", baseAmount: 200, unit: "g", category: "despensa", group: "carbs" },
+                  { id: "cen_pan", name: "Pan integral", baseAmount: 80, unit: "g", category: "mercadona", group: "carbs" },
+                  { id: "cen_aceite", name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa", group: "fats" },
+                  { id: "cen_verdura", name: "Verdura congelada", baseAmount: 100, unit: "g", category: "mercadona", group: "veg" }
                 ],
                 steps: ["Cocinar patata al microondas.", "Marcar carne con verdura.", "Añadir huevos y patata."]
               }
@@ -175,7 +206,7 @@
     ];
 
     /* ==========================================
-       CAPA 2: GOOGLE REST API CON USUARIO & CARPETA ESPECÍFICA
+       CAPA 2: SERVICIOS GOOGLE REST API & DRIVE
        ========================================== */
     const DriveService = {
       initAuth(onSuccess) {
@@ -186,7 +217,6 @@
             callback: async (response) => {
               if (response.access_token) {
                 localStorage.setItem("google_access_token", response.access_token);
-                // Obtener info del usuario de Google
                 const userRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
                   headers: { Authorization: `Bearer ${response.access_token}` }
                 });
@@ -263,7 +293,7 @@
        ========================================== */
     function WeightChart({ logs }) {
       if (!logs || logs.length < 2) {
-        return <div className="p-4 text-center text-xs text-black/50 bg-[#f8faf8] rounded-xl border border-[#f0f3ef]">Registra al menos 2 pesajes para ver gráfica.</div>;
+        return <div className="p-4 text-center text-xs text-black/50 bg-[#f8faf8] rounded-xl border border-[#f0f3ef]">Registra al menos 2 pesajes para ver la gráfica.</div>;
       }
       const sortedLogs = [...logs].reverse();
       const weights = sortedLogs.map(l => l.weight);
@@ -310,21 +340,23 @@
       const [activeTab, setActiveTab] = React.useState("dieta");
       const [openMeal, setOpenMeal] = React.useState("d_desayuno");
       const [openRecipe, setOpenRecipe] = React.useState(null);
+      const [substitutionModal, setSubstitutionModal] = React.useState(null);
 
-      // Estado de Cuenta de Google / Gmail
+      // Estado de Cuenta Google
       const [googleUser, setGoogleUser] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_google_user_v62");
+          const saved = localStorage.getItem("dieta_google_user_v63");
           return saved ? JSON.parse(saved) : null;
         } catch { return null; }
       });
 
+      // Perfiles y Mapa de Sustituciones de Alimentos por ID
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v62");
-          return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {} }];
+          const saved = localStorage.getItem("dieta_profiles_v63");
+          return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         } catch {
-          return [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {} }];
+          return [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         }
       });
 
@@ -335,6 +367,7 @@
       const targetKcal = currentProfile.customKcal || 3000;
       const scaleFactor = targetKcal / 3000;
       const activeVariants = currentProfile.activeVariants || {};
+      const foodSubstitutions = currentProfile.foodSubstitutions || {};
 
       const [checkedItems, setCheckedItems] = React.useState(() => {
         try {
@@ -355,11 +388,11 @@
       const [syncStatus, setSyncStatus] = React.useState(null);
 
       React.useEffect(() => {
-        try { localStorage.setItem("dieta_profiles_v62", JSON.stringify(profiles)); } catch {}
+        try { localStorage.setItem("dieta_profiles_v63", JSON.stringify(profiles)); } catch {}
       }, [profiles]);
 
       React.useEffect(() => {
-        try { if (googleUser) localStorage.setItem("dieta_google_user_v62", JSON.stringify(googleUser)); } catch {}
+        try { if (googleUser) localStorage.setItem("dieta_google_user_v63", JSON.stringify(googleUser)); } catch {}
       }, [googleUser]);
 
       React.useEffect(() => {
@@ -385,6 +418,22 @@
         }));
       };
 
+      const handleSubstituteFood = (foodId, substituteObj) => {
+        setProfiles(prev => prev.map(p => {
+          if (p.id === activeProfileId) {
+            const updatedSubs = { ...(p.foodSubstitutions || {}) };
+            if (substituteObj) {
+              updatedSubs[foodId] = substituteObj;
+            } else {
+              delete updatedSubs[foodId]; // Restaurar alimento original
+            }
+            return { ...p, foodSubstitutions: updatedSubs };
+          }
+          return p;
+        }));
+        setSubstitutionModal(null);
+      };
+
       const updateKcal = (delta) => {
         setProfiles(prev => prev.map(p => {
           if (p.id === activeProfileId) {
@@ -395,13 +444,10 @@
         }));
       };
 
-      // Vincular con Cuenta de Google & Crear Perfil + Carpeta Personal
       const handleGoogleLogin = () => {
         DriveService.initAuth(async (token, userInfo) => {
           setGoogleUser(userInfo);
           const folderName = `Mi_Dieta_PWA_${userInfo.given_name || userInfo.name || 'Usuario'}`;
-          
-          // Crear o asignar perfil único para esta cuenta de Google
           const profileId = `user_${userInfo.sub || Date.now()}`;
           const newProfile = {
             id: profileId,
@@ -409,7 +455,8 @@
             email: userInfo.email,
             folderName: folderName,
             customKcal: 3000,
-            activeVariants: {}
+            activeVariants: {},
+            foodSubstitutions: {}
           };
 
           setProfiles([newProfile]);
@@ -452,7 +499,7 @@
         }
       };
 
-      // Lista de compra dinámicamente agregada
+      // Generador de la lista de la compra considerando variantes y sustituciones isocalóricas
       const computedShoppingList = React.useMemo(() => {
         const mapMercadona = {};
         const mapDespensa = {};
@@ -462,17 +509,32 @@
           const selectedVariant = meal.variants[vIdx] || meal.variants[0];
 
           selectedVariant.foods.forEach(food => {
-            const scaledAmount = food.unit === 'uds'
-              ? Math.round(food.baseAmount * scaleFactor)
-              : Math.round(food.baseAmount * scaleFactor * 7);
+            let finalName = food.name;
+            let finalCategory = food.category;
+            let amountMultiplier = 1.0;
+            let finalUnit = food.unit;
 
-            const unitLabel = food.unit === 'uds' ? 'uds' : (food.unit === 'ml' ? 'ml' : 'g');
-            const targetMap = food.category === 'mercadona' ? mapMercadona : mapDespensa;
+            // Verificar si hay una sustitución activa para este alimento
+            if (foodSubstitutions[food.id]) {
+              const sub = foodSubstitutions[food.id];
+              finalName = sub.name;
+              finalCategory = sub.category;
+              amountMultiplier = sub.factor;
+              finalUnit = sub.unit;
+            }
 
-            if (targetMap[food.name]) {
-              targetMap[food.name].total += scaledAmount;
+            const baseQty = food.baseAmount * amountMultiplier;
+            const scaledAmount = finalUnit === 'uds'
+              ? Math.round(baseQty * scaleFactor)
+              : Math.round(baseQty * scaleFactor * 7);
+
+            const unitLabel = finalUnit === 'uds' ? 'uds' : (finalUnit === 'ml' ? 'ml' : 'g');
+            const targetMap = finalCategory === 'mercadona' ? mapMercadona : mapDespensa;
+
+            if (targetMap[finalName]) {
+              targetMap[finalName].total += scaledAmount;
             } else {
-              targetMap[food.name] = { total: scaledAmount, unit: unitLabel };
+              targetMap[finalName] = { total: scaledAmount, unit: unitLabel };
             }
           });
         });
@@ -503,7 +565,7 @@
           mercadona: formatList(mapMercadona, 'm'),
           despensa: formatList(mapDespensa, 'd')
         };
-      }, [baseDiet, activeVariants, scaleFactor]);
+      }, [baseDiet, activeVariants, foodSubstitutions, scaleFactor]);
 
       const currentProtein = Math.round(baseDiet.baseProtein * scaleFactor);
       const currentFats = Math.round(baseDiet.baseFats * scaleFactor);
@@ -519,7 +581,7 @@
                   <span className="w-2 h-2 rounded-full bg-[#a8e6a0] animate-pulse"></span>
                   {googleUser ? googleUser.name : currentProfile.name} • ({APP_VERSION})
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">Mi Dieta & Drive Personal</h1>
+                <h1 className="text-xl font-bold tracking-tight">Sustitución Isocalórica de Alimentos</h1>
               </div>
               <div>
                 <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/90">
@@ -530,7 +592,7 @@
           </header>
 
           <main className="max-w mx-auto px-4 pt-5 pb-16 fade-in">
-            {/* SECCIÓN 1: MENÚ Y DIETA */}
+            {/* SECCIÓN 1: MENÚ Y SUSTITUCIÓN */}
             {activeTab === "dieta" && (
               <>
                 <section className="mb-5">
@@ -571,7 +633,7 @@
                 <section className="mb-5">
                   <div className="flex items-center justify-between mb-2.5">
                     <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Tomas Diarias e Ingredientes</h2>
-                    <span className="text-xs text-black/50">Despliega para rotar platos</span>
+                    <span className="text-xs text-black/50">Toca un ingrediente para cambiarlo</span>
                   </div>
 
                   <div className="flex flex-col gap-3">
@@ -624,13 +686,28 @@
                               </div>
 
                               <div className="space-y-2 text-sm">
-                                {selectedVariant.foods.map((food, idx) => {
-                                  const scaledAmount = Math.round(food.baseAmount * scaleFactor);
+                                {selectedVariant.foods.map((food) => {
+                                  const activeSub = foodSubstitutions[food.id];
+                                  const displayName = activeSub ? activeSub.name : food.name;
+                                  const factor = activeSub ? activeSub.factor : 1.0;
+                                  const displayUnit = activeSub ? activeSub.unit : food.unit;
+                                  const scaledAmount = Math.round(food.baseAmount * factor * scaleFactor);
+
                                   return (
-                                    <div key={idx} className="flex items-center justify-between py-1.5 border-b border-[#f0f3ef] last:border-0">
-                                      <span className="text-[#1a2b1f] font-semibold text-sm">{food.name}</span>
-                                      <span className="font-mono text-sm font-bold bg-white px-2.5 py-1 rounded-md border border-[#e2e6e0] text-black/90">
-                                        {scaledAmount}{food.unit}
+                                    <div 
+                                      key={food.id} 
+                                      onClick={() => setSubstitutionModal({ food, activeSub })}
+                                      className="flex items-center justify-between p-2.5 rounded-xl border border-[#e2e6e0] bg-white cursor-pointer hover:bg-[#f4f7f3] transition active:scale-[0.99]"
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs">🔄</span>
+                                        <span className="text-[#1a2b1f] font-semibold text-sm">
+                                          {displayName}
+                                          {activeSub && <span className="ml-1.5 text-[10px] font-bold text-[#0f2a1d] bg-[#eef2ec] px-2 py-0.5 rounded-md">Sustituido</span>}
+                                        </span>
+                                      </div>
+                                      <span className="font-mono text-sm font-bold bg-[#f8faf8] px-2.5 py-1 rounded-md border border-[#e2e6e0] text-black/90">
+                                        {scaledAmount}{displayUnit}
                                       </span>
                                     </div>
                                   );
@@ -646,7 +723,58 @@
               </>
             )}
 
-            {/* SECCIÓN 2: PLAN B RESTAURADO */}
+            {/* MODAL DE SUSTITUCIÓN INTELIGENTE */}
+            {substitutionModal && (
+              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 fade-in">
+                <div className="bg-white rounded-3xl w-full max-w-md p-5 space-y-4 shadow-xl">
+                  <div className="flex items-center justify-between border-b border-[#f0f3ef] pb-3">
+                    <div>
+                      <h3 className="text-base font-bold text-[#0f2a1d]">Sustituir Alimento</h3>
+                      <p className="text-xs text-black/60">Sustituto equivalente para: <span className="font-bold">{substitutionModal.food.name}</span></p>
+                    </div>
+                    <button onClick={() => setSubstitutionModal(null)} className="text-sm font-bold text-black/40 hover:text-black">✕</button>
+                  </div>
+
+                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                    <button
+                      onClick={() => handleSubstituteFood(substitutionModal.food.id, null)}
+                      className={`w-full text-left p-3 rounded-xl border text-xs font-semibold flex items-center justify-between transition ${!substitutionModal.activeSub ? 'border-[#0f2a1d] bg-[#eef2ec] text-[#0f2a1d]' : 'border-[#e2e6e0] bg-white'}`}
+                    >
+                      <span>Original: {substitutionModal.food.name}</span>
+                      <span>✓ Default</span>
+                    </button>
+
+                    {(FOOD_SUBSTITUTES[substitutionModal.food.group] || []).map((sub, idx) => {
+                      const isSelected = substitutionModal.activeSub?.name === sub.name;
+                      const calculatedQty = Math.round(substitutionModal.food.baseAmount * sub.factor * scaleFactor);
+
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => handleSubstituteFood(substitutionModal.food.id, sub)}
+                          className={`w-full text-left p-3 rounded-xl border text-xs flex items-center justify-between transition ${isSelected ? 'border-[#0f2a1d] bg-[#0f2a1d] text-white' : 'border-[#e2e6e0] bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
+                        >
+                          <div>
+                            <div className="font-bold">{sub.name}</div>
+                            <div className="text-[10px] opacity-75">Sustituto equivalente ({sub.category})</div>
+                          </div>
+                          <span className="font-mono font-bold text-sm">{calculatedQty}{sub.unit}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <button 
+                    onClick={() => setSubstitutionModal(null)}
+                    className="w-full py-3 rounded-xl bg-[#eef2ec] text-[#0f2a1d] text-xs font-bold"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* SECCIÓN 2: PLAN B */}
             {activeTab === "alternativas" && (
               <section className="space-y-4 fade-in">
                 <div className="mb-2">
@@ -681,7 +809,7 @@
                 <div className="flex items-center justify-between mb-1">
                   <div>
                     <h2 className="text-xl font-bold text-[#0f2a1d]">Lista de Compra Automática</h2>
-                    <p className="text-sm text-black/70">Cálculo de 7 días según tus variantes activas.</p>
+                    <p className="text-sm text-black/70">Cálculo de 7 días ajustado a tus sustituciones.</p>
                   </div>
                   <button onClick={resetShoppingList} className="text-xs font-semibold text-[#0f2a1d] underline bg-[#eef2ec] px-3.5 py-2 rounded-xl">
                     Desmarcar todo
@@ -751,7 +879,7 @@
               <section className="space-y-5 fade-in">
                 <div className="mb-2">
                   <h2 className="text-xl font-bold text-[#0f2a1d]">Recetario Dinámico Activo</h2>
-                  <p className="text-sm text-black/70">Paso a paso para las variantes elegidas.</p>
+                  <p className="text-sm text-black/70">Paso a paso para las variantes e ingredientes elegidos.</p>
                 </div>
 
                 <div className="space-y-3">
@@ -776,13 +904,21 @@
                         {isOpen && (
                           <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-3 fade-in">
                             <div>
-                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-1.5">Ingredientes:</h5>
+                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-1.5">Ingredientes Adaptados:</h5>
                               <div className="flex flex-wrap gap-1.5">
-                                {vData.foods.map((ing, i) => (
-                                  <span key={i} className="bg-white border border-[#e2e6e0] text-xs font-semibold text-[#1a2b1f] px-2.5 py-1 rounded-lg">
-                                    {ing.name} ({Math.round(ing.baseAmount * scaleFactor)}{ing.unit})
-                                  </span>
-                                ))}
+                                {vData.foods.map((ing, i) => {
+                                  const sub = foodSubstitutions[ing.id];
+                                  const ingName = sub ? sub.name : ing.name;
+                                  const factor = sub ? sub.factor : 1.0;
+                                  const unit = sub ? sub.unit : ing.unit;
+                                  const qty = Math.round(ing.baseAmount * factor * scaleFactor);
+
+                                  return (
+                                    <span key={i} className="bg-white border border-[#e2e6e0] text-xs font-semibold text-[#1a2b1f] px-2.5 py-1 rounded-lg">
+                                      {ingName} ({qty}{unit})
+                                    </span>
+                                  );
+                                })}
                               </div>
                             </div>
                             <div className="border-t border-[#f0f3ef] pt-2.5">
@@ -807,7 +943,7 @@
               <section className="space-y-4 fade-in">
                 <div className="mb-2">
                   <h2 className="text-xl font-bold text-[#0f2a1d]">Vinculación Gmail & Google Drive</h2>
-                  <p className="text-sm text-black/70">Inicia sesión con tu cuenta de Google para guardar tus datos en tu propia carpeta.</p>
+                  <p className="text-sm text-black/70">Sincronización en tiempo real con tu carpeta personal.</p>
                 </div>
 
                 <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
