@@ -50,7 +50,7 @@
     /* ==========================================
        CAPA 1: DATOS Y CONSTANTES DE NEGOCIO
        ========================================== */
-    const APP_VERSION = "v5.3-ESCALADOR";
+    const APP_VERSION = "v5.4-SYNC-REAL";
 
     const DEFAULT_PROFILE = {
       id: "principal",
@@ -114,23 +114,23 @@
       }
     ];
 
-    const INITIAL_SHOPPING_LIST = {
+    const BASE_SHOPPING_ITEMS = {
       mercadona: [
-        { id: "m1", name: "Pechuga de pollo", qty: "1,4 kg", note: "fileteada", checked: false },
-        { id: "m2", name: "Huevos L", qty: "24 uds", note: "2 maples", checked: false },
-        { id: "m3", name: "Leche semidescremada", qty: "6 L", note: "", checked: false },
-        { id: "m4", name: "Arroz redondo / largo", qty: "1 kg", note: "", checked: false },
-        { id: "m5", name: "Pan integral de molde", qty: "500 g", note: "", checked: false },
-        { id: "m6", name: "Bolsas de ensalada", qty: "3 bolsas", note: "100g x toma", checked: false },
-        { id: "m7", name: "Verdura congelada", qty: "1 kg", note: "mezcla", checked: false },
-        { id: "m8", name: "Miel", qty: "1 bote", note: "", checked: false }
+        { id: "m1", name: "Pechuga de pollo", baseQty: 1.4, unit: "kg", note: "fileteada" },
+        { id: "m2", name: "Huevos L", baseQty: 24, unit: "uds", note: "2 maples" },
+        { id: "m3", name: "Leche semidescremada", baseQty: 6, unit: "L", note: "" },
+        { id: "m4", name: "Arroz redondo / largo", baseQty: 1, unit: "kg", note: "" },
+        { id: "m5", name: "Pan integral de molde", baseQty: 500, unit: "g", note: "" },
+        { id: "m6", name: "Bolsas de ensalada", baseQty: 3, unit: "bolsas", note: "100g x toma" },
+        { id: "m7", name: "Verdura congelada", baseQty: 1, unit: "kg", note: "mezcla" },
+        { id: "m8", name: "Miel", baseQty: 1, unit: "bote", note: "" }
       ],
       despensa: [
-        { id: "d1", name: "Copos de avena suaves", qty: "1,8 kg", note: "", checked: false },
-        { id: "d2", name: "Carne picada vacuno 5%", qty: "1 kg", note: "", checked: false },
-        { id: "d3", name: "Patata natural", qty: "2,5 kg", note: "", checked: false },
-        { id: "d4", name: "Crema de cacahuete 100%", qty: "1 bote", note: "sin azúcar", checked: false },
-        { id: "d5", name: "Aceite oliva virgen extra", qty: "1 botella", note: "", checked: false }
+        { id: "d1", name: "Copos de avena suaves", baseQty: 1.8, unit: "kg", note: "" },
+        { id: "d2", name: "Carne picada vacuno 5%", baseQty: 1, unit: "kg", note: "" },
+        { id: "d3", name: "Patata natural", baseQty: 2.5, unit: "kg", note: "" },
+        { id: "d4", name: "Crema de cacahuete 100%", baseQty: 1, unit: "bote", note: "sin azúcar" },
+        { id: "d5", name: "Aceite oliva virgen extra", baseQty: 1, unit: "botella", note: "" }
       ]
     };
 
@@ -207,7 +207,7 @@
     ];
 
     /* ==========================================
-       CAPA 2: SERVICIOS EXTERNOS (GOOGLE DRIVE)
+       CAPA 2: SERVICIOS EXTERNOS (GOOGLE DRIVE REST API REAL)
        ========================================== */
     const DriveService = {
       initAuth(onSuccess) {
@@ -224,29 +224,120 @@
           });
           client.requestAccessToken();
         } catch (err) {
-          console.error("Error OAuth:", err);
+          console.error("Error OAuth Client:", err);
         }
       },
-      async saveProfileData(profileId, payload) {
+
+      async syncRealDrive(profileId, payload) {
         const token = localStorage.getItem("google_access_token");
-        if (!token) return false;
-        console.log(`[DriveSync] Sincronizado perfil ${profileId} en Google Drive`, payload);
-        return true;
+        if (!token) return { success: false, reason: "No auth token" };
+
+        const fileName = `dieta_profile_${profileId}.json`;
+        try {
+          // 1. Buscar si el archivo ya existe en Drive
+          const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='${fileName}' and trashed=false`;
+          const searchRes = await fetch(searchUrl, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const searchData = await searchRes.json();
+
+          const fileContent = JSON.stringify(payload, null, 2);
+          const blob = new Blob([fileContent], { type: "application/json" });
+
+          if (searchData.files && searchData.files.length > 0) {
+            // Update archivo existente
+            const fileId = searchData.files[0].id;
+            await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+              method: "PATCH",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+              },
+              body: blob
+            });
+          } else {
+            // Create nuevo archivo
+            const metadata = { name: fileName, mimeType: "application/json" };
+            const form = new FormData();
+            form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+            form.append("file", blob);
+
+            await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+              body: form
+            });
+          }
+          return { success: true };
+        } catch (err) {
+          console.error("Error Sync Drive API:", err);
+          return { success: false, reason: err.message };
+        }
       }
     };
 
     /* ==========================================
-       CAPA 3 & 4: COMPONENTES VISUALES Y NÚCLEO
+       CAPA 3: COMPONENTE GRÁFICA SVG NATIVA
+       ========================================== */
+    function WeightChart({ logs }) {
+      if (!logs || logs.length < 2) {
+        return (
+          <div className="p-4 text-center text-xs text-black/50 bg-[#f8faf8] rounded-xl border border-[#f0f3ef]">
+            Registra al menos 2 pesajes para generar la gráfica de tendencia.
+          </div>
+        );
+      }
+
+      const sortedLogs = [...logs].reverse(); // Orden cronológico
+      const weights = sortedLogs.map(l => l.weight);
+      const minW = Math.min(...weights) - 0.5;
+      const maxW = Math.max(...weights) + 0.5;
+      const range = maxW - minW || 1;
+
+      const height = 120;
+      const width = 300;
+      const padding = 20;
+
+      const points = sortedLogs.map((log, i) => {
+        const x = padding + (i / (sortedLogs.length - 1)) * (width - padding * 2);
+        const y = height - padding - ((log.weight - minW) / range) * (height - padding * 2);
+        return { x, y, weight: log.weight, date: log.date };
+      });
+
+      const pathD = points.reduce((acc, p, i) => i === 0 ? `M ${p.x} ${p.y}` : `${acc} L ${p.x} ${p.y}`, "");
+
+      return (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs font-semibold text-black/60">
+            <span>Mín: {minW.toFixed(1)} kg</span>
+            <span className="text-[#0f2a1d] font-bold">Tendencia de Peso</span>
+            <span>Máx: {maxW.toFixed(1)} kg</span>
+          </div>
+          <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-32 overflow-visible">
+            <path d={pathD} fill="none" stroke="#0f2a1d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            {points.map((p, i) => (
+              <g key={i}>
+                <circle cx={p.x} cy={p.y} r="4" fill="#0f2a1d" className="transition-all hover:r-6" />
+                <text x={p.x} y={p.y - 8} textAnchor="middle" className="text-[9px] font-mono font-bold fill-[#0f2a1d]">{p.weight}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
+      );
+    }
+
+    /* ==========================================
+       CAPA 4: NÚCLEO DE APLICACIÓN
        ========================================== */
     function App() {
       const [openMeal, setOpenMeal] = React.useState("desayuno");
       const [activeTab, setActiveTab] = React.useState("dieta");
       const [openRecipe, setOpenRecipe] = React.useState(null);
 
-      // Estado Multi-Perfil y Escalador de Calorías
+      // Multi-Perfil y Calorías
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v53");
+          const saved = localStorage.getItem("dieta_profiles_v54");
           return saved ? JSON.parse(saved) : [DEFAULT_PROFILE];
         } catch {
           return [DEFAULT_PROFILE];
@@ -257,14 +348,15 @@
 
       const currentProfile = profiles.find(p => p.id === activeProfileId) || DEFAULT_PROFILE;
       const targetKcal = currentProfile.baseKcal || 3000;
-      const scaleFactor = targetKcal / 3000; // Factor multiplicador basado en 3000kcal base
+      const scaleFactor = targetKcal / 3000;
 
-      const [shoppingList, setShoppingList] = React.useState(() => {
+      // Estado de Marcas de Compra
+      const [checkedItems, setCheckedItems] = React.useState(() => {
         try {
-          const saved = localStorage.getItem(`dieta_shopping_${activeProfileId}`);
-          return saved ? JSON.parse(saved) : INITIAL_SHOPPING_LIST;
+          const saved = localStorage.getItem(`dieta_checked_${activeProfileId}`);
+          return saved ? JSON.parse(saved) : {};
         } catch {
-          return INITIAL_SHOPPING_LIST;
+          return {};
         }
       });
 
@@ -283,15 +375,15 @@
 
       React.useEffect(() => {
         try {
-          localStorage.setItem("dieta_profiles_v53", JSON.stringify(profiles));
+          localStorage.setItem("dieta_profiles_v54", JSON.stringify(profiles));
         } catch {}
       }, [profiles]);
 
       React.useEffect(() => {
         try {
-          localStorage.setItem(`dieta_shopping_${activeProfileId}`, JSON.stringify(shoppingList));
+          localStorage.setItem(`dieta_checked_${activeProfileId}`, JSON.stringify(checkedItems));
         } catch {}
-      }, [shoppingList, activeProfileId]);
+      }, [checkedItems, activeProfileId]);
 
       React.useEffect(() => {
         try {
@@ -299,17 +391,15 @@
         } catch {}
       }, [weightLogs, activeProfileId]);
 
-      const toggleCheck = (category, id) => {
-        setShoppingList(prev => ({
+      const toggleCheck = (itemId) => {
+        setCheckedItems(prev => ({
           ...prev,
-          [category]: prev[category].map(item => 
-            item.id === id ? { ...item, checked: !item.checked } : item
-          )
+          [itemId]: !prev[itemId]
         }));
       };
 
       const resetShoppingList = () => {
-        setShoppingList(INITIAL_SHOPPING_LIST);
+        setCheckedItems({});
       };
 
       const handleAddProfile = (e) => {
@@ -337,7 +427,7 @@
         setProfiles(updated);
       };
 
-      const handleAddWeight = (e) => {
+      const handleAddWeight = async (e) => {
         e.preventDefault();
         if (!currentWeightInput) return;
         const newLog = {
@@ -350,19 +440,32 @@
         setWeightLogs(updated);
         setCurrentWeightInput("");
         setWeightNote("");
-        
-        DriveService.saveProfileData(activeProfileId, { profile: currentProfile, weights: updated, shopping: shoppingList });
-        setSyncStatus("Sincronizado ✓");
+
+        setSyncStatus("Sincronizando Drive...");
+        const res = await DriveService.syncRealDrive(activeProfileId, {
+          profile: currentProfile,
+          weights: updated,
+          checked: checkedItems
+        });
+        if (res.success) {
+          setSyncStatus("Drive Sync ✓");
+        } else {
+          setSyncStatus("Local (Sin auth)");
+        }
       };
 
       const handleGoogleLogin = () => {
-        DriveService.initAuth(() => {
+        DriveService.initAuth(async () => {
           setSyncStatus("Conectado ✓");
-          DriveService.saveProfileData(activeProfileId, { profile: currentProfile, weights: weightLogs, shopping: shoppingList });
+          await DriveService.syncRealDrive(activeProfileId, {
+            profile: currentProfile,
+            weights: weightLogs,
+            checked: checkedItems
+          });
         });
       };
 
-      // Macros calculados dinámicamente
+      // Macros calculados
       const currentProtein = Math.round(198 * scaleFactor);
       const currentFats = Math.round(78 * scaleFactor);
       const currentCarbs = Math.round(360 * scaleFactor);
@@ -390,7 +493,6 @@
           <main className="max-w mx-auto px-4 pt-5 pb-16 fade-in">
             {activeTab === "dieta" && (
               <>
-                {/* SELECTOR DE PERFILES */}
                 <section className="mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Perfil Activo</h2>
@@ -483,9 +585,7 @@
                             <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] fade-in">
                               <div className="space-y-3 text-sm">
                                 {meal.baseFoods.map((food, idx) => {
-                                  const scaledAmount = food.unit === 'uds' 
-                                    ? Math.round(food.baseAmount * scaleFactor) 
-                                    : Math.round(food.baseAmount * scaleFactor);
+                                  const scaledAmount = Math.round(food.baseAmount * scaleFactor);
                                   return (
                                     <div key={idx} className="flex items-center justify-between py-1.5 border-b border-[#f0f3ef] last:border-0">
                                       <span className="text-[#1a2b1f] font-semibold text-sm">{food.name}</span>
@@ -533,8 +633,8 @@
               <section className="space-y-4 fade-in">
                 <div className="flex items-center justify-between mb-1">
                   <div>
-                    <h2 className="text-xl font-bold text-[#0f2a1d]">Lista de Compra Semanal</h2>
-                    <p className="text-sm text-black/70">Toca un elemento para marcarlo en el súper.</p>
+                    <h2 className="text-xl font-bold text-[#0f2a1d]">Lista de Compra Recalculada</h2>
+                    <p className="text-sm text-black/70">Ajustada automáticamente a tu objetivo de {targetKcal} kcal.</p>
                   </div>
                   <button onClick={resetShoppingList} className="text-xs font-semibold text-[#0f2a1d] underline bg-[#eef2ec] px-3.5 py-2 rounded-xl">
                     Desmarcar todo
@@ -548,21 +648,25 @@
                       <h3 className="text-base font-bold">Mercadona (Frescos)</h3>
                     </div>
                     <div className="space-y-2">
-                      {shoppingList.mercadona.map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => toggleCheck('mercadona', item.id)}
-                          className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${item.checked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${item.checked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>
-                              {item.checked ? '✓' : ''}
-                            </span>
-                            <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
-                          </div>
-                          <span className="font-mono text-xs font-bold text-black/90">{item.qty}</span>
-                        </button>
-                      ))}
+                      {BASE_SHOPPING_ITEMS.mercadona.map((item) => {
+                        const isChecked = !!checkedItems[item.id];
+                        const scaledQty = (item.baseQty * scaleFactor).toFixed(1).replace('.0', '');
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => toggleCheck(item.id)}
+                            className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${isChecked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>
+                                {isChecked ? '✓' : ''}
+                              </span>
+                              <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
+                            </div>
+                            <span className="font-mono text-xs font-bold text-black/90">{scaledQty} {item.unit}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -572,21 +676,25 @@
                       <h3 className="text-base font-bold">Lidl / Hiperdino (Despensa)</h3>
                     </div>
                     <div className="space-y-2">
-                      {shoppingList.despensa.map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => toggleCheck('despensa', item.id)}
-                          className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${item.checked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${item.checked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>
-                              {item.checked ? '✓' : ''}
-                            </span>
-                            <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
-                          </div>
-                          <span className="font-mono text-xs font-bold text-black/90">{item.qty}</span>
-                        </button>
-                      ))}
+                      {BASE_SHOPPING_ITEMS.despensa.map((item) => {
+                        const isChecked = !!checkedItems[item.id];
+                        const scaledQty = (item.baseQty * scaleFactor).toFixed(1).replace('.0', '');
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => toggleCheck(item.id)}
+                            className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${isChecked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>
+                                {isChecked ? '✓' : ''}
+                              </span>
+                              <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
+                            </div>
+                            <span className="font-mono text-xs font-bold text-black/90">{scaledQty} {item.unit}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -661,11 +769,10 @@
             {activeTab === "peso" && (
               <section className="space-y-4 fade-in">
                 <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Control de Peso & Perfiles en Drive</h2>
-                  <p className="text-sm text-black/70">Gestiona múltiples perfiles y sincronízalos con la nube.</p>
+                  <h2 className="text-xl font-bold text-[#0f2a1d]">Control de Peso & Google Drive API</h2>
+                  <p className="text-sm text-black/70">Sincronización real en la nube y gráfica de tendencia.</p>
                 </div>
 
-                {/* CREAR PERFIL */}
                 <form onSubmit={handleAddProfile} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
                   <h3 className="text-sm font-bold">Añadir Nuevo Perfil / Usuario</h3>
                   <div className="flex gap-2">
@@ -685,16 +792,16 @@
 
                 <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 flex items-center justify-between gap-3 shadow-2xs">
                   <div>
-                    <h3 className="text-sm font-bold text-[#0f2a1d]">Sincronización Drive</h3>
-                    <p className="text-xs text-black/60">{syncStatus || "Conecta tu cuenta para sincronizar"}</p>
+                    <h3 className="text-sm font-bold text-[#0f2a1d]">Conexión Google Drive API</h3>
+                    <p className="text-xs text-black/60">{syncStatus || "Desconectado"}</p>
                   </div>
                   <button onClick={handleGoogleLogin} className="px-4 py-2.5 rounded-xl bg-[#0f2a1d] text-white text-xs font-semibold hover:bg-black transition">
-                    Conectar Drive
+                    Autenticar OAuth
                   </button>
                 </div>
 
                 <form onSubmit={handleAddWeight} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
-                  <h3 className="text-sm font-bold">Nuevo Registro para {currentProfile.name}</h3>
+                  <h3 className="text-sm font-bold">Nuevo Pesaje para {currentProfile.name}</h3>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-semibold text-black/70 uppercase mb-1">Peso (kg)</label>
@@ -720,16 +827,20 @@
                     </div>
                   </div>
                   <button type="submit" className="w-full py-3.5 rounded-xl bg-[#0f2a1d] text-white text-sm font-semibold hover:bg-black transition">
-                    Guardar y Sincronizar
+                    Guardar y Sincronizar en Drive
                   </button>
                 </form>
 
-                <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-2xs">
-                  <h3 className="text-sm font-bold mb-3">Historial de {currentProfile.name}</h3>
+                <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-4 shadow-2xs">
+                  <h3 className="text-sm font-bold">Evolución Físico / Peso ({currentProfile.name})</h3>
+                  
+                  {/* COMPONENTE DE GRÁFICA SVG */}
+                  <WeightChart logs={weightLogs} />
+
                   {weightLogs.length === 0 ? (
-                    <p className="text-sm text-black/50 text-center py-4">Sin registros todavía en este perfil.</p>
+                    <p className="text-sm text-black/50 text-center py-2">Sin registros aún.</p>
                   ) : (
-                    <div className="space-y-2.5">
+                    <div className="space-y-2 border-t border-[#f0f3ef] pt-3">
                       {weightLogs.map((log) => (
                         <div key={log.id} className="flex items-center justify-between p-3 rounded-xl bg-[#f8faf8] border border-[#f0f3ef] text-sm">
                           <div>
