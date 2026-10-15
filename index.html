@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - Multi-Dieta</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V5.6</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -48,27 +48,27 @@
 
   <script type="text/babel">
     /* ==========================================
-       CAPA 1: DATOS Y CATÁLOGO DE DIETAS (MULTI-DIETA)
+       CAPA 1: CATÁLOGO Y MODELOS DE DIETAS BASE
        ========================================== */
-    const APP_VERSION = "v5.5-MULTI-DIETA";
+    const APP_VERSION = "v5.6-ESCALADOR-UNIFICADO";
 
     const DIET_CATALOG = {
       volumen_3000: {
         id: "volumen_3000",
-        name: "Volumen Hipertrofia (3000 kcal)",
-        targetKcal: 3000,
-        protein: "198g",
-        fats: "78g",
-        carbs: "360g",
+        name: "Volumen Hipertrofia",
+        baseKcal: 3000,
+        baseProtein: 198,
+        baseFats: 78,
+        baseCarbs: 360,
         meals: [
           {
             id: "d_desayuno",
             time: "07:00",
             label: "Desayuno",
             foods: [
-              { name: "Avena", baseAmount: 130, unit: "g" },
-              { name: "Leche semidescremada", baseAmount: 300, unit: "ml" },
-              { name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g" }
+              { name: "Avena", baseAmount: 130, unit: "g", category: "despensa" },
+              { name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona" },
+              { name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", category: "despensa" }
             ],
             baseProtein: 30,
             baseKcal: 739
@@ -78,10 +78,10 @@
             time: "14:00",
             label: "Comida",
             foods: [
-              { name: "Pechuga de pollo", baseAmount: 200, unit: "g" },
-              { name: "Arroz", baseAmount: 120, unit: "g" },
-              { name: "Aceite de oliva", baseAmount: 10, unit: "ml" },
-              { name: "Ensalada bolsa", baseAmount: 100, unit: "g" }
+              { name: "Pechuga de pollo", baseAmount: 200, unit: "g", category: "mercadona" },
+              { name: "Arroz", baseAmount: 120, unit: "g", category: "mercadona" },
+              { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa" },
+              { name: "Ensalada bolsa", baseAmount: 100, unit: "g", category: "mercadona" }
             ],
             baseProtein: 54,
             baseKcal: 728
@@ -91,10 +91,10 @@
             time: "17:00",
             label: "Merienda",
             foods: [
-              { name: "Batido proteína whey", baseAmount: 30, unit: "g" },
-              { name: "Leche semidescremada", baseAmount: 300, unit: "ml" },
-              { name: "Avena", baseAmount: 80, unit: "g" },
-              { name: "Miel", baseAmount: 20, unit: "g" }
+              { name: "Batido proteína whey", baseAmount: 30, unit: "g", category: "despensa" },
+              { name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona" },
+              { name: "Avena", baseAmount: 80, unit: "g", category: "despensa" },
+              { name: "Miel", baseAmount: 20, unit: "g", category: "mercadona" }
             ],
             baseProtein: 48,
             baseKcal: 560
@@ -104,49 +104,34 @@
             time: "21:00",
             label: "Cena",
             foods: [
-              { name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g" },
-              { name: "Huevos L", baseAmount: 3, unit: "uds" },
-              { name: "Patata", baseAmount: 200, unit: "g" },
-              { name: "Pan integral", baseAmount: 80, unit: "g" },
-              { name: "Aceite de oliva", baseAmount: 10, unit: "ml" },
-              { name: "Verdura congelada", baseAmount: 100, unit: "g" }
+              { name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g", category: "despensa" },
+              { name: "Huevos L", baseAmount: 3, unit: "uds", category: "mercadona" },
+              { name: "Patata", baseAmount: 200, unit: "g", category: "despensa" },
+              { name: "Pan integral", baseAmount: 80, unit: "g", category: "mercadona" },
+              { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa" },
+              { name: "Verdura congelada", baseAmount: 100, unit: "g", category: "mercadona" }
             ],
             baseProtein: 54,
             baseKcal: 659
           }
-        ],
-        shopping: {
-          mercadona: [
-            { id: "m1", name: "Pechuga de pollo", baseQty: 1.4, unit: "kg", note: "fileteada" },
-            { id: "m2", name: "Huevos L", baseQty: 24, unit: "uds", note: "2 maples" },
-            { id: "m3", name: "Leche semidescremada", baseQty: 6, unit: "L", note: "" },
-            { id: "m4", name: "Arroz redondo / largo", baseQty: 1, unit: "kg", note: "" },
-            { id: "m5", name: "Pan integral de molde", baseQty: 500, unit: "g", note: "" },
-            { id: "m6", name: "Bolsas de ensalada", baseQty: 3, unit: "bolsas", note: "" }
-          ],
-          despensa: [
-            { id: "d1", name: "Copos de avena suaves", baseQty: 1.8, unit: "kg", note: "" },
-            { id: "d2", name: "Carne picada vacuno 5%", baseQty: 1, unit: "kg", note: "" },
-            { id: "d3", name: "Patata natural", baseQty: 2.5, unit: "kg", note: "" }
-          ]
-        }
+        ]
       },
       definicion_2200: {
         id: "definicion_2200",
-        name: "Definición Limpia (2200 kcal)",
-        targetKcal: 2200,
-        protein: "190g",
-        fats: "60g",
-        carbs: "220g",
+        name: "Definición Limpia",
+        baseKcal: 2200,
+        baseProtein: 190,
+        baseFats: 60,
+        baseCarbs: 220,
         meals: [
           {
             id: "def_desayuno",
             time: "07:00",
             label: "Desayuno",
             foods: [
-              { name: "Avena", baseAmount: 60, unit: "g" },
-              { name: "Claras de huevo", baseAmount: 250, unit: "ml" },
-              { name: "Frutos rojos", baseAmount: 80, unit: "g" }
+              { name: "Avena", baseAmount: 60, unit: "g", category: "despensa" },
+              { name: "Claras de huevo", baseAmount: 250, unit: "ml", category: "mercadona" },
+              { name: "Frutos rojos", baseAmount: 80, unit: "g", category: "mercadona" }
             ],
             baseProtein: 35,
             baseKcal: 420
@@ -156,10 +141,10 @@
             time: "14:00",
             label: "Comida",
             foods: [
-              { name: "Pechuga de pollo", baseAmount: 200, unit: "g" },
-              { name: "Arroz basmati", baseAmount: 60, unit: "g" },
-              { name: "Brócoli al vapor", baseAmount: 200, unit: "g" },
-              { name: "Aceite de oliva", baseAmount: 8, unit: "ml" }
+              { name: "Pechuga de pollo", baseAmount: 200, unit: "g", category: "mercadona" },
+              { name: "Arroz basmati", baseAmount: 60, unit: "g", category: "mercadona" },
+              { name: "Brócoli al vapor", baseAmount: 200, unit: "g", category: "mercadona" },
+              { name: "Aceite de oliva", baseAmount: 8, unit: "ml", category: "despensa" }
             ],
             baseProtein: 52,
             baseKcal: 580
@@ -169,9 +154,9 @@
             time: "17:00",
             label: "Merienda",
             foods: [
-              { name: "Batido proteína whey", baseAmount: 35, unit: "g" },
-              { name: "Tortitas de arroz", baseAmount: 40, unit: "g" },
-              { name: "Crema de cacahuete", baseAmount: 15, unit: "g" }
+              { name: "Batido proteína whey", baseAmount: 35, unit: "g", category: "despensa" },
+              { name: "Tortitas de arroz", baseAmount: 40, unit: "g", category: "despensa" },
+              { name: "Crema de cacahuete", baseAmount: 15, unit: "g", category: "despensa" }
             ],
             baseProtein: 38,
             baseKcal: 390
@@ -181,28 +166,15 @@
             time: "21:00",
             label: "Cena",
             foods: [
-              { name: "Merluza / Pescado blanco", baseAmount: 250, unit: "g" },
-              { name: "Patata cocida", baseAmount: 180, unit: "g" },
-              { name: "Ensalada verde", baseAmount: 150, unit: "g" },
-              { name: "Aceite de oliva", baseAmount: 10, unit: "ml" }
+              { name: "Merluza", baseAmount: 250, unit: "g", category: "mercadona" },
+              { name: "Patata cocida", baseAmount: 180, unit: "g", category: "despensa" },
+              { name: "Ensalada verde", baseAmount: 150, unit: "g", category: "mercadona" },
+              { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa" }
             ],
             baseProtein: 55,
             baseKcal: 610
           }
-        ],
-        shopping: {
-          mercadona: [
-            { id: "dm1", name: "Pechuga de pollo", baseQty: 1.4, unit: "kg", note: "" },
-            { id: "dm2", name: "Merluza congelada", baseQty: 1.2, unit: "kg", note: "" },
-            { id: "dm3", name: "Claras de huevo pasteurizadas", baseQty: 1, unit: "L", note: "" },
-            { id: "dm4", name: "Arroz basmati", baseQty: 0.8, unit: "kg", note: "" },
-            { id: "dm5", name: "Brócoli congelado", baseQty: 1.5, unit: "kg", note: "" }
-          ],
-          despensa: [
-            { id: "dd1", name: "Copos de avena", baseQty: 0.8, unit: "kg", note: "" },
-            { id: "dd2", name: "Tortitas de arroz", baseQty: 2, unit: "paquetes", note: "" }
-          ]
-        }
+        ]
       }
     };
 
@@ -255,7 +227,6 @@
           const data = await res.json();
           if (data.files && data.files.length > 0) return data.files[0].id;
 
-          // Crear carpeta
           const createRes = await fetch("https://www.googleapis.com/drive/v3/files", {
             method: "POST",
             headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -271,7 +242,7 @@
 
       async syncCloudProfile(profileId, payload) {
         const token = localStorage.getItem("google_access_token");
-        if (!token) return { success: false, reason: "No token" };
+        if (!token) return { success: false };
 
         try {
           const folderId = await this.getOrCreateFolder(token);
@@ -304,8 +275,7 @@
           }
           return { success: true };
         } catch (err) {
-          console.error("Error Sync Cloud:", err);
-          return { success: false, reason: err.message };
+          return { success: false };
         }
       }
     };
@@ -367,20 +337,23 @@
       const [activeTab, setActiveTab] = React.useState("dieta");
       const [openRecipe, setOpenRecipe] = React.useState(null);
 
-      // Gestión de Perfiles y Selección de Dieta
+      // Perfiles
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v55");
-          return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000" }];
+          const saved = localStorage.getItem("dieta_profiles_v56");
+          return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000 }];
         } catch {
-          return [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000" }];
+          return [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000 }];
         }
       });
       const [activeProfileId, setActiveProfileId] = React.useState("gabriel");
       const [newProfileName, setNewProfileName] = React.useState("");
 
       const currentProfile = profiles.find(p => p.id === activeProfileId) || profiles[0];
-      const activeDiet = DIET_CATALOG[currentProfile.dietKey] || DIET_CATALOG.volumen_3000;
+      const baseDiet = DIET_CATALOG[currentProfile.dietKey] || DIET_CATALOG.volumen_3000;
+      
+      const targetKcal = currentProfile.customKcal || baseDiet.baseKcal;
+      const scaleFactor = targetKcal / baseDiet.baseKcal;
 
       const [checkedItems, setCheckedItems] = React.useState(() => {
         try {
@@ -406,7 +379,7 @@
 
       React.useEffect(() => {
         try {
-          localStorage.setItem("dieta_profiles_v55", JSON.stringify(profiles));
+          localStorage.setItem("dieta_profiles_v56", JSON.stringify(profiles));
         } catch {}
       }, [profiles]);
 
@@ -434,7 +407,8 @@
         const newProf = {
           id: `profile_${Date.now()}`,
           name: newProfileName.trim(),
-          dietKey: "volumen_3000"
+          dietKey: "volumen_3000",
+          customKcal: 3000
         };
         const updated = [...profiles, newProf];
         setProfiles(updated);
@@ -443,9 +417,72 @@
       };
 
       const handleDietChange = (newDietKey) => {
-        const updated = profiles.map(p => p.id === activeProfileId ? { ...p, dietKey: newDietKey } : p);
+        const newBase = DIET_CATALOG[newDietKey] || DIET_CATALOG.volumen_3000;
+        const updated = profiles.map(p => p.id === activeProfileId ? { ...p, dietKey: newDietKey, customKcal: newBase.baseKcal } : p);
         setProfiles(updated);
       };
+
+      const updateKcal = (delta) => {
+        const updated = profiles.map(p => {
+          if (p.id === activeProfileId) {
+            const current = p.customKcal || baseDiet.baseKcal;
+            const nextKcal = Math.max(1500, Math.min(5500, current + delta));
+            return { ...p, customKcal: nextKcal };
+          }
+          return p;
+        });
+        setProfiles(updated);
+      };
+
+      // Generador Algorítmico de Lista de Compra (Agrupa ingredientes de la dieta x 7 días)
+      const computedShoppingList = React.useMemo(() => {
+        const mapMercadona = {};
+        const mapDespensa = {};
+
+        baseDiet.meals.forEach(meal => {
+          meal.foods.forEach(food => {
+            const scaledAmount = food.unit === 'uds' 
+              ? Math.round(food.baseAmount * scaleFactor)
+              : Math.round(food.baseAmount * scaleFactor * 7); // 7 días en gramos/ml
+
+            const unitLabel = food.unit === 'uds' ? 'uds' : (food.unit === 'ml' ? 'ml' : 'g');
+            const targetMap = food.category === 'mercadona' ? mapMercadona : mapDespensa;
+
+            if (targetMap[food.name]) {
+              targetMap[food.name].total += scaledAmount;
+            } else {
+              targetMap[food.name] = { total: scaledAmount, unit: unitLabel };
+            }
+          });
+        });
+
+        const formatList = (map, catName) => {
+          return Object.keys(map).map((name, idx) => {
+            const item = map[name];
+            let displayQty = item.total;
+            let displayUnit = item.unit;
+
+            if (item.unit === 'g' && item.total >= 1000) {
+              displayQty = (item.total / 1000).toFixed(1).replace('.0', '');
+              displayUnit = 'kg';
+            } else if (item.unit === 'ml' && item.total >= 1000) {
+              displayQty = (item.total / 1000).toFixed(1).replace('.0', '');
+              displayUnit = 'L';
+            }
+
+            return {
+              id: `${catName}_${idx}_${name}`,
+              name,
+              qtyText: `${displayQty} ${displayUnit}`
+            };
+          });
+        };
+
+        return {
+          mercadona: formatList(mapMercadona, 'm'),
+          despensa: formatList(mapDespensa, 'd')
+        };
+      }, [baseDiet, scaleFactor]);
 
       const handleAddWeight = async (e) => {
         e.preventDefault();
@@ -467,7 +504,7 @@
           weights: updated,
           checked: checkedItems
         });
-        setSyncStatus(res.success ? "Drive Cloud ✓" : "Local (Sin auth)");
+        setSyncStatus(res.success ? "Drive Cloud ✓" : "Local");
       };
 
       const handleGoogleLogin = () => {
@@ -481,6 +518,10 @@
         });
       };
 
+      const currentProtein = Math.round(baseDiet.baseProtein * scaleFactor);
+      const currentFats = Math.round(baseDiet.baseFats * scaleFactor);
+      const currentCarbs = Math.round(baseDiet.baseCarbs * scaleFactor);
+
       return (
         <div className="min-h-screen bg-[#f8faf8] text-[#111c14] selection:bg-[#0f2a1d] selection:text-white">
           
@@ -489,9 +530,9 @@
               <div>
                 <div className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-[#a8e6a0]">
                   <span className="w-2 h-2 rounded-full bg-[#a8e6a0] animate-pulse"></span>
-                  {currentProfile.name} • {activeDiet.name} ({APP_VERSION})
+                  {currentProfile.name} • {baseDiet.name} ({APP_VERSION})
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">Gestor Multi-Dieta Cloud</h1>
+                <h1 className="text-xl font-bold tracking-tight">Gestor Dinámico Multi-Dieta</h1>
               </div>
               <div>
                 <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/10 text-white/90">
@@ -504,11 +545,7 @@
           <main className="max-w mx-auto px-4 pt-5 pb-16 fade-in">
             {activeTab === "dieta" && (
               <>
-                {/* SELECTOR DE PERFILES Y DIETAS */}
                 <section className="mb-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Perfiles y Objetivos</h2>
-                  </div>
                   <div className="flex items-center gap-2 overflow-x-auto pb-1">
                     {profiles.map(p => (
                       <button
@@ -522,24 +559,32 @@
                   </div>
 
                   <div className="bg-white p-3.5 rounded-2xl border border-[#e2e6e0] flex items-center justify-between gap-3 shadow-2xs">
-                    <span className="text-xs font-bold text-black/70 uppercase">Dieta Activa:</span>
+                    <span className="text-xs font-bold text-black/70 uppercase">Modelo Base:</span>
                     <select 
                       value={currentProfile.dietKey}
                       onChange={(e) => handleDietChange(e.target.value)}
                       className="bg-[#f8faf8] border border-[#e2e6e0] text-xs font-bold text-[#0f2a1d] px-3 py-2 rounded-xl focus:outline-none"
                     >
-                      <option value="volumen_3000">Volumen Hipertrofia (3000 kcal)</option>
-                      <option value="definicion_2200">Definición Limpia (2200 kcal)</option>
+                      <option value="volumen_3000">Volumen Hipertrofia (Base 3000 kcal)</option>
+                      <option value="definicion_2200">Definición Limpia (Base 2200 kcal)</option>
                     </select>
                   </div>
                 </section>
 
                 <section className="mb-5">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Escalador Calórico Diario</h2>
+                    <div className="flex items-center gap-1.5">
+                      <button onClick={() => updateKcal(-50)} className="w-7 h-7 rounded-lg bg-[#eef2ec] font-bold text-xs text-[#0f2a1d] flex items-center justify-center active:scale-95">-50</button>
+                      <button onClick={() => updateKcal(50)} className="w-7 h-7 rounded-lg bg-[#eef2ec] font-bold text-xs text-[#0f2a1d] flex items-center justify-center active:scale-95">+50</button>
+                    </div>
+                  </div>
+
                   <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-sm space-y-3">
                     <div className="rounded-xl bg-[#0f2a1d] text-white p-4 flex items-center justify-between">
                       <div>
-                        <span className="text-xs font-medium text-white/70">Aporte Calórico de la Dieta</span>
-                        <div className="text-2xl font-bold">{activeDiet.targetKcal} <span className="text-sm font-normal text-white/80">kcal / día</span></div>
+                        <span className="text-xs font-medium text-white/70">Aporte Calórico Objetivo</span>
+                        <div className="text-2xl font-bold">{targetKcal} <span className="text-sm font-normal text-white/80">kcal / día</span></div>
                       </div>
                       <div className="text-2xl">⚡</div>
                     </div>
@@ -547,15 +592,15 @@
                     <div className="grid grid-cols-3 gap-2.5">
                       <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
                         <span className="block text-[11px] font-semibold text-black/50">Proteína</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{activeDiet.protein}</span>
+                        <span className="text-base font-bold text-[#0f2a1d]">{currentProtein}g</span>
                       </div>
                       <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
                         <span className="block text-[11px] font-semibold text-black/50">Grasas</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{activeDiet.fats}</span>
+                        <span className="text-base font-bold text-[#0f2a1d]">{currentFats}g</span>
                       </div>
                       <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
                         <span className="block text-[11px] font-semibold text-black/50">Carbos</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{activeDiet.carbs}</span>
+                        <span className="text-base font-bold text-[#0f2a1d]">{currentCarbs}g</span>
                       </div>
                     </div>
                   </div>
@@ -563,13 +608,16 @@
 
                 <section className="mb-5">
                   <div className="flex items-center justify-between mb-2.5">
-                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Menú Diario Asignado</h2>
+                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Menú Diario (Recalculado)</h2>
                     <span className="text-xs text-black/50">Toca para desplegar</span>
                   </div>
 
                   <div className="flex flex-col gap-3">
-                    {activeDiet.meals.map((meal) => {
+                    {baseDiet.meals.map((meal) => {
                       const isOpen = openMeal === meal.id;
+                      const mealKcal = Math.round(meal.baseKcal * scaleFactor);
+                      const mealProt = Math.round(meal.baseProtein * scaleFactor);
+
                       return (
                         <div key={meal.id} className={`rounded-2xl border transition-all bg-white overflow-hidden ${isOpen ? 'border-[#0f2a1d] shadow-sm ring-1 ring-[#0f2a1d]/15' : 'border-[#e2e6e0]'}`}>
                           <button 
@@ -587,8 +635,8 @@
                             </div>
                             <div className="flex items-center gap-3">
                               <div className="text-right">
-                                <div className="text-sm font-bold text-[#0f2a1d]">{meal.baseProtein}g P</div>
-                                <div className="text-xs font-medium text-black/60">{meal.baseKcal} kcal</div>
+                                <div className="text-sm font-bold text-[#0f2a1d]">{mealProt}g P</div>
+                                <div className="text-xs font-medium text-black/60">{mealKcal} kcal</div>
                               </div>
                               <span className={`text-xs text-black/40 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
                             </div>
@@ -597,14 +645,19 @@
                           {isOpen && (
                             <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] fade-in">
                               <div className="space-y-3 text-sm">
-                                {meal.foods.map((food, idx) => (
-                                  <div key={idx} className="flex items-center justify-between py-1.5 border-b border-[#f0f3ef] last:border-0">
-                                    <span className="text-[#1a2b1f] font-semibold text-sm">{food.name}</span>
-                                    <span className="font-mono text-sm font-bold bg-white px-2.5 py-1 rounded-md border border-[#e2e6e0] text-black/90">
-                                      {food.baseAmount}{food.unit}
-                                    </span>
-                                  </div>
-                                ))}
+                                {meal.foods.map((food, idx) => {
+                                  const scaledAmount = food.unit === 'uds'
+                                    ? Math.round(food.baseAmount * scaleFactor)
+                                    : Math.round(food.baseAmount * scaleFactor);
+                                  return (
+                                    <div key={idx} className="flex items-center justify-between py-1.5 border-b border-[#f0f3ef] last:border-0">
+                                      <span className="text-[#1a2b1f] font-semibold text-sm">{food.name}</span>
+                                      <span className="font-mono text-sm font-bold bg-white px-2.5 py-1 rounded-md border border-[#e2e6e0] text-black/90">
+                                        {scaledAmount}{food.unit}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </div>
                           )}
@@ -643,8 +696,8 @@
               <section className="space-y-4 fade-in">
                 <div className="flex items-center justify-between mb-1">
                   <div>
-                    <h2 className="text-xl font-bold text-[#0f2a1d]">Lista de Compra ({activeDiet.name})</h2>
-                    <p className="text-sm text-black/70">Sincronizada con la dieta seleccionada.</p>
+                    <h2 className="text-xl font-bold text-[#0f2a1d]">Lista de Compra Semanal</h2>
+                    <p className="text-sm text-black/70">Calculada automáticamente desde las porciones de la dieta.</p>
                   </div>
                   <button onClick={resetShoppingList} className="text-xs font-semibold text-[#0f2a1d] underline bg-[#eef2ec] px-3.5 py-2 rounded-xl">
                     Desmarcar todo
@@ -658,7 +711,7 @@
                       <h3 className="text-base font-bold">Mercadona</h3>
                     </div>
                     <div className="space-y-2">
-                      {activeDiet.shopping.mercadona.map((item) => {
+                      {computedShoppingList.mercadona.map((item) => {
                         const isChecked = !!checkedItems[item.id];
                         return (
                           <button
@@ -672,7 +725,7 @@
                               </span>
                               <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
                             </div>
-                            <span className="font-mono text-xs font-bold text-black/90">{item.baseQty} {item.unit}</span>
+                            <span className="font-mono text-xs font-bold text-black/90">{item.qtyText}</span>
                           </button>
                         );
                       })}
@@ -685,7 +738,7 @@
                       <h3 className="text-base font-bold">Despensa / Otros</h3>
                     </div>
                     <div className="space-y-2">
-                      {activeDiet.shopping.despensa.map((item) => {
+                      {computedShoppingList.despensa.map((item) => {
                         const isChecked = !!checkedItems[item.id];
                         return (
                           <button
@@ -699,7 +752,7 @@
                               </span>
                               <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
                             </div>
-                            <span className="font-mono text-xs font-bold text-black/90">{item.baseQty} {item.unit}</span>
+                            <span className="font-mono text-xs font-bold text-black/90">{item.qtyText}</span>
                           </button>
                         );
                       })}
@@ -713,11 +766,11 @@
               <section className="space-y-5 fade-in">
                 <div className="mb-2">
                   <h2 className="text-xl font-bold text-[#0f2a1d]">Recetario Dinámico de la Dieta</h2>
-                  <p className="text-sm text-black/70">Instrucciones adaptadas a los ingredientes de {activeDiet.name}.</p>
+                  <p className="text-sm text-black/70">Instrucciones adaptadas a los ingredientes de {baseDiet.name}.</p>
                 </div>
 
                 <div className="space-y-3">
-                  {activeDiet.meals.map((meal, idx) => {
+                  {baseDiet.meals.map((meal, idx) => {
                     const isOpen = openRecipe === idx;
                     return (
                       <div key={idx} className={`rounded-2xl border transition-all bg-white overflow-hidden ${isOpen ? 'border-[#0f2a1d] shadow-sm ring-1 ring-[#0f2a1d]/15' : 'border-[#e2e6e0]'}`}>
@@ -739,7 +792,7 @@
                               <div className="flex flex-wrap gap-1.5">
                                 {meal.foods.map((ing, i) => (
                                   <span key={i} className="bg-white border border-[#e2e6e0] text-xs font-semibold text-[#1a2b1f] px-2.5 py-1 rounded-lg">
-                                    {ing.name} ({ing.baseAmount}{ing.unit})
+                                    {ing.name} ({Math.round(ing.baseAmount * scaleFactor)}{ing.unit})
                                   </span>
                                 ))}
                               </div>
@@ -833,7 +886,7 @@
                     <p className="text-sm text-black/50 text-center py-2">Sin registros aún.</p>
                   ) : (
                     <div className="space-y-2 border-t border-[#f0f3ef] pt-3">
-                      {weightLogs.map((log) => (
+                      {weightLogs.log?.map((log) => (
                         <div key={log.id} className="flex items-center justify-between p-3 rounded-xl bg-[#f8faf8] border border-[#f0f3ef] text-sm">
                           <div>
                             <span className="font-semibold">{log.date}</span>
