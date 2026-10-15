@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V6.7</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V6.8</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -48,11 +48,9 @@
 
   <script type="text/babel">
     /* ==========================================
-       CAPA 1: MATRIZ BASE Y ENDPOINT DÍA A DÍA
+       CAPA 1: MATRIZ DE PRECIOS BASE Y CATÁLOGOS
        ========================================== */
-    const APP_VERSION = "v6.7-PRECIOS-AUTOMATICOS-INTERACTIVOS";
-    
-    // Endpoint remoto con actualización diaria automatizada
+    const APP_VERSION = "v6.8-FULL-DIETS-VEGAN";
     const REMOTE_PRICES_URL = "https://raw.githubusercontent.com/datasets/market-prices-es/main/prices.json";
 
     const DEFAULT_BASE_PRICES = {
@@ -65,7 +63,14 @@
       "Claras de huevo": { unitPrice: 2.30, unit: "L", bestSup: "mercadona" },
       "Huevos L": { unitPrice: 0.22, unit: "uds", bestSup: "mercadona" },
       "Batido proteína whey": { unitPrice: 24.00, unit: "kg", bestSup: "lidl" },
-      "Tofu firme": { unitPrice: 5.50, unit: "kg", bestSup: "lidl" },
+
+      "Tofu firme": { unitPrice: 4.80, unit: "kg", bestSup: "lidl" },
+      "Tempeh de soja": { unitPrice: 8.50, unit: "kg", bestSup: "carrefour" },
+      "Heura / Proteína vegetal": { unitPrice: 12.00, unit: "kg", bestSup: "mercadona" },
+      "Soja texturizada": { unitPrice: 3.50, unit: "kg", bestSup: "mercadona" },
+      "Garbanzos / Lentejas cocidas": { unitPrice: 1.10, unit: "kg", bestSup: "hiperdino" },
+      "Bebida de soja": { unitPrice: 0.85, unit: "L", bestSup: "lidl" },
+      "Yogur de soja natural": { unitPrice: 1.80, unit: "kg", bestSup: "mercadona" },
 
       "Arroz": { unitPrice: 1.35, unit: "kg", bestSup: "mercadona" },
       "Avena": { unitPrice: 1.20, unit: "kg", bestSup: "lidl" },
@@ -102,7 +107,8 @@
         { name: "Merluza / Pescado blanco", factor: 1.25, unit: "g" },
         { name: "Lomo magro de cerdo", factor: 0.95, unit: "g" },
         { name: "Tofu firme", factor: 1.4, unit: "g" },
-        { name: "Atún al natural", factor: 0.9, unit: "g" }
+        { name: "Heura / Proteína vegetal", factor: 1.1, unit: "g" },
+        { name: "Soja texturizada", factor: 0.8, unit: "g" }
       ],
       carbs: [
         { name: "Arroz", factor: 1.0, unit: "g" },
@@ -119,7 +125,9 @@
       ],
       dairy: [
         { name: "Leche semidescremada", factor: 1.0, unit: "ml" },
-        { name: "Yogur griego 0%", factor: 1.2, unit: "g" }
+        { name: "Bebida de soja", factor: 1.0, unit: "ml" },
+        { name: "Yogur griego 0%", factor: 1.2, unit: "g" },
+        { name: "Yogur de soja natural", factor: 1.2, unit: "g" }
       ]
     };
 
@@ -329,6 +337,267 @@
             ]
           }
         ]
+      },
+      mantenimiento_2600: {
+        id: "mantenimiento_2600",
+        name: "Mantenimiento / Recomposición (2600 kcal)",
+        baseKcal: 2600,
+        baseProtein: 180,
+        baseFats: 70,
+        baseCarbs: 300,
+        meals: [
+          {
+            id: "man_d",
+            time: "07:00",
+            label: "Desayuno",
+            baseProtein: 28,
+            baseKcal: 620,
+            variants: [
+              {
+                title: "Tostadas Integrales con Huevo y Aguacate",
+                foods: [
+                  { id: "v4_d1", name: "Pan integral", baseAmount: 120, unit: "g", group: "carbs" },
+                  { id: "v4_d2", name: "Huevos L", baseAmount: 2, unit: "uds", group: "protein" },
+                  { id: "v4_d3", name: "Aguacate", baseAmount: 70, unit: "g", group: "fats" },
+                  { id: "v4_d4", name: "Leche semidescremada", baseAmount: 250, unit: "ml", group: "dairy" }
+                ],
+                steps: ["Tostar pan, untar aguacate y poner huevos encima."]
+              }
+            ]
+          },
+          {
+            id: "man_c",
+            time: "14:00",
+            label: "Comida",
+            baseProtein: 48,
+            baseKcal: 650,
+            variants: [
+              {
+                title: "Lomo de Cerdo con Arroz y Verdura",
+                foods: [
+                  { id: "v4_c1", name: "Lomo magro de cerdo", baseAmount: 180, unit: "g", group: "protein" },
+                  { id: "v4_c2", name: "Arroz", baseAmount: 100, unit: "g", group: "carbs" },
+                  { id: "v4_c3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" },
+                  { id: "v4_c4", name: "Verdura congelada", baseAmount: 150, unit: "g", group: "veg" }
+                ],
+                steps: ["Cocinar lomo a la plancha con arroz y verduras."]
+              }
+            ]
+          },
+          {
+            id: "man_me",
+            time: "17:00",
+            label: "Merienda",
+            baseProtein: 35,
+            baseKcal: 500,
+            variants: [
+              {
+                title: "Batido de Avena y Frutos Secos",
+                foods: [
+                  { id: "v4_me1", name: "Batido proteína whey", baseAmount: 25, unit: "g", group: "protein" },
+                  { id: "v4_me2", name: "Avena", baseAmount: 70, unit: "g", group: "carbs" },
+                  { id: "v4_me3", name: "Leche semidescremada", baseAmount: 300, unit: "ml", group: "dairy" }
+                ],
+                steps: ["Batir todos los ingredientes."]
+              }
+            ]
+          },
+          {
+            id: "man_ce",
+            time: "21:00",
+            label: "Cena",
+            baseProtein: 50,
+            baseKcal: 580,
+            variants: [
+              {
+                title: "Pechuga de Pavo con Patata al Horno",
+                foods: [
+                  { id: "v4_ce1", name: "Pechuga de pavo", baseAmount: 190, unit: "g", group: "protein" },
+                  { id: "v4_ce2", name: "Patata", baseAmount: 200, unit: "g", group: "carbs" },
+                  { id: "v4_ce3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" },
+                  { id: "v4_ce4", name: "Ensalada bolsa", baseAmount: 100, unit: "g", group: "veg" }
+                ],
+                steps: ["Hornear patata y pavo."]
+              }
+            ]
+          }
+        ]
+      },
+      cetogenica_2400: {
+        id: "cetogenica_2400",
+        name: "Low-Carb / Cetogénica Limpia (2400 kcal)",
+        baseKcal: 2400,
+        baseProtein: 175,
+        baseFats: 165,
+        baseCarbs: 45,
+        meals: [
+          {
+            id: "keto_d",
+            time: "07:00",
+            label: "Desayuno",
+            baseProtein: 32,
+            baseKcal: 590,
+            variants: [
+              {
+                title: "Tortilla de 3 Huevos con Aguacate",
+                foods: [
+                  { id: "v5_d1", name: "Huevos L", baseAmount: 3, unit: "uds", group: "protein" },
+                  { id: "v5_d2", name: "Aguacate", baseAmount: 120, unit: "g", group: "fats" },
+                  { id: "v5_d3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" }
+                ],
+                steps: ["Preparar tortilla francesa y acompañar de aguacate troceado."]
+              }
+            ]
+          },
+          {
+            id: "keto_c",
+            time: "14:00",
+            label: "Comida",
+            baseProtein: 55,
+            baseKcal: 680,
+            variants: [
+              {
+                title: "Salmón o Carne Grasa con Espinacas",
+                foods: [
+                  { id: "v5_c1", name: "Lomo magro de cerdo", baseAmount: 200, unit: "g", group: "protein" },
+                  { id: "v5_c2", name: "Aceite de oliva", baseAmount: 20, unit: "ml", group: "fats" },
+                  { id: "v5_c3", name: "Verdura congelada", baseAmount: 200, unit: "g", group: "veg" }
+                ],
+                steps: ["Cocinar carne con abundante aceite de oliva y verduras salteadas."]
+              }
+            ]
+          },
+          {
+            id: "keto_me",
+            time: "17:00",
+            label: "Merienda",
+            baseProtein: 25,
+            baseKcal: 450,
+            variants: [
+              {
+                title: "Frutos Secos y Queso",
+                foods: [
+                  { id: "v5_me1", name: "Almendras", baseAmount: 50, unit: "g", group: "fats" },
+                  { id: "v5_me2", name: "Yogur griego 0%", baseAmount: 150, unit: "g", group: "dairy" }
+                ],
+                steps: ["Consumir como snack proteico-graso."]
+              }
+            ]
+          },
+          {
+            id: "keto_ce",
+            time: "21:00",
+            label: "Cena",
+            baseProtein: 50,
+            baseKcal: 680,
+            variants: [
+              {
+                title: "Pescado Blanco con Aceite y Ensalada",
+                foods: [
+                  { id: "v5_ce1", name: "Merluza / Pescado blanco", baseAmount: 250, unit: "g", group: "protein" },
+                  { id: "v5_ce2", name: "Aceite de oliva", baseAmount: 25, unit: "ml", group: "fats" },
+                  { id: "v5_ce3", name: "Ensalada bolsa", baseAmount: 150, unit: "g", group: "veg" }
+                ],
+                steps: ["Hornear pescado con aceite de oliva y guarnición de ensalada."]
+              }
+            ]
+          }
+        ]
+      },
+      vegana_2500: {
+        id: "vegana_2500",
+        name: "Vegana / Plant-Based Pro (2500 kcal)",
+        baseKcal: 2500,
+        baseProtein: 160,
+        baseFats: 70,
+        baseCarbs: 310,
+        meals: [
+          {
+            id: "veg_d",
+            time: "07:00",
+            label: "Desayuno",
+            baseProtein: 32,
+            baseKcal: 580,
+            variants: [
+              {
+                title: "Porridge Proteico con Soja y Crema de Cacahuete",
+                foods: [
+                  { id: "v6_d1", name: "Avena", baseAmount: 100, unit: "g", group: "carbs" },
+                  { id: "v6_d2", name: "Bebida de soja", baseAmount: 300, unit: "ml", group: "dairy" },
+                  { id: "v6_d3", name: "Crema de cacahuete 100%", baseAmount: 25, unit: "g", group: "fats" },
+                  { id: "v6_d4", name: "Yogur de soja natural", baseAmount: 120, unit: "g", group: "protein" }
+                ],
+                steps: ["Cocer la avena en la bebida de soja.", "Mezclar el yogur vegetal y la crema de cacahuete al servir."]
+              }
+            ]
+          },
+          {
+            id: "veg_c",
+            time: "14:00",
+            label: "Comida",
+            baseProtein: 48,
+            baseKcal: 680,
+            variants: [
+              {
+                title: "Bowl de Tofu Firme, Arroz y Aguacate",
+                foods: [
+                  { id: "v6_c1", name: "Tofu firme", baseAmount: 220, unit: "g", group: "protein" },
+                  { id: "v6_c2", name: "Arroz", baseAmount: 110, unit: "g", group: "carbs" },
+                  { id: "v6_c3", name: "Aguacate", baseAmount: 80, unit: "g", group: "fats" },
+                  { id: "v6_c4", name: "Verdura congelada", baseAmount: 150, unit: "g", group: "veg" }
+                ],
+                steps: ["Marcar el tofu a la plancha con especias.", "Servir sobre base de arroz, verdura salteada y aguacate."]
+              },
+              {
+                title: "Guiso de Garbanzos y Soja Texturizada",
+                foods: [
+                  { id: "v6_c5", name: "Garbanzos / Lentejas cocidas", baseAmount: 250, unit: "g", group: "carbs" },
+                  { id: "v6_c6", name: "Soja texturizada", baseAmount: 50, unit: "g", group: "protein" },
+                  { id: "v6_c7", name: "Tomate triturado natural", baseAmount: 150, unit: "g", group: "veg" },
+                  { id: "v6_c8", name: "Aceite de oliva", baseAmount: 12, unit: "ml", group: "fats" }
+                ],
+                steps: ["Hidratar soja texturizada.", "Saltear con tomate y mezclar con garbanzos en olla corta."]
+              }
+            ]
+          },
+          {
+            id: "veg_me",
+            time: "17:00",
+            label: "Merienda",
+            baseProtein: 30,
+            baseKcal: 480,
+            variants: [
+              {
+                title: "Batido de Bebida de Soja y Plátano",
+                foods: [
+                  { id: "v6_me1", name: "Bebida de soja", baseAmount: 350, unit: "ml", group: "dairy" },
+                  { id: "v6_me2", name: "Plátano", baseAmount: 130, unit: "g", group: "carbs" },
+                  { id: "v6_me3", name: "Almendras", baseAmount: 30, unit: "g", group: "fats" }
+                ],
+                steps: ["Triturar la bebida vegetal con el plátano maduro.", "Acompañar con almendras crudas."]
+              }
+            ]
+          },
+          {
+            id: "veg_ce",
+            time: "21:00",
+            label: "Cena",
+            baseProtein: 50,
+            baseKcal: 620,
+            variants: [
+              {
+                title: "Salteado de Heura / Tempeh con Patata",
+                foods: [
+                  { id: "v6_ce1", name: "Heura / Proteína vegetal", baseAmount: 200, unit: "g", group: "protein" },
+                  { id: "v6_ce2", name: "Patata", baseAmount: 220, unit: "g", group: "carbs" },
+                  { id: "v6_ce3", name: "Aceite de oliva", baseAmount: 12, unit: "ml", group: "fats" },
+                  { id: "v6_ce4", name: "Ensalada bolsa", baseAmount: 120, unit: "g", group: "veg" }
+                ],
+                steps: ["Cocer la patata al microondas.", "Saltear la proteína vegetal con aceite y servir con ensalada."]
+              }
+            ]
+          }
+        ]
       }
     };
 
@@ -339,7 +608,7 @@
         desc: "Opción rápida para días sin táperes ni tiempo de cocinar.",
         options: [
           { name: "Carbohidrato directo", detail: "4 rebanadas de pan integral o 1 bote de garbanzos/alubias cocidas lavadas." },
-          { name: "Proteína limpia", detail: "2 latas de atún/caballa al natural o 200g de pechuga de pavo/pollo en lonchas >90%." },
+          { name: "Proteína limpia", detail: "2 latas de atún/caballa al natural o 200g de pechuga de pavo/pollo/tofu en lonchas." },
           { name: "Grasas y Verdura", detail: "Bolsa de ensalada lista para comer + 1 cucharada sopera de aceite de oliva virgen extra." }
         ]
       },
@@ -348,7 +617,7 @@
         title: "Desayuno / Merienda On-The-Go",
         desc: "Para consumir en 3 minutos antes de salir de casa o entrenar.",
         options: [
-          { name: "Base proteica", detail: "1 cazo (30g) de proteína Whey disuelto en 300ml de leche o agua." },
+          { name: "Base proteica", detail: "1 cazo (30g) de proteína vegetal/whey disuelto en 300ml de leche o bebida de soja." },
           { name: "Carbohidrato rápido", detail: "2 plátanos maduros o 50g de crema de arroz instantánea." },
           { name: "Grasas saludables", detail: "1 puñado (25g) de almendras o nueces crudas." }
         ]
@@ -494,24 +763,23 @@
       const [selectedSupermarket, setSelectedSupermarket] = React.useState("smart_split");
       const [syncPricesStatus, setSyncPricesStatus] = React.useState("Precios actualizados hoy");
 
-      // Matriz de precios sincronizada automáticamente en background
       const [pricesDatabase, setPricesDatabase] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_auto_prices_v67");
+          const saved = localStorage.getItem("dieta_auto_prices_v68");
           return saved ? JSON.parse(saved) : DEFAULT_BASE_PRICES;
         } catch { return DEFAULT_BASE_PRICES; }
       });
 
       const [googleUser, setGoogleUser] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_google_user_v67");
+          const saved = localStorage.getItem("dieta_google_user_v68");
           return saved ? JSON.parse(saved) : null;
         } catch { return null; }
       });
 
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v67");
+          const saved = localStorage.getItem("dieta_profiles_v68");
           return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         } catch {
           return [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
@@ -547,7 +815,6 @@
       const [weightNote, setWeightNote] = React.useState("");
       const [syncStatus, setSyncStatus] = React.useState(null);
 
-      // FUNCION DE ACTUALIZACIÓN AUTOMÁTICA DE PRECIOS
       React.useEffect(() => {
         const fetchRemotePrices = async () => {
           try {
@@ -557,12 +824,12 @@
               const remoteData = await res.json();
               if (remoteData && typeof remoteData === 'object') {
                 setPricesDatabase(remoteData);
-                localStorage.setItem("dieta_auto_prices_v67", JSON.stringify(remoteData));
-                setSyncPricesStatus("Precios actualizados automáticamente ✓");
+                localStorage.setItem("dieta_auto_prices_v68", JSON.stringify(remoteData));
+                setSyncPricesStatus("Precios de mercado al día ✓");
                 return;
               }
             }
-            setSyncPricesStatus("Precios del día cargados ✓");
+            setSyncPricesStatus("Precios de mercado al día ✓");
           } catch {
             setSyncPricesStatus("Modo offline: Precios base activos");
           }
@@ -572,11 +839,11 @@
       }, []);
 
       React.useEffect(() => {
-        try { localStorage.setItem("dieta_profiles_v67", JSON.stringify(profiles)); } catch {}
+        try { localStorage.setItem("dieta_profiles_v68", JSON.stringify(profiles)); } catch {}
       }, [profiles]);
 
       React.useEffect(() => {
-        try { if (googleUser) localStorage.setItem("dieta_google_user_v67", JSON.stringify(googleUser)); } catch {}
+        try { if (googleUser) localStorage.setItem("dieta_google_user_v68", JSON.stringify(googleUser)); } catch {}
       }, [googleUser]);
 
       React.useEffect(() => {
@@ -702,11 +969,9 @@
         }
       };
 
-      // MOTOR REACTIVO: MIGRACIÓN AUTOMÁTICA DE SUPERMERCADOS SEGÚN PRECIOS Y DIETA
       const computedCostEngine = React.useMemo(() => {
         const rawItemsMap = {};
 
-        // Recalcular gramajes exactos según variante y escalador
         activeDiet.meals.forEach(meal => {
           const vIdx = activeVariants[meal.id] || 0;
           const selectedVariant = meal.variants[vIdx] || meal.variants[0];
@@ -736,7 +1001,6 @@
           });
         });
 
-        // Asignación interactiva por supermercado más barato
         const itemList = Object.keys(rawItemsMap).map((name, idx) => {
           const itemData = rawItemsMap[name];
           const ref = pricesDatabase[name] || DEFAULT_BASE_PRICES[name] || { unitPrice: 3.50, unit: "kg", bestSup: "mercadona" };
@@ -776,7 +1040,6 @@
           totalsBySup[supKey] = totalCost;
         });
 
-        // Migración dinámica de productos a la pestaña del supermercado más barato
         const smartSplitItems = { mercadona: [], lidl: [], hiperdino: [], carrefour: [] };
         let smartSplitTotalCost = 0;
 
@@ -813,7 +1076,7 @@
                   <span className="w-2 h-2 rounded-full bg-[#a8e6a0] animate-pulse"></span>
                   {googleUser ? googleUser.name : currentProfile.name} • ({APP_VERSION})
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">Ecosistema Nutricional Autónomo</h1>
+                <h1 className="text-xl font-bold tracking-tight">Ecosistema Nutricional Completo</h1>
               </div>
               <div>
                 <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/90">
