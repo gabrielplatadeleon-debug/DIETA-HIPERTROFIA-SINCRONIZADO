@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V6.0</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V6.1</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -50,7 +50,7 @@
     /* ==========================================
        CAPA 1: CATÁLOGO Y VARIANTES DE RECETAS
        ========================================== */
-    const APP_VERSION = "v6.0-MOTOR-RECETAS";
+    const APP_VERSION = "v6.1-AUTO-PERFILES";
 
     const DIET_CATALOG = {
       volumen_3000: {
@@ -69,18 +69,18 @@
               {
                 title: "Gachas Clásicas de Avena",
                 foods: [
-                  { name: "Avena", baseAmount: 130, unit: "g", category: "despensa", group: "carbs" },
-                  { name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona", group: "dairy" },
-                  { name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", category: "despensa", group: "fats" }
+                  { name: "Avena", baseAmount: 130, unit: "g", category: "despensa" },
+                  { name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona" },
+                  { name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", category: "despensa" }
                 ],
                 steps: ["Calentar leche 2 min.", "Añadir avena y remover.", "Integrar crema de cacahuete."]
               },
               {
                 title: "Tortitas de Avena y Huevo",
                 foods: [
-                  { name: "Avena", baseAmount: 130, unit: "g", category: "despensa", group: "carbs" },
-                  { name: "Claras de huevo", baseAmount: 200, unit: "ml", category: "mercadona", group: "protein" },
-                  { name: "Plátano", baseAmount: 120, unit: "g", category: "mercadona", group: "carbs" }
+                  { name: "Avena", baseAmount: 130, unit: "g", category: "despensa" },
+                  { name: "Claras de huevo", baseAmount: 200, unit: "ml", category: "mercadona" },
+                  { name: "Plátano", baseAmount: 120, unit: "g", category: "mercadona" }
                 ],
                 steps: ["Triturar avena con claras y plátano.", "Cocinar en sartén antiadherente."]
               }
@@ -96,22 +96,12 @@
               {
                 title: "Arroz con Pollo y Ensalada",
                 foods: [
-                  { name: "Pechuga de pollo", baseAmount: 200, unit: "g", category: "mercadona", group: "protein" },
-                  { name: "Arroz", baseAmount: 120, unit: "g", category: "mercadona", group: "carbs" },
-                  { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa", group: "fats" },
-                  { name: "Ensalada bolsa", baseAmount: 100, unit: "g", category: "mercadona", group: "veg" }
+                  { name: "Pechuga de pollo", baseAmount: 200, unit: "g", category: "mercadona" },
+                  { name: "Arroz", baseAmount: 120, unit: "g", category: "mercadona" },
+                  { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa" },
+                  { name: "Ensalada bolsa", baseAmount: 100, unit: "g", category: "mercadona" }
                 ],
                 steps: ["Cocinar arroz y pollo a la plancha.", "Mezclar con aceite y ensalada."]
-              },
-              {
-                title: "Pasta Boloñesa Casera Limpia",
-                foods: [
-                  { name: "Carne picada vacuno 5%", baseAmount: 180, unit: "g", category: "despensa", group: "protein" },
-                  { name: "Macarrones integrales", baseAmount: 110, unit: "g", category: "despensa", group: "carbs" },
-                  { name: "Tomate triturado natural", baseAmount: 150, unit: "g", category: "mercadona", group: "veg" },
-                  { name: "Aceite de oliva", baseAmount: 8, unit: "ml", category: "despensa", group: "fats" }
-                ],
-                steps: ["Hervir pasta.", "Marcar carne con tomate y aceite.", "Combinar."]
               }
             ],
             baseProtein: 54,
@@ -125,21 +115,12 @@
               {
                 title: "Batido Energético de Avena y Whey",
                 foods: [
-                  { name: "Batido proteína whey", baseAmount: 30, unit: "g", category: "despensa", group: "protein" },
-                  { name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona", group: "dairy" },
-                  { name: "Avena", baseAmount: 80, unit: "g", category: "despensa", group: "carbs" },
-                  { name: "Miel", baseAmount: 20, unit: "g", category: "mercadona", group: "carbs" }
+                  { name: "Batido proteína whey", baseAmount: 30, unit: "g", category: "despensa" },
+                  { name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona" },
+                  { name: "Avena", baseAmount: 80, unit: "g", category: "despensa" },
+                  { name: "Miel", baseAmount: 20, unit: "g", category: "mercadona" }
                 ],
                 steps: ["Pulverizar avena en batidora.", "Añadir leche, whey y miel. Batir."]
-              },
-              {
-                title: "Sándwich de Pavo y Frutos Secos",
-                foods: [
-                  { name: "Pan integral de molde", baseAmount: 100, unit: "g", category: "mercadona", group: "carbs" },
-                  { name: "Pechuga de pavo lonchas 90%", baseAmount: 120, unit: "g", category: "mercadona", group: "protein" },
-                  { name: "Almendras naturales", baseAmount: 25, unit: "g", category: "despensa", group: "fats" }
-                ],
-                steps: ["Montar sándwich con pavo.", "Acompañar con almendras."]
               }
             ],
             baseProtein: 48,
@@ -153,24 +134,14 @@
               {
                 title: "Sartén de Carne, Patata y Huevos",
                 foods: [
-                  { name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g", category: "despensa", group: "protein" },
-                  { name: "Huevos L", baseAmount: 3, unit: "uds", category: "mercadona", group: "protein" },
-                  { name: "Patata", baseAmount: 200, unit: "g", category: "despensa", group: "carbs" },
-                  { name: "Pan integral", baseAmount: 80, unit: "g", category: "mercadona", group: "carbs" },
-                  { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa", group: "fats" },
-                  { name: "Verdura congelada", baseAmount: 100, unit: "g", category: "mercadona", group: "veg" }
+                  { name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g", category: "despensa" },
+                  { name: "Huevos L", baseAmount: 3, unit: "uds", category: "mercadona" },
+                  { name: "Patata", baseAmount: 200, unit: "g", category: "despensa" },
+                  { name: "Pan integral", baseAmount: 80, unit: "g", category: "mercadona" },
+                  { name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa" },
+                  { name: "Verdura congelada", baseAmount: 100, unit: "g", category: "mercadona" }
                 ],
                 steps: ["Cocinar patata al microondas.", "Marcar carne con verdura.", "Añadir huevos y patata."]
-              },
-              {
-                title: "Pescado Blanco al Horno con Patata",
-                foods: [
-                  { name: "Merluza / Bacalao", baseAmount: 250, unit: "g", category: "mercadona", group: "protein" },
-                  { name: "Patata", baseAmount: 220, unit: "g", category: "despensa", group: "carbs" },
-                  { name: "Aceite de oliva", baseAmount: 15, unit: "ml", category: "despensa", group: "fats" },
-                  { name: "Verdura congelada", baseAmount: 120, unit: "g", category: "mercadona", group: "veg" }
-                ],
-                steps: ["Hornear pescado y patata laminada a 190°C.", "Servir con verdura."]
               }
             ],
             baseProtein: 54,
@@ -192,7 +163,7 @@
     ];
 
     /* ==========================================
-       CAPA 2: SERVICIOS GOOGLE DRIVE API
+       CAPA 2: SERVICIOS GOOGLE DRIVE API (AUTODETECCIÓN)
        ========================================== */
     const DriveService = {
       initAuth(onSuccess) {
@@ -210,29 +181,63 @@
           client.requestAccessToken();
         } catch (err) {}
       },
-      async getOrCreateFolder(token) {
+
+      async getFolderId(token) {
         try {
           const searchUrl = `https://www.googleapis.com/drive/v3/files?q=name='Mi_Dieta_PWA' and mimeType='application/vnd.google-apps.folder' and trashed=false`;
           const res = await fetch(searchUrl, { headers: { Authorization: `Bearer ${token}` } });
           const data = await res.json();
           if (data.files && data.files.length > 0) return data.files[0].id;
-
-          const createRes = await fetch("https://www.googleapis.com/drive/v3/files", {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ name: "Mi_Dieta_PWA", mimeType: "application/vnd.google-apps.folder" })
-          });
-          const folderData = await createRes.json();
-          return folderData.id;
-        } catch (err) {
+          return null;
+        } catch {
           return null;
         }
       },
+
+      async scanCloudProfiles(token) {
+        try {
+          const folderId = await this.getFolderId(token);
+          if (!folderId) return [];
+
+          const query = `q='${folderId}' in parents and name contains 'perfil_' and trashed=false`;
+          const res = await fetch(`https://www.googleapis.com/drive/v3/files?${query}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (!data.files) return [];
+
+          const profiles = [];
+          for (const file of data.files) {
+            const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            const profileData = await fileRes.json();
+            if (profileData && profileData.profile) {
+              profiles.push(profileData.profile);
+            }
+          }
+          return profiles;
+        } catch (err) {
+          console.error("Error escaneando perfiles:", err);
+          return [];
+        }
+      },
+
       async syncCloudProfile(profileId, payload) {
         const token = localStorage.getItem("google_access_token");
         if (!token) return { success: false };
         try {
-          const folderId = await this.getOrCreateFolder(token);
+          let folderId = await this.getFolderId(token);
+          if (!folderId) {
+            const createRes = await fetch("https://www.googleapis.com/drive/v3/files", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+              body: JSON.stringify({ name: "Mi_Dieta_PWA", mimeType: "application/vnd.google-apps.folder" })
+            });
+            const folderData = await createRes.json();
+            folderId = folderData.id;
+          }
+
           const fileName = `perfil_${profileId}.json`;
           const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
 
@@ -317,10 +322,9 @@
       const [activeTab, setActiveTab] = React.useState("dieta");
       const [openRecipe, setOpenRecipe] = React.useState(null);
 
-      // Estado de Perfiles y Variante de Receta Activa por Comida
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v60");
+          const saved = localStorage.getItem("dieta_profiles_v61");
           return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {} }];
         } catch {
           return [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {} }];
@@ -334,7 +338,6 @@
       
       const targetKcal = currentProfile.customKcal || 3000;
       const scaleFactor = targetKcal / 3000;
-
       const activeVariants = currentProfile.activeVariants || {};
 
       const setVariantForMeal = (mealId, variantIndex) => {
@@ -373,7 +376,7 @@
 
       React.useEffect(() => {
         try {
-          localStorage.setItem("dieta_profiles_v60", JSON.stringify(profiles));
+          localStorage.setItem("dieta_profiles_v61", JSON.stringify(profiles));
         } catch {}
       }, [profiles]);
 
@@ -419,7 +422,6 @@
         }));
       };
 
-      // Generador Dinámico de la Lista de Compra basado en la variante activa de cada comida
       const computedShoppingList = React.useMemo(() => {
         const mapMercadona = {};
         const mapDespensa = {};
@@ -496,13 +498,21 @@
       };
 
       const handleGoogleLogin = () => {
-        DriveService.initAuth(async () => {
-          setSyncStatus("Autenticado ✓");
-          await DriveService.syncCloudProfile(activeProfileId, {
-            profile: currentProfile,
-            weights: weightLogs,
-            checked: checkedItems
-          });
+        DriveService.initAuth(async (token) => {
+          setSyncStatus("Escaneando Drive...");
+          const cloudProfiles = await DriveService.scanCloudProfiles(token);
+          if (cloudProfiles && cloudProfiles.length > 0) {
+            setProfiles(cloudProfiles);
+            setActiveProfileId(cloudProfiles[0].id);
+            setSyncStatus("Perfiles Detectados ✓");
+          } else {
+            setSyncStatus("Vinculado ✓");
+            await DriveService.syncCloudProfile(activeProfileId, {
+              profile: currentProfile,
+              weights: weightLogs,
+              checked: checkedItems
+            });
+          }
         });
       };
 
@@ -520,7 +530,7 @@
                   <span className="w-2 h-2 rounded-full bg-[#a8e6a0] animate-pulse"></span>
                   {currentProfile.name} • {baseDiet.name} ({APP_VERSION})
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">Motor Inteligente de Recetas</h1>
+                <h1 className="text-xl font-bold tracking-tight">Gestor Cloud Autodidacta</h1>
               </div>
               <div>
                 <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/10 text-white/90">
@@ -622,7 +632,6 @@
 
                           {isOpen && (
                             <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-3.5 fade-in">
-                              {/* SELECTOR DE VARIANTES */}
                               <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-[#e2e6e0]">
                                 <span className="text-xs font-bold text-black/60 uppercase">Variante de Plato:</span>
                                 <div className="flex gap-1.5">
@@ -812,12 +821,12 @@
             {activeTab === "peso" && (
               <section className="space-y-4 fade-in">
                 <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Control de Peso & Cloud</h2>
-                  <p className="text-sm text-black/70">Sincronización en la carpeta Mi_Dieta_PWA.</p>
+                  <h2 className="text-xl font-bold text-[#0f2a1d]">Control de Peso & Autodetección Cloud</h2>
+                  <p className="text-sm text-black/70">Escaneo automático de perfiles en la carpeta Mi_Dieta_PWA.</p>
                 </div>
 
                 <form onSubmit={handleAddProfile} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
-                  <h3 className="text-sm font-bold">Añadir Nuevo Perfil</h3>
+                  <h3 className="text-sm font-bold">Añadir Nuevo Perfil Local</h3>
                   <div className="flex gap-2">
                     <input 
                       type="text" 
@@ -835,11 +844,11 @@
 
                 <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 flex items-center justify-between gap-3 shadow-2xs">
                   <div>
-                    <h3 className="text-sm font-bold text-[#0f2a1d]">Google Drive (Mi_Dieta_PWA)</h3>
+                    <h3 className="text-sm font-bold text-[#0f2a1d]">Sincronizar y Autodetectar Drive</h3>
                     <p className="text-xs text-black/60">{syncStatus || "Desconectado"}</p>
                   </div>
                   <button onClick={handleGoogleLogin} className="px-4 py-2.5 rounded-xl bg-[#0f2a1d] text-white text-xs font-semibold hover:bg-black transition">
-                    Vincular Drive
+                    Vincular / Escanear
                   </button>
                 </div>
 
