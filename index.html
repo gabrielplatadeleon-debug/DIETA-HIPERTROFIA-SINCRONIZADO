@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V6.3</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V6.4</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -48,135 +48,409 @@
 
   <script type="text/babel">
     /* ==========================================
-       CAPA 1: CATÁLOGOS Y MATRIZ DE EQUIVALENCIAS
+       CAPA 1: CATÁLOGO MULTI-DIETA PRO Y VARIANTES
        ========================================== */
-    const APP_VERSION = "v6.3-SUSTITUCION-INTELIGENTE";
+    const APP_VERSION = "v6.4-MULTI-DIETA-PRO";
 
-    // Matriz de sustitución por grupos de alimentos con factores de densidad
     const FOOD_SUBSTITUTES = {
       protein: [
-        { name: "Pechuga de pollo", factor: 1.0, unit: "g", category: "mercadona" },
-        { name: "Pechuga de pavo", factor: 1.0, unit: "g", category: "mercadona" },
-        { name: "Merluza / Pescado blanco", factor: 1.25, unit: "g", category: "mercadona" },
-        { name: "Lomo magro de cerdo", factor: 0.95, unit: "g", category: "mercadona" },
-        { name: "Tofu firme", factor: 1.4, unit: "g", category: "mercadona" },
-        { name: "Latas de atún al natural", factor: 0.9, unit: "g", category: "despensa" }
+        { name: "Pechuga de pollo", factor: 1.0, unit: "g", supermarket: "mercadona" },
+        { name: "Pechuga de pavo", factor: 1.0, unit: "g", supermarket: "mercadona" },
+        { name: "Merluza / Pescado blanco", factor: 1.25, unit: "g", supermarket: "lidl" },
+        { name: "Lomo magro de cerdo", factor: 0.95, unit: "g", supermarket: "carrefour" },
+        { name: "Tofu firme", factor: 1.4, unit: "g", supermarket: "lidl" },
+        { name: "Atún al natural", factor: 0.9, unit: "g", supermarket: "hiperdino" }
       ],
       carbs: [
-        { name: "Arroz", factor: 1.0, unit: "g", category: "mercadona" },
-        { name: "Patata", factor: 3.5, unit: "g", category: "despensa" },
-        { name: "Pan integral", factor: 1.2, unit: "g", category: "mercadona" },
-        { name: "Avena", factor: 0.9, unit: "g", category: "despensa" },
-        { name: "Quinoa", factor: 1.0, unit: "g", category: "despensa" },
-        { name: "Pasta integral", factor: 1.0, unit: "g", category: "despensa" }
+        { name: "Arroz", factor: 1.0, unit: "g", supermarket: "mercadona" },
+        { name: "Patata", factor: 3.5, unit: "g", supermarket: "hiperdino" },
+        { name: "Pan integral", factor: 1.2, unit: "g", supermarket: "carrefour" },
+        { name: "Avena", factor: 0.9, unit: "g", supermarket: "lidl" },
+        { name: "Pasta integral", factor: 1.0, unit: "g", supermarket: "mercadona" }
       ],
       fats: [
-        { name: "Aceite de oliva", factor: 1.0, unit: "ml", category: "despensa" },
-        { name: "Crema de cacahuete 100%", factor: 1.3, unit: "g", category: "despensa" },
-        { name: "Aguacate", factor: 3.0, unit: "g", category: "mercadona" },
-        { name: "Almendras / Frutos secos", factor: 1.1, unit: "g", category: "despensa" }
+        { name: "Aceite de oliva", factor: 1.0, unit: "ml", supermarket: "hiperdino" },
+        { name: "Crema de cacahuete 100%", factor: 1.3, unit: "g", supermarket: "lidl" },
+        { name: "Aguacate", factor: 3.0, unit: "g", supermarket: "mercadona" },
+        { name: "Almendras", factor: 1.1, unit: "g", supermarket: "lidl" }
       ],
       dairy: [
-        { name: "Leche semidescremada", factor: 1.0, unit: "ml", category: "mercadona" },
-        { name: "Bebida de soja", factor: 1.1, unit: "ml", category: "mercadona" },
-        { name: "Yogur griego 0%", factor: 1.2, unit: "g", category: "mercadona" }
+        { name: "Leche semidescremada", factor: 1.0, unit: "ml", supermarket: "mercadona" },
+        { name: "Bebida de soja", factor: 1.1, unit: "ml", supermarket: "lidl" },
+        { name: "Yogur griego 0%", factor: 1.2, unit: "g", supermarket: "carrefour" }
       ]
     };
 
     const DIET_CATALOG = {
       volumen_3000: {
         id: "volumen_3000",
-        name: "Volumen Hipertrofia",
+        name: "Volumen Muscular (3000 kcal)",
         baseKcal: 3000,
         baseProtein: 198,
         baseFats: 78,
         baseCarbs: 360,
         meals: [
           {
-            id: "d_desayuno",
+            id: "m_desayuno",
             time: "07:00",
             label: "Desayuno",
+            baseProtein: 30,
+            baseKcal: 739,
             variants: [
               {
                 title: "Gachas Clásicas de Avena",
                 foods: [
-                  { id: "des_avena", name: "Avena", baseAmount: 130, unit: "g", category: "despensa", group: "carbs" },
-                  { id: "des_leche", name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona", group: "dairy" },
-                  { id: "des_cacahuete", name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", category: "despensa", group: "fats" }
+                  { id: "v3_d1", name: "Avena", baseAmount: 130, unit: "g", supermarket: "lidl", group: "carbs" },
+                  { id: "v3_d2", name: "Leche semidescremada", baseAmount: 300, unit: "ml", supermarket: "mercadona", group: "dairy" },
+                  { id: "v3_d3", name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", supermarket: "lidl", group: "fats" }
                 ],
                 steps: ["Calentar leche 2 min.", "Añadir avena y remover.", "Integrar crema de cacahuete."]
               },
               {
                 title: "Tortitas de Avena y Huevo",
                 foods: [
-                  { id: "des_avena_2", name: "Avena", baseAmount: 130, unit: "g", category: "despensa", group: "carbs" },
-                  { id: "des_claras", name: "Claras de huevo", baseAmount: 200, unit: "ml", category: "mercadona", group: "protein" },
-                  { id: "des_platano", name: "Plátano", baseAmount: 120, unit: "g", category: "mercadona", group: "carbs" }
+                  { id: "v3_d4", name: "Avena", baseAmount: 130, unit: "g", supermarket: "lidl", group: "carbs" },
+                  { id: "v3_d5", name: "Claras de huevo", baseAmount: 200, unit: "ml", supermarket: "mercadona", group: "protein" },
+                  { id: "v3_d6", name: "Plátano", baseAmount: 120, unit: "g", supermarket: "hiperdino", group: "carbs" }
                 ],
                 steps: ["Triturar avena con claras y plátano.", "Cocinar en sartén antiadherente."]
               }
-            ],
-            baseProtein: 30,
-            baseKcal: 739
+            ]
           },
           {
-            id: "d_comida",
+            id: "m_comida",
             time: "14:00",
             label: "Comida",
+            baseProtein: 54,
+            baseKcal: 728,
             variants: [
               {
                 title: "Arroz con Pollo y Ensalada",
                 foods: [
-                  { id: "com_pollo", name: "Pechuga de pollo", baseAmount: 200, unit: "g", category: "mercadona", group: "protein" },
-                  { id: "com_arroz", name: "Arroz", baseAmount: 120, unit: "g", category: "mercadona", group: "carbs" },
-                  { id: "com_aceite", name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa", group: "fats" },
-                  { id: "com_ensalada", name: "Ensalada bolsa", baseAmount: 100, unit: "g", category: "mercadona", group: "veg" }
+                  { id: "v3_c1", name: "Pechuga de pollo", baseAmount: 200, unit: "g", supermarket: "mercadona", group: "protein" },
+                  { id: "v3_c2", name: "Arroz", baseAmount: 120, unit: "g", supermarket: "mercadona", group: "carbs" },
+                  { id: "v3_c3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", supermarket: "hiperdino", group: "fats" },
+                  { id: "v3_c4", name: "Ensalada bolsa", baseAmount: 100, unit: "g", supermarket: "mercadona", group: "veg" }
                 ],
                 steps: ["Cocinar arroz y pollo a la plancha.", "Mezclar con aceite y ensalada."]
+              },
+              {
+                title: "Pasta Boloñesa Casera Limpia",
+                foods: [
+                  { id: "v3_c5", name: "Carne picada vacuno 5%", baseAmount: 180, unit: "g", supermarket: "carrefour", group: "protein" },
+                  { id: "v3_c6", name: "Pasta integral", baseAmount: 110, unit: "g", supermarket: "mercadona", group: "carbs" },
+                  { id: "v3_c7", name: "Tomate triturado natural", baseAmount: 150, unit: "g", supermarket: "mercadona", group: "veg" },
+                  { id: "v3_c8", name: "Aceite de oliva", baseAmount: 8, unit: "ml", supermarket: "hiperdino", group: "fats" }
+                ],
+                steps: ["Hervir pasta.", "Marcar carne con tomate y aceite.", "Combinar."]
               }
-            ],
-            baseProtein: 54,
-            baseKcal: 728
+            ]
           },
           {
-            id: "d_merienda",
+            id: "m_merienda",
             time: "17:00",
             label: "Merienda",
+            baseProtein: 48,
+            baseKcal: 560,
             variants: [
               {
                 title: "Batido Energético de Avena y Whey",
                 foods: [
-                  { id: "mer_whey", name: "Batido proteína whey", baseAmount: 30, unit: "g", category: "despensa", group: "protein" },
-                  { id: "mer_leche", name: "Leche semidescremada", baseAmount: 300, unit: "ml", category: "mercadona", group: "dairy" },
-                  { id: "mer_avena", name: "Avena", baseAmount: 80, unit: "g", category: "despensa", group: "carbs" },
-                  { id: "mer_miel", name: "Miel", baseAmount: 20, unit: "g", category: "mercadona", group: "carbs" }
+                  { id: "v3_me1", name: "Batido proteína whey", baseAmount: 30, unit: "g", supermarket: "lidl", group: "protein" },
+                  { id: "v3_me2", name: "Leche semidescremada", baseAmount: 300, unit: "ml", supermarket: "mercadona", group: "dairy" },
+                  { id: "v3_me3", name: "Avena", baseAmount: 80, unit: "g", supermarket: "lidl", group: "carbs" },
+                  { id: "v3_me4", name: "Miel", baseAmount: 20, unit: "g", supermarket: "hiperdino", group: "carbs" }
                 ],
                 steps: ["Pulverizar avena en batidora.", "Añadir leche, whey y miel. Batir."]
+              },
+              {
+                title: "Sándwich de Pavo y Frutos Secos",
+                foods: [
+                  { id: "v3_me5", name: "Pan integral", baseAmount: 100, unit: "g", supermarket: "carrefour", group: "carbs" },
+                  { id: "v3_me6", name: "Pechuga de pavo", baseAmount: 120, unit: "g", supermarket: "mercadona", group: "protein" },
+                  { id: "v3_me7", name: "Almendras", baseAmount: 25, unit: "g", supermarket: "lidl", group: "fats" }
+                ],
+                steps: ["Montar sándwich con pavo.", "Acompañar con almendras crudas."]
               }
-            ],
-            baseProtein: 48,
-            baseKcal: 560
+            ]
           },
           {
-            id: "d_cena",
+            id: "m_cena",
             time: "21:00",
             label: "Cena",
+            baseProtein: 54,
+            baseKcal: 659,
             variants: [
               {
                 title: "Sartén de Carne, Patata y Huevos",
                 foods: [
-                  { id: "cen_carne", name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g", category: "despensa", group: "protein" },
-                  { id: "cen_huevos", name: "Huevos L", baseAmount: 3, unit: "uds", category: "mercadona", group: "protein" },
-                  { id: "cen_patata", name: "Patata", baseAmount: 200, unit: "g", category: "despensa", group: "carbs" },
-                  { id: "cen_pan", name: "Pan integral", baseAmount: 80, unit: "g", category: "mercadona", group: "carbs" },
-                  { id: "cen_aceite", name: "Aceite de oliva", baseAmount: 10, unit: "ml", category: "despensa", group: "fats" },
-                  { id: "cen_verdura", name: "Verdura congelada", baseAmount: 100, unit: "g", category: "mercadona", group: "veg" }
+                  { id: "v3_ce1", name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g", supermarket: "carrefour", group: "protein" },
+                  { id: "v3_ce2", name: "Huevos L", baseAmount: 3, unit: "uds", supermarket: "mercadona", group: "protein" },
+                  { id: "v3_ce3", name: "Patata", baseAmount: 200, unit: "g", supermarket: "hiperdino", group: "carbs" },
+                  { id: "v3_ce4", name: "Aceite de oliva", baseAmount: 10, unit: "ml", supermarket: "hiperdino", group: "fats" },
+                  { id: "v3_ce5", name: "Verdura congelada", baseAmount: 100, unit: "g", supermarket: "mercadona", group: "veg" }
                 ],
                 steps: ["Cocinar patata al microondas.", "Marcar carne con verdura.", "Añadir huevos y patata."]
+              },
+              {
+                title: "Pescado Blanco al Horno con Patata",
+                foods: [
+                  { id: "v3_ce6", name: "Merluza / Pescado blanco", baseAmount: 250, unit: "g", supermarket: "lidl", group: "protein" },
+                  { id: "v3_ce7", name: "Patata", baseAmount: 220, unit: "g", supermarket: "hiperdino", group: "carbs" },
+                  { id: "v3_ce8", name: "Aceite de oliva", baseAmount: 15, unit: "ml", supermarket: "hiperdino", group: "fats" }
+                ],
+                steps: ["Hornear pescado y patata a 190°C.", "Servir con un chorro de aceite en crudo."]
               }
-            ],
-            baseProtein: 54,
-            baseKcal: 659
+            ]
+          }
+        ]
+      },
+      definicion_2200: {
+        id: "definicion_2200",
+        name: "Definición Limpia (2200 kcal)",
+        baseKcal: 2200,
+        baseProtein: 190,
+        baseFats: 60,
+        baseCarbs: 220,
+        meals: [
+          {
+            id: "def_d",
+            time: "07:00",
+            label: "Desayuno",
+            baseProtein: 35,
+            baseKcal: 420,
+            variants: [
+              {
+                title: "Porridge Ligero de Avena",
+                foods: [
+                  { id: "v2_d1", name: "Avena", baseAmount: 60, unit: "g", supermarket: "lidl", group: "carbs" },
+                  { id: "v2_d2", name: "Leche semidescremada", baseAmount: 250, unit: "ml", supermarket: "mercadona", group: "dairy" },
+                  { id: "v2_d3", name: "Yogur griego 0%", baseAmount: 120, unit: "g", supermarket: "carrefour", group: "protein" }
+                ],
+                steps: ["Mezclar avena con leche en caliente.", "Añadir yogur griego al servir."]
+              }
+            ]
+          },
+          {
+            id: "def_c",
+            time: "14:00",
+            label: "Comida",
+            baseProtein: 52,
+            baseKcal: 580,
+            variants: [
+              {
+                title: "Pollo con Arroz Basmati y Brócoli",
+                foods: [
+                  { id: "v2_c1", name: "Pechuga de pollo", baseAmount: 200, unit: "g", supermarket: "mercadona", group: "protein" },
+                  { id: "v2_c2", name: "Arroz", baseAmount: 60, unit: "g", supermarket: "mercadona", group: "carbs" },
+                  { id: "v2_c3", name: "Aceite de oliva", baseAmount: 8, unit: "ml", supermarket: "hiperdino", group: "fats" },
+                  { id: "v2_c4", name: "Verdura congelada", baseAmount: 200, unit: "g", supermarket: "mercadona", group: "veg" }
+                ],
+                steps: ["Hervir arroz basmati.", "Hacer pollo a la plancha con brócoli al vapor."]
+              }
+            ]
+          },
+          {
+            id: "def_me",
+            time: "17:00",
+            label: "Merienda",
+            baseProtein: 38,
+            baseKcal: 390,
+            variants: [
+              {
+                title: "Batido Whey con Tortitas de Arroz",
+                foods: [
+                  { id: "v2_me1", name: "Batido proteína whey", baseAmount: 35, unit: "g", supermarket: "lidl", group: "protein" },
+                  { id: "v2_me2", name: "Crema de cacahuete 100%", baseAmount: 15, unit: "g", supermarket: "lidl", group: "fats" }
+                ],
+                steps: ["Tomar batido acompañado de crema de cacahuete."]
+              }
+            ]
+          },
+          {
+            id: "def_ce",
+            time: "21:00",
+            label: "Cena",
+            baseProtein: 55,
+            baseKcal: 610,
+            variants: [
+              {
+                title: "Merluza al Vapor con Patata Cocida",
+                foods: [
+                  { id: "v2_ce1", name: "Merluza / Pescado blanco", baseAmount: 250, unit: "g", supermarket: "lidl", group: "protein" },
+                  { id: "v2_ce2", name: "Patata", baseAmount: 180, unit: "g", supermarket: "hiperdino", group: "carbs" },
+                  { id: "v2_ce3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", supermarket: "hiperdino", group: "fats" },
+                  { id: "v2_ce4", name: "Ensalada bolsa", baseAmount: 150, unit: "g", supermarket: "mercadona", group: "veg" }
+                ],
+                steps: ["Cocer patata y pescado.", "Aliñar con ensalada y aceite."]
+              }
+            ]
+          }
+        ]
+      },
+      mantenimiento_2600: {
+        id: "mantenimiento_2600",
+        name: "Mantenimiento / Recomposición (2600 kcal)",
+        baseKcal: 2600,
+        baseProtein: 180,
+        baseFats: 70,
+        baseCarbs: 300,
+        meals: [
+          {
+            id: "man_d",
+            time: "07:00",
+            label: "Desayuno",
+            baseProtein: 28,
+            baseKcal: 620,
+            variants: [
+              {
+                title: "Tostadas Integrales con Huevo y Aguacate",
+                foods: [
+                  { id: "v4_d1", name: "Pan integral", baseAmount: 120, unit: "g", supermarket: "carrefour", group: "carbs" },
+                  { id: "v4_d2", name: "Huevos L", baseAmount: 2, unit: "uds", supermarket: "mercadona", group: "protein" },
+                  { id: "v4_d3", name: "Aguacate", baseAmount: 70, unit: "g", supermarket: "mercadona", group: "fats" },
+                  { id: "v4_d4", name: "Leche semidescremada", baseAmount: 250, unit: "ml", supermarket: "mercadona", group: "dairy" }
+                ],
+                steps: ["Tostar pan, untar aguacate y poner huevos encima."]
+              }
+            ]
+          },
+          {
+            id: "man_c",
+            time: "14:00",
+            label: "Comida",
+            baseProtein: 48,
+            baseKcal: 650,
+            variants: [
+              {
+                title: "Lomo de Cerdo con Arroz y Verdura",
+                foods: [
+                  { id: "v4_c1", name: "Lomo magro de cerdo", baseAmount: 180, unit: "g", supermarket: "carrefour", group: "protein" },
+                  { id: "v4_c2", name: "Arroz", baseAmount: 100, unit: "g", supermarket: "mercadona", group: "carbs" },
+                  { id: "v4_c3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", supermarket: "hiperdino", group: "fats" },
+                  { id: "v4_c4", name: "Verdura congelada", baseAmount: 150, unit: "g", supermarket: "mercadona", group: "veg" }
+                ],
+                steps: ["Cocinar lomo a la plancha con arroz y verduras."]
+              }
+            ]
+          },
+          {
+            id: "man_me",
+            time: "17:00",
+            label: "Merienda",
+            baseProtein: 35,
+            baseKcal: 500,
+            variants: [
+              {
+                title: "Batido de Avena y Frutos Secos",
+                foods: [
+                  { id: "v4_me1", name: "Batido proteína whey", baseAmount: 25, unit: "g", supermarket: "lidl", group: "protein" },
+                  { id: "v4_me2", name: "Avena", baseAmount: 70, unit: "g", supermarket: "lidl", group: "carbs" },
+                  { id: "v4_me3", name: "Leche semidescremada", baseAmount: 300, unit: "ml", supermarket: "mercadona", group: "dairy" }
+                ],
+                steps: ["Batir todos los ingredientes."]
+              }
+            ]
+          },
+          {
+            id: "man_ce",
+            time: "21:00",
+            label: "Cena",
+            baseProtein: 50,
+            baseKcal: 580,
+            variants: [
+              {
+                title: "Pechuga de Pavo con Patata al Horno",
+                foods: [
+                  { id: "v4_ce1", name: "Pechuga de pavo", baseAmount: 190, unit: "g", supermarket: "mercadona", group: "protein" },
+                  { id: "v4_ce2", name: "Patata", baseAmount: 200, unit: "g", supermarket: "hiperdino", group: "carbs" },
+                  { id: "v4_ce3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", supermarket: "hiperdino", group: "fats" },
+                  { id: "v4_ce4", name: "Ensalada bolsa", baseAmount: 100, unit: "g", supermarket: "mercadona", group: "veg" }
+                ],
+                steps: ["Hornear patata y pavo."]
+              }
+            ]
+          }
+        ]
+      },
+      cetogenica_2400: {
+        id: "cetogenica_2400",
+        name: "Low-Carb / Cetogénica Limpia (2400 kcal)",
+        baseKcal: 2400,
+        baseProtein: 175,
+        baseFats: 165,
+        baseCarbs: 45,
+        meals: [
+          {
+            id: "keto_d",
+            time: "07:00",
+            label: "Desayuno",
+            baseProtein: 32,
+            baseKcal: 590,
+            variants: [
+              {
+                title: "Tortilla de 3 Huevos con Aguacate",
+                foods: [
+                  { id: "v5_d1", name: "Huevos L", baseAmount: 3, unit: "uds", supermarket: "mercadona", group: "protein" },
+                  { id: "v5_d2", name: "Aguacate", baseAmount: 120, unit: "g", supermarket: "mercadona", group: "fats" },
+                  { id: "v5_d3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", supermarket: "hiperdino", group: "fats" }
+                ],
+                steps: ["Preparar tortilla francesa y acompañar de aguacate troceado."]
+              }
+            ]
+          },
+          {
+            id: "keto_c",
+            time: "14:00",
+            label: "Comida",
+            baseProtein: 55,
+            baseKcal: 680,
+            variants: [
+              {
+                title: "Salmón o Carne Grasa con Espinacas",
+                foods: [
+                  { id: "v5_c1", name: "Lomo magro de cerdo", baseAmount: 200, unit: "g", supermarket: "carrefour", group: "protein" },
+                  { id: "v5_c2", name: "Aceite de oliva", baseAmount: 20, unit: "ml", supermarket: "hiperdino", group: "fats" },
+                  { id: "v5_c3", name: "Verdura congelada", baseAmount: 200, unit: "g", supermarket: "mercadona", group: "veg" }
+                ],
+                steps: ["Cocinar carne con abundante aceite de oliva y verduras salteadas."]
+              }
+            ]
+          },
+          {
+            id: "keto_me",
+            time: "17:00",
+            label: "Merienda",
+            baseProtein: 25,
+            baseKcal: 450,
+            variants: [
+              {
+                title: "Frutos Secos y Queso",
+                foods: [
+                  { id: "v5_me1", name: "Almendras", baseAmount: 50, unit: "g", supermarket: "lidl", group: "fats" },
+                  { id: "v5_me2", name: "Yogur griego 0%", baseAmount: 150, unit: "g", supermarket: "carrefour", group: "dairy" }
+                ],
+                steps: ["Consumir como snack proteico-graso."]
+              }
+            ]
+          },
+          {
+            id: "keto_ce",
+            time: "21:00",
+            label: "Cena",
+            baseProtein: 50,
+            baseKcal: 680,
+            variants: [
+              {
+                title: "Pescado Blanco con Aceite y Ensalada",
+                foods: [
+                  { id: "v5_ce1", name: "Merluza / Pescado blanco", baseAmount: 250, unit: "g", supermarket: "lidl", group: "protein" },
+                  { id: "v5_ce2", name: "Aceite de oliva", baseAmount: 25, unit: "ml", supermarket: "hiperdino", group: "fats" },
+                  { id: "v5_ce3", name: "Ensalada bolsa", baseAmount: 150, unit: "g", supermarket: "mercadona", group: "veg" }
+                ],
+                steps: ["Hornear pescado con aceite de oliva y guarnición de ensalada."]
+              }
+            ]
           }
         ]
       }
@@ -338,34 +612,34 @@
        ========================================== */
     function App() {
       const [activeTab, setActiveTab] = React.useState("dieta");
-      const [openMeal, setOpenMeal] = React.useState("d_desayuno");
+      const [openMeal, setOpenMeal] = React.useState("m_desayuno");
       const [openRecipe, setOpenRecipe] = React.useState(null);
       const [substitutionModal, setSubstitutionModal] = React.useState(null);
 
-      // Estado de Cuenta Google
       const [googleUser, setGoogleUser] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_google_user_v63");
+          const saved = localStorage.getItem("dieta_google_user_v64");
           return saved ? JSON.parse(saved) : null;
         } catch { return null; }
       });
 
-      // Perfiles y Mapa de Sustituciones de Alimentos por ID
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v63");
-          return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
+          const saved = localStorage.getItem("dieta_profiles_v64");
+          return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         } catch {
-          return [{ id: "gabriel", name: "Gabriel", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
+          return [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         }
       });
 
       const [activeProfileId, setActiveProfileId] = React.useState("gabriel");
       const currentProfile = profiles.find(p => p.id === activeProfileId) || profiles[0];
-      const baseDiet = DIET_CATALOG.volumen_3000;
+      
+      const currentDietKey = currentProfile.dietKey || "volumen_3000";
+      const activeDiet = DIET_CATALOG[currentDietKey] || DIET_CATALOG.volumen_3000;
 
-      const targetKcal = currentProfile.customKcal || 3000;
-      const scaleFactor = targetKcal / 3000;
+      const targetKcal = currentProfile.customKcal || activeDiet.baseKcal;
+      const scaleFactor = targetKcal / activeDiet.baseKcal;
       const activeVariants = currentProfile.activeVariants || {};
       const foodSubstitutions = currentProfile.foodSubstitutions || {};
 
@@ -388,11 +662,11 @@
       const [syncStatus, setSyncStatus] = React.useState(null);
 
       React.useEffect(() => {
-        try { localStorage.setItem("dieta_profiles_v63", JSON.stringify(profiles)); } catch {}
+        try { localStorage.setItem("dieta_profiles_v64", JSON.stringify(profiles)); } catch {}
       }, [profiles]);
 
       React.useEffect(() => {
-        try { if (googleUser) localStorage.setItem("dieta_google_user_v63", JSON.stringify(googleUser)); } catch {}
+        try { if (googleUser) localStorage.setItem("dieta_google_user_v64", JSON.stringify(googleUser)); } catch {}
       }, [googleUser]);
 
       React.useEffect(() => {
@@ -405,6 +679,22 @@
 
       const toggleCheck = (itemId) => setCheckedItems(prev => ({ ...prev, [itemId]: !prev[itemId] }));
       const resetShoppingList = () => setCheckedItems({});
+
+      const handleDietChange = (newKey) => {
+        const newDiet = DIET_CATALOG[newKey];
+        setProfiles(prev => prev.map(p => {
+          if (p.id === activeProfileId) {
+            return {
+              ...p,
+              dietKey: newKey,
+              customKcal: newDiet.baseKcal,
+              activeVariants: {},
+              foodSubstitutions: {}
+            };
+          }
+          return p;
+        }));
+      };
 
       const setVariantForMeal = (mealId, variantIndex) => {
         setProfiles(prev => prev.map(p => {
@@ -425,7 +715,7 @@
             if (substituteObj) {
               updatedSubs[foodId] = substituteObj;
             } else {
-              delete updatedSubs[foodId]; // Restaurar alimento original
+              delete updatedSubs[foodId];
             }
             return { ...p, foodSubstitutions: updatedSubs };
           }
@@ -437,7 +727,7 @@
       const updateKcal = (delta) => {
         setProfiles(prev => prev.map(p => {
           if (p.id === activeProfileId) {
-            const current = p.customKcal || 3000;
+            const current = p.customKcal || activeDiet.baseKcal;
             return { ...p, customKcal: Math.max(1500, Math.min(5500, current + delta)) };
           }
           return p;
@@ -454,6 +744,7 @@
             name: userInfo.name || userInfo.email,
             email: userInfo.email,
             folderName: folderName,
+            dietKey: "volumen_3000",
             customKcal: 3000,
             activeVariants: {},
             foodSubstitutions: {}
@@ -499,26 +790,29 @@
         }
       };
 
-      // Generador de la lista de la compra considerando variantes y sustituciones isocalóricas
-      const computedShoppingList = React.useMemo(() => {
-        const mapMercadona = {};
-        const mapDespensa = {};
+      // Optimizador de la lista de la compra clasificada por Supermercados en España
+      const computedSupermarketList = React.useMemo(() => {
+        const supermarkets = {
+          mercadona: {},
+          lidl: {},
+          hiperdino: {},
+          carrefour: {}
+        };
 
-        baseDiet.meals.forEach(meal => {
+        activeDiet.meals.forEach(meal => {
           const vIdx = activeVariants[meal.id] || 0;
           const selectedVariant = meal.variants[vIdx] || meal.variants[0];
 
           selectedVariant.foods.forEach(food => {
             let finalName = food.name;
-            let finalCategory = food.category;
+            let finalSupermarket = food.supermarket || "mercadona";
             let amountMultiplier = 1.0;
             let finalUnit = food.unit;
 
-            // Verificar si hay una sustitución activa para este alimento
             if (foodSubstitutions[food.id]) {
               const sub = foodSubstitutions[food.id];
               finalName = sub.name;
-              finalCategory = sub.category;
+              finalSupermarket = sub.supermarket || "mercadona";
               amountMultiplier = sub.factor;
               finalUnit = sub.unit;
             }
@@ -529,7 +823,7 @@
               : Math.round(baseQty * scaleFactor * 7);
 
             const unitLabel = finalUnit === 'uds' ? 'uds' : (finalUnit === 'ml' ? 'ml' : 'g');
-            const targetMap = finalCategory === 'mercadona' ? mapMercadona : mapDespensa;
+            const targetMap = supermarkets[finalSupermarket] || supermarkets.mercadona;
 
             if (targetMap[finalName]) {
               targetMap[finalName].total += scaledAmount;
@@ -539,7 +833,7 @@
           });
         });
 
-        const formatList = (map, catName) => {
+        const formatMap = (map, supKey) => {
           return Object.keys(map).map((name, idx) => {
             const item = map[name];
             let displayQty = item.total;
@@ -554,7 +848,7 @@
             }
 
             return {
-              id: `${catName}_${idx}_${name}`,
+              id: `${supKey}_${idx}_${name}`,
               name,
               qtyText: `${displayQty} ${displayUnit}`
             };
@@ -562,14 +856,16 @@
         };
 
         return {
-          mercadona: formatList(mapMercadona, 'm'),
-          despensa: formatList(mapDespensa, 'd')
+          mercadona: formatMap(supermarkets.mercadona, 'm'),
+          lidl: formatMap(supermarkets.lidl, 'l'),
+          hiperdino: formatMap(supermarkets.hiperdino, 'h'),
+          carrefour: formatMap(supermarkets.carrefour, 'c')
         };
-      }, [baseDiet, activeVariants, foodSubstitutions, scaleFactor]);
+      }, [activeDiet, activeVariants, foodSubstitutions, scaleFactor]);
 
-      const currentProtein = Math.round(baseDiet.baseProtein * scaleFactor);
-      const currentFats = Math.round(baseDiet.baseFats * scaleFactor);
-      const currentCarbs = Math.round(baseDiet.baseCarbs * scaleFactor);
+      const currentProtein = Math.round(activeDiet.baseProtein * scaleFactor);
+      const currentFats = Math.round(activeDiet.baseFats * scaleFactor);
+      const currentCarbs = Math.round(activeDiet.baseCarbs * scaleFactor);
 
       return (
         <div className="min-h-screen bg-[#f8faf8] text-[#111c14] selection:bg-[#0f2a1d] selection:text-white">
@@ -581,7 +877,7 @@
                   <span className="w-2 h-2 rounded-full bg-[#a8e6a0] animate-pulse"></span>
                   {googleUser ? googleUser.name : currentProfile.name} • ({APP_VERSION})
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">Sustitución Isocalórica de Alimentos</h1>
+                <h1 className="text-xl font-bold tracking-tight">Ecosistema Multi-Dieta Pro & Supermercados</h1>
               </div>
               <div>
                 <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/90">
@@ -592,9 +888,24 @@
           </header>
 
           <main className="max-w mx-auto px-4 pt-5 pb-16 fade-in">
-            {/* SECCIÓN 1: MENÚ Y SUSTITUCIÓN */}
+            {/* SECCIÓN 1: MENÚ Y SELECCIÓN DE DIETA */}
             {activeTab === "dieta" && (
               <>
+                <section className="mb-4">
+                  <div className="bg-white p-3.5 rounded-2xl border border-[#e2e6e0] flex items-center justify-between gap-3 shadow-2xs">
+                    <span className="text-xs font-bold text-black/70 uppercase">Tipo de Dieta:</span>
+                    <select 
+                      value={currentDietKey}
+                      onChange={(e) => handleDietChange(e.target.value)}
+                      className="bg-[#f8faf8] border border-[#e2e6e0] text-xs font-bold text-[#0f2a1d] px-3 py-2 rounded-xl focus:outline-none"
+                    >
+                      {Object.keys(DIET_CATALOG).map(k => (
+                        <option key={k} value={k}>{DIET_CATALOG[k].name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </section>
+
                 <section className="mb-5">
                   <div className="flex items-center justify-between mb-2.5">
                     <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Escalador Calórico Diario</h2>
@@ -632,12 +943,12 @@
 
                 <section className="mb-5">
                   <div className="flex items-center justify-between mb-2.5">
-                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Tomas Diarias e Ingredientes</h2>
-                    <span className="text-xs text-black/50">Toca un ingrediente para cambiarlo</span>
+                    <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Menú Diario (Todas las Tomas)</h2>
+                    <span className="text-xs text-black/50">Toca para rotar o sustituir ingredientes</span>
                   </div>
 
                   <div className="flex flex-col gap-3">
-                    {baseDiet.meals.map((meal) => {
+                    {activeDiet.meals.map((meal) => {
                       const isOpen = openMeal === meal.id;
                       const currentVariantIndex = activeVariants[meal.id] || 0;
                       const selectedVariant = meal.variants[currentVariantIndex] || meal.variants[0];
@@ -670,20 +981,22 @@
 
                           {isOpen && (
                             <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-3.5 fade-in">
-                              <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-[#e2e6e0]">
-                                <span className="text-xs font-bold text-black/60 uppercase">Variante:</span>
-                                <div className="flex gap-1.5">
-                                  {meal.variants.map((v, vIdx) => (
-                                    <button
-                                      key={vIdx}
-                                      onClick={() => setVariantForMeal(meal.id, vIdx)}
-                                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${currentVariantIndex === vIdx ? 'bg-[#0f2a1d] text-white' : 'bg-[#f4f7f3] text-black/70 hover:bg-[#eef2ec]'}`}
-                                    >
-                                      Opción {vIdx + 1}
-                                    </button>
-                                  ))}
+                              {meal.variants.length > 1 && (
+                                <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-[#e2e6e0]">
+                                  <span className="text-xs font-bold text-black/60 uppercase">Variante de Plato:</span>
+                                  <div className="flex gap-1.5">
+                                    {meal.variants.map((v, vIdx) => (
+                                      <button
+                                        key={vIdx}
+                                        onClick={() => setVariantForMeal(meal.id, vIdx)}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${currentVariantIndex === vIdx ? 'bg-[#0f2a1d] text-white' : 'bg-[#f4f7f3] text-black/70 hover:bg-[#eef2ec]'}`}
+                                      >
+                                        Opción {vIdx + 1}
+                                      </button>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
+                              )}
 
                               <div className="space-y-2 text-sm">
                                 {selectedVariant.foods.map((food) => {
@@ -723,14 +1036,14 @@
               </>
             )}
 
-            {/* MODAL DE SUSTITUCIÓN INTELIGENTE */}
+            {/* MODAL DE SUSTITUCIÓN */}
             {substitutionModal && (
               <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 fade-in">
                 <div className="bg-white rounded-3xl w-full max-w-md p-5 space-y-4 shadow-xl">
                   <div className="flex items-center justify-between border-b border-[#f0f3ef] pb-3">
                     <div>
                       <h3 className="text-base font-bold text-[#0f2a1d]">Sustituir Alimento</h3>
-                      <p className="text-xs text-black/60">Sustituto equivalente para: <span className="font-bold">{substitutionModal.food.name}</span></p>
+                      <p className="text-xs text-black/60">Equivalente para: <span className="font-bold">{substitutionModal.food.name}</span></p>
                     </div>
                     <button onClick={() => setSubstitutionModal(null)} className="text-sm font-bold text-black/40 hover:text-black">✕</button>
                   </div>
@@ -755,8 +1068,7 @@
                           className={`w-full text-left p-3 rounded-xl border text-xs flex items-center justify-between transition ${isSelected ? 'border-[#0f2a1d] bg-[#0f2a1d] text-white' : 'border-[#e2e6e0] bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
                         >
                           <div>
-                            <div className="font-bold">{sub.name}</div>
-                            <div className="text-[10px] opacity-75">Sustituto equivalente ({sub.category})</div>
+                            <div className="font-bold">{sub.name} <span className="text-[10px] opacity-75">({sub.supermarket})</span></div>
                           </div>
                           <span className="font-mono font-bold text-sm">{calculatedQty}{sub.unit}</span>
                         </button>
@@ -764,10 +1076,7 @@
                     })}
                   </div>
 
-                  <button 
-                    onClick={() => setSubstitutionModal(null)}
-                    className="w-full py-3 rounded-xl bg-[#eef2ec] text-[#0f2a1d] text-xs font-bold"
-                  >
+                  <button onClick={() => setSubstitutionModal(null)} className="w-full py-3 rounded-xl bg-[#eef2ec] text-[#0f2a1d] text-xs font-bold">
                     Cerrar
                   </button>
                 </div>
@@ -803,13 +1112,13 @@
               </section>
             )}
 
-            {/* SECCIÓN 3: COMPRA */}
+            {/* SECCIÓN 3: COMPRA OPTIMIZADA POR SUPERMERCADOS EN ESPAÑA */}
             {activeTab === "compra" && (
               <section className="space-y-4 fade-in">
                 <div className="flex items-center justify-between mb-1">
                   <div>
-                    <h2 className="text-xl font-bold text-[#0f2a1d]">Lista de Compra Automática</h2>
-                    <p className="text-sm text-black/70">Cálculo de 7 días ajustado a tus sustituciones.</p>
+                    <h2 className="text-xl font-bold text-[#0f2a1d]">Optimizador de Supermercados</h2>
+                    <p className="text-sm text-black/70">Lista de compra semanal distribuida por cadena (España).</p>
                   </div>
                   <button onClick={resetShoppingList} className="text-xs font-semibold text-[#0f2a1d] underline bg-[#eef2ec] px-3.5 py-2 rounded-xl">
                     Desmarcar todo
@@ -817,24 +1126,19 @@
                 </div>
 
                 <div className="space-y-4">
+                  {/* MERCADONA */}
                   <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-2xs">
                     <div className="flex items-center gap-2.5 mb-3.5 pb-2 border-b border-[#f0f3ef]">
                       <div className="w-8 h-8 rounded-xl bg-[#e8f5e6] flex items-center justify-center text-xs font-bold text-[#0f2a1d]">M</div>
-                      <h3 className="text-base font-bold">Mercadona</h3>
+                      <h3 className="text-base font-bold">Mercadona (Frescos & Marca Blanca)</h3>
                     </div>
                     <div className="space-y-2">
-                      {computedShoppingList.mercadona.map((item) => {
+                      {computedSupermarketList.mercadona.length === 0 ? <p className="text-xs text-black/40 italic">Sin productos en esta sección.</p> : computedSupermarketList.mercadona.map((item) => {
                         const isChecked = !!checkedItems[item.id];
                         return (
-                          <button
-                            key={item.id}
-                            onClick={() => toggleCheck(item.id)}
-                            className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${isChecked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
-                          >
+                          <button key={item.id} onClick={() => toggleCheck(item.id)} className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${isChecked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}>
                             <div className="flex items-center gap-3">
-                              <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>
-                                {isChecked ? '✓' : ''}
-                              </span>
+                              <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>{isChecked ? '✓' : ''}</span>
                               <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
                             </div>
                             <span className="font-mono text-xs font-bold text-black/90">{item.qtyText}</span>
@@ -844,24 +1148,19 @@
                     </div>
                   </div>
 
+                  {/* LIDL */}
                   <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-2xs">
                     <div className="flex items-center gap-2.5 mb-3.5 pb-2 border-b border-[#f0f3ef]">
-                      <div className="w-8 h-8 rounded-xl bg-[#fff4d6] flex items-center justify-center text-xs font-bold text-[#5a4100]">D</div>
-                      <h3 className="text-base font-bold">Despensa / Otros</h3>
+                      <div className="w-8 h-8 rounded-xl bg-[#fff4d6] flex items-center justify-center text-xs font-bold text-[#5a4100]">L</div>
+                      <h3 className="text-base font-bold">Lidl (Frutos Secos, Lácteos & Proteína)</h3>
                     </div>
                     <div className="space-y-2">
-                      {computedShoppingList.despensa.map((item) => {
+                      {computedSupermarketList.lidl.length === 0 ? <p className="text-xs text-black/40 italic">Sin productos en esta sección.</p> : computedSupermarketList.lidl.map((item) => {
                         const isChecked = !!checkedItems[item.id];
                         return (
-                          <button
-                            key={item.id}
-                            onClick={() => toggleCheck(item.id)}
-                            className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${isChecked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
-                          >
+                          <button key={item.id} onClick={() => toggleCheck(item.id)} className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${isChecked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}>
                             <div className="flex items-center gap-3">
-                              <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>
-                                {isChecked ? '✓' : ''}
-                              </span>
+                              <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>{isChecked ? '✓' : ''}</span>
                               <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
                             </div>
                             <span className="font-mono text-xs font-bold text-black/90">{item.qtyText}</span>
@@ -870,6 +1169,51 @@
                       })}
                     </div>
                   </div>
+
+                  {/* HIPERDINO */}
+                  <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-2xs">
+                    <div className="flex items-center gap-2.5 mb-3.5 pb-2 border-b border-[#f0f3ef]">
+                      <div className="w-8 h-8 rounded-xl bg-[#e3f2fd] flex items-center justify-center text-xs font-bold text-[#0d47a1]">H</div>
+                      <h3 className="text-base font-bold">Hiperdino (Aceites, Frutas & Patatas)</h3>
+                    </div>
+                    <div className="space-y-2">
+                      {computedSupermarketList.hiperdino.length === 0 ? <p className="text-xs text-black/40 italic">Sin productos en esta sección.</p> : computedSupermarketList.hiperdino.map((item) => {
+                        const isChecked = !!checkedItems[item.id];
+                        return (
+                          <button key={item.id} onClick={() => toggleCheck(item.id)} className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${isChecked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}>
+                            <div className="flex items-center gap-3">
+                              <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>{isChecked ? '✓' : ''}</span>
+                              <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
+                            </div>
+                            <span className="font-mono text-xs font-bold text-black/90">{item.qtyText}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* CARREFOUR */}
+                  <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-2xs">
+                    <div className="flex items-center gap-2.5 mb-3.5 pb-2 border-b border-[#f0f3ef]">
+                      <div className="w-8 h-8 rounded-xl bg-[#ffebee] flex items-center justify-center text-xs font-bold text-[#b71c1c]">C</div>
+                      <h3 className="text-base font-bold">Carrefour (Carnes, Panadería & Despensa)</h3>
+                    </div>
+                    <div className="space-y-2">
+                      {computedSupermarketList.carrefour.length === 0 ? <p className="text-xs text-black/40 italic">Sin productos en esta sección.</p> : computedSupermarketList.carrefour.map((item) => {
+                        const isChecked = !!checkedItems[item.id];
+                        return (
+                          <button key={item.id} onClick={() => toggleCheck(item.id)} className={`w-full flex items-center justify-between p-3 rounded-xl transition text-left ${isChecked ? 'bg-[#f4f4f0] opacity-50 line-through' : 'bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}>
+                            <div className="flex items-center gap-3">
+                              <span className={`w-5.5 h-5.5 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>{isChecked ? '✓' : ''}</span>
+                              <span className="text-sm font-semibold text-[#1a2b1f]">{item.name}</span>
+                            </div>
+                            <span className="font-mono text-xs font-bold text-black/90">{item.qtyText}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                 </div>
               </section>
             )}
@@ -883,7 +1227,7 @@
                 </div>
 
                 <div className="space-y-3">
-                  {baseDiet.meals.map((meal, idx) => {
+                  {activeDiet.meals.map((meal, idx) => {
                     const isOpen = openRecipe === idx;
                     const vIdx = activeVariants[meal.id] || 0;
                     const vData = meal.variants[vIdx] || meal.variants[0];
