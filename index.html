@@ -50,7 +50,7 @@
     /* ==========================================
        CAPA 1: DATOS Y CONSTANTES DE NEGOCIO
        ========================================== */
-    const APP_VERSION = "v5.0.1-modular";
+    const APP_VERSION = "v5.1-RECETAS";
 
     const NUTRITIONAL_TARGETS = {
       kcal: 3000,
@@ -164,6 +164,49 @@
       }
     ];
 
+    const RECIPES_DATA = [
+      {
+        title: "Gachas Proteicas de Avena (Desayuno)",
+        target: "Desayuno (07:00)",
+        ingredients: ["130g Avena", "300ml Leche semidescremada", "20g Crema de cacahuete"],
+        steps: [
+          "Calienta la leche en un bol o cazo durante 2 minutos.",
+          "Añade los 130g de copos de avena y remueve bien.",
+          "Integra los 20g de crema de cacahuete en caliente para que se funda y aporte textura cremosa."
+        ]
+      },
+      {
+        title: "Arroz Salteado con Pollo en Crudo (Comida)",
+        target: "Comida (14:00)",
+        ingredients: ["200g Pechuga de pollo", "120g Arroz", "10ml Aceite de oliva", "100g Ensalada"],
+        steps: [
+          "Cocina el arroz previamente por lotes (batch cooking) o ponlo a hervir.",
+          "Corta la pechuga de pollo en dados y dórala en la sartén con los 10ml de aceite de oliva.",
+          "Mezcla el arroz con el pollo caliente y acompaña con la ensalada fresca aliñada al gusto."
+        ]
+      },
+      {
+        title: "Batido Hipercalórico de Avena y Whey (Merienda)",
+        target: "Merienda (17:00)",
+        ingredients: ["30g Proteína Whey", "300ml Leche semidescremada", "80g Avena", "20g Miel"],
+        steps: [
+          "Introduce la avena en un molinillo o batidora de vaso para pulverizarla (opcional para mejor textura).",
+          "Añade la leche semidescremada, el cazo de proteína whey (30g) y los 20g de miel.",
+          "Bate a máxima potencia durante 45 segundos hasta obtener un batido denso y energético."
+        ]
+      },
+      {
+        title: "Sartén de Carne Picada, Patata y Huevos (Cena)",
+        target: "Cena (21:00)",
+        ingredients: ["150g Carne picada 5%", "3 Huevos L", "200g Patata", "80g Pan integral", "10ml AOVE", "100g Verdura"],
+        steps: [
+          "Cuece o haz al microondas los 200g de patata troceada (8-10 min con film).",
+          "Marca la carne picada en la sartén con 10ml de aceite de oliva y añade la verdura congelada.",
+          "Añade los 3 huevos y revuelve junto con la patata para crear un plato potente. Acompaña con el pan integral."
+        ]
+      }
+    ];
+
     /* ==========================================
        CAPA 2: SERVICIOS EXTERNOS (GOOGLE DRIVE)
        ========================================== */
@@ -198,6 +241,7 @@
     function App() {
       const [openMeal, setOpenMeal] = React.useState("desayuno");
       const [activeTab, setActiveTab] = React.useState("dieta");
+      const [openRecipe, setOpenRecipe] = React.useState(null);
       
       const [shoppingList, setShoppingList] = React.useState(() => {
         try {
@@ -467,24 +511,68 @@
             )}
 
             {activeTab === "logistica" && (
-              <section className="space-y-4 fade-in">
+              <section className="space-y-5 fade-in">
                 <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Estrategia de Cocina (Batch Cooking)</h2>
-                  <p className="text-sm text-black/70">Organización estructurada para cocinar en bloques.</p>
+                  <h2 className="text-xl font-bold text-[#0f2a1d]">Centro de Cocina & Recetario</h2>
+                  <p className="text-sm text-black/70">Batch cooking y recetas exactas basadas en tus tomas en crudo.</p>
                 </div>
+
+                {/* ESTRATEGIA DE BATCH COOKING */}
                 <div className="rounded-2xl border border-[#e2e6e0] bg-white p-5 space-y-4 text-sm leading-relaxed shadow-2xs">
+                  <h3 className="text-base font-bold text-[#0f2a1d] pb-2 border-b border-[#f0f3ef]">Estrategia General (Batch Cooking)</h3>
                   <div>
-                    <h3 className="font-bold text-[#0f2a1d] text-base mb-1">1. Cocción de Carbohidratos Base</h3>
-                    <p className="text-black/85 text-sm leading-relaxed">Cocina 480g de arroz en crudo cada 3-4 días. Déjalo enfriar por completo y guárdalo en táperes herméticos en la nevera para tener fuente limpia inmediata.</p>
+                    <h4 className="font-bold text-[#1a2b1f] text-sm mb-1">1. Cocción de Carbohidratos Base</h4>
+                    <p className="text-black/80 text-sm">Cocina 480g de arroz en crudo cada 3-4 días. Déjalo enfriar por completo y guárdalo en táperes herméticos en la nevera.</p>
                   </div>
-                  <div className="border-t border-[#f0f3ef] pt-3.5">
-                    <h3 className="font-bold text-[#0f2a1d] text-base mb-1">2. Preparación de Proteínas</h3>
-                    <p className="text-black/85 text-sm leading-relaxed">Prepara la pechuga de pollo a la plancha para 2 días consecutivos. La carne picada conviene marcarla en la sartén la noche anterior o justo antes del consumo.</p>
+                  <div className="border-t border-[#f0f3ef] pt-3">
+                    <h4 className="font-bold text-[#1a2b1f] text-sm mb-1">2. Preparación de Proteínas</h4>
+                    <p className="text-black/80 text-sm">Prepara la pechuga de pollo a la plancha para 2 días consecutivos. La carne picada conviene marcarla en la sartén justo antes del consumo.</p>
                   </div>
-                  <div className="border-t border-[#f0f3ef] pt-3.5">
-                    <h3 className="font-bold text-[#0f2a1d] text-base mb-1">3. Patatas y Verduras Exprés</h3>
-                    <p className="text-black/85 text-sm leading-relaxed">Lava las patatas y hazlas al microondas envolviéndolas en film (8-10 min) para cenar de manera rápida, o recurre a botes de patata cocida al vacío.</p>
-                  </div>
+                </div>
+
+                {/* RECETARIO INTELIGENTE */}
+                <div className="space-y-3">
+                  <h3 className="text-base font-bold text-[#0f2a1d] pt-2">Recetario Exacto de las Tomas</h3>
+                  {RECIPES_DATA.map((recipe, idx) => {
+                    const isRecipeOpen = openRecipe === idx;
+                    return (
+                      <div key={idx} className={`rounded-2xl border transition-all bg-white overflow-hidden ${isRecipeOpen ? 'border-[#0f2a1d] shadow-sm ring-1 ring-[#0f2a1d]/15' : 'border-[#e2e6e0]'}`}>
+                        <button
+                          onClick={() => setOpenRecipe(isRecipeOpen ? null : idx)}
+                          className="w-full flex items-center justify-between p-4 text-left active:bg-black/5 transition"
+                        >
+                          <div>
+                            <span className="text-[11px] font-bold text-[#0f2a1d] uppercase tracking-wider bg-[#eef2ec] px-2.5 py-1 rounded-md">{recipe.target}</span>
+                            <h4 className="text-base font-bold text-[#1a2b1f] mt-1.5">{recipe.title}</h4>
+                          </div>
+                          <span className={`text-xs text-black/40 transition-transform duration-200 ${isRecipeOpen ? 'rotate-180' : ''}`}>▼</span>
+                        </button>
+
+                        {isRecipeOpen && (
+                          <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-3 fade-in">
+                            <div>
+                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-1.5">Ingredientes de la toma:</h5>
+                              <div className="flex flex-wrap gap-1.5">
+                                {recipe.ingredients.map((ing, i) => (
+                                  <span key={i} className="bg-white border border-[#e2e6e0] text-xs font-semibold text-[#1a2b1f] px-2.5 py-1 rounded-lg">
+                                    {ing}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="border-t border-[#f0f3ef] pt-2.5">
+                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-1.5">Preparación paso a paso:</h5>
+                              <ol className="space-y-2 text-sm text-black/85 pl-4 list-decimal">
+                                {recipe.steps.map((step, sIdx) => (
+                                  <li key={sIdx} className="leading-relaxed">{step}</li>
+                                ))}
+                              </ol>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </section>
             )}
