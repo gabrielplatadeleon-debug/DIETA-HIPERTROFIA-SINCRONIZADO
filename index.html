@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V6.9.1</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V6.9.2</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -47,7 +47,7 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const APP_VERSION = "v6.9.1-FIXED-SYNTAX";
+    const APP_VERSION = "v6.9.2-RESTORED-PLANB";
     const REMOTE_PRICES_URL = "https://raw.githubusercontent.com/datasets/market-prices-es/main/prices.json";
 
     const DEFAULT_BASE_PRICES = {
@@ -561,6 +561,16 @@
           { name: "Proteína limpia", detail: "2 latas de atún/caballa al natural o 200g de pechuga de pavo/pollo/tofu en lonchas." },
           { name: "Grasas y Verdura", detail: "Bolsa de ensalada lista para comer + 1 cucharada sopera de aceite de oliva virgen extra." }
         ]
+      },
+      {
+        id: "planb_desayuno",
+        title: "Desayuno / Merienda On-The-Go",
+        desc: "Para consumir en 3 minutos antes de salir de casa o entrenar.",
+        options: [
+          { name: "Base proteica", detail: "1 cazo (30g) de proteína vegetal/whey disuelto en 300ml de leche o bebida de soja." },
+          { name: "Carbohidrato rápido", detail: "2 plátanos maduros o 50g de crema de arroz instantánea." },
+          { name: "Grasas saludables", detail: "1 puñado (25g) de almendras o nueces crudas." }
+        ]
       }
     ];
 
@@ -710,21 +720,21 @@
 
       const [pricesDatabase, setPricesDatabase] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_auto_prices_v691");
+          const saved = localStorage.getItem("dieta_auto_prices_v692");
           return saved ? JSON.parse(saved) : DEFAULT_BASE_PRICES;
         } catch { return DEFAULT_BASE_PRICES; }
       });
 
       const [googleUser, setGoogleUser] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_google_user_v691");
+          const saved = localStorage.getItem("dieta_google_user_v692");
           return saved ? JSON.parse(saved) : null;
         } catch { return null; }
       });
 
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v691");
+          const saved = localStorage.getItem("dieta_profiles_v692");
           return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         } catch {
           return [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
@@ -776,7 +786,7 @@
               const remoteData = await res.json();
               if (remoteData && typeof remoteData === 'object') {
                 setPricesDatabase(remoteData);
-                localStorage.setItem("dieta_auto_prices_v691", JSON.stringify(remoteData));
+                localStorage.setItem("dieta_auto_prices_v692", JSON.stringify(remoteData));
                 setSyncPricesStatus("Precios de mercado al día ✓");
                 return;
               }
@@ -791,11 +801,11 @@
       }, []);
 
       React.useEffect(() => {
-        try { localStorage.setItem("dieta_profiles_v691", JSON.stringify(profiles)); } catch {}
+        try { localStorage.setItem("dieta_profiles_v692", JSON.stringify(profiles)); } catch {}
       }, [profiles]);
 
       React.useEffect(() => {
-        try { if (googleUser) localStorage.setItem("dieta_google_user_v691", JSON.stringify(googleUser)); } catch {}
+        try { if (googleUser) localStorage.setItem("dieta_google_user_v692", JSON.stringify(googleUser)); } catch {}
       }, [googleUser]);
 
       React.useEffect(() => {
