@@ -50,6 +50,8 @@
     /* ==========================================
        CAPA 1: DATOS Y CONSTANTES DE NEGOCIO
        ========================================== */
+    const APP_VERSION = "v5.0.1-modular";
+
     const NUTRITIONAL_TARGETS = {
       kcal: 3000,
       protein: "198g",
@@ -186,7 +188,6 @@
       syncData(logs) {
         const token = localStorage.getItem("google_access_token");
         if (!token) return false;
-        // Lógica de sincronización lista para integración avanzada
         return true;
       }
     };
@@ -278,7 +279,7 @@
               <div>
                 <div className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-[#a8e6a0]">
                   <span className="w-2 h-2 rounded-full bg-[#a8e6a0] animate-pulse"></span>
-                  Dieta Base En Crudo
+                  Dieta Base En Crudo ({APP_VERSION})
                 </div>
                 <h1 className="text-xl font-bold tracking-tight">Dieta Hipertrofia 3000 kcal</h1>
               </div>
