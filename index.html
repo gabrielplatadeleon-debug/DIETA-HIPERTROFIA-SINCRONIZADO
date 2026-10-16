@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V7.2 Premium</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V7.3 UI Fix</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -49,7 +49,7 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const APP_VERSION = "v7.2-UI-PREMIUM";
+    const APP_VERSION = "v7.3-UI-FIX";
     const REMOTE_PRICES_URL = "https://raw.githubusercontent.com/datasets/market-prices-es/main/prices.json";
 
     const DEFAULT_BASE_PRICES = {
@@ -732,21 +732,21 @@
 
       const [pricesDatabase, setPricesDatabase] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_auto_prices_v72");
+          const saved = localStorage.getItem("dieta_auto_prices_v73");
           return saved ? JSON.parse(saved) : DEFAULT_BASE_PRICES;
         } catch { return DEFAULT_BASE_PRICES; }
       });
 
       const [googleUser, setGoogleUser] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_google_user_v72");
+          const saved = localStorage.getItem("dieta_google_user_v73");
           return saved ? JSON.parse(saved) : null;
         } catch { return null; }
       });
 
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v72");
+          const saved = localStorage.getItem("dieta_profiles_v73");
           return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         } catch {
           return [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
@@ -798,7 +798,7 @@
               const remoteData = await res.json();
               if (remoteData && typeof remoteData === 'object') {
                 setPricesDatabase(remoteData);
-                localStorage.setItem("dieta_auto_prices_v72", JSON.stringify(remoteData));
+                localStorage.setItem("dieta_auto_prices_v73", JSON.stringify(remoteData));
                 setSyncPricesStatus("Precios de mercado al día ✓");
                 return;
               }
@@ -813,15 +813,15 @@
       }, []);
 
       React.useEffect(() => {
-        try { localStorage.setItem("dieta_profiles_v72", JSON.stringify(profiles)); } catch {}
+        try { localStorage.setItem("dieta_profiles_v73", JSON.stringify(profiles)); } catch {}
       }, [profiles]);
 
       React.useEffect(() => {
         try { 
           if (googleUser) {
-            localStorage.setItem("dieta_google_user_v72", JSON.stringify(googleUser));
+            localStorage.setItem("dieta_google_user_v73", JSON.stringify(googleUser));
           } else {
-            localStorage.removeItem("dieta_google_user_v72");
+            localStorage.removeItem("dieta_google_user_v73");
           }
         } catch {}
       }, [googleUser]);
@@ -1104,12 +1104,12 @@
             {activeTab === "dieta" && (
               <>
                 <section>
-                  <div className="bg-white p-4.5 rounded-3xl border border-[#e2e6e0] shadow-card flex items-center justify-between gap-3">
+                  <div className="bg-white p-4.5 rounded-3xl border border-[#e2e6e0] shadow-card flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                     <span className="text-xs font-bold text-black/60 uppercase tracking-wide">Plan Nutricional:</span>
                     <select 
                       value={currentDietKey}
                       onChange={(e) => handleDietChange(e.target.value)}
-                      className="bg-[#f8faf8] border border-[#e2e6e0] text-sm font-bold text-[#0b1e14] px-4 py-2.5 rounded-2xl focus:outline-none focus:border-[#0b1e14] shadow-2xs"
+                      className="bg-[#f8faf8] border border-[#e2e6e0] text-sm font-bold text-[#0b1e14] px-4 py-3 rounded-2xl focus:outline-none focus:border-[#0b1e14] shadow-2xs w-full sm:w-auto"
                     >
                       {Object.keys(DIET_CATALOG).map(k => (
                         <option key={k} value={k}>{DIET_CATALOG[k].name}</option>
@@ -1140,7 +1140,6 @@
                       {tdeeAdvice}
                     </div>
 
-                    {/* Barras de macronutrientes visuales con diseño Apple Health */}
                     <div className="grid grid-cols-3 gap-3 pt-1">
                       <div className="rounded-2xl bg-[#f8faf8] p-3.5 text-center border border-[#e2e6e0] space-y-1">
                         <span className="block text-[11px] font-bold text-black/50 uppercase">Proteína</span>
@@ -1516,13 +1515,13 @@
                       <div key={idx} className={`rounded-3xl border transition-all bg-white overflow-hidden shadow-card ${isOpen ? 'border-[#0b1e14] ring-2 ring-[#0b1e14]/10' : 'border-[#e2e6e0]'}`}>
                         <button
                           onClick={() => setOpenRecipe(isOpen ? null : idx)}
-                          className="w-full flex items-center justify-between p-4.5 text-left active:bg-black/5 transition"
+                          className="w-full flex items-center justify-between p-5 text-left active:bg-black/5 transition"
                         >
-                          <div>
-                            <span className="text-xs font-bold text-[#0b1e14] uppercase tracking-wider bg-[#eef4f0] px-3 py-1 rounded-lg">{meal.label} ({meal.time})</span>
-                            <h4 className="text-base font-bold text-[#1a2b1f] mt-2">{vData.title}</h4>
+                          <div className="space-y-1.5">
+                            <span className="inline-block text-xs font-bold text-[#0b1e14] uppercase tracking-wider bg-[#eef4f0] px-3 py-1 rounded-lg">{meal.label} ({meal.time})</span>
+                            <h4 className="text-base font-bold text-[#1a2b1f] block">{vData.title}</h4>
                           </div>
-                          <span className={`w-7 h-7 rounded-full bg-[#f4f6f4] flex items-center justify-center text-xs text-black/60 transition-transform duration-200 ${isOpen ? 'rotate-180 bg-[#0b1e14] text-white' : ''}`}>▼</span>
+                          <span className={`w-7 h-7 rounded-full bg-[#f4f6f4] flex items-center justify-center text-xs text-black/60 transition-transform duration-200 shrink-0 ml-3 ${isOpen ? 'rotate-180 bg-[#0b1e14] text-white' : ''}`}>▼</span>
                         </button>
 
                         {isOpen && (
