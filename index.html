@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V7.3 UI Fix</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V7.4 Chef Pro</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -49,7 +49,7 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const APP_VERSION = "v7.3-UI-FIX";
+    const APP_VERSION = "v7.4-CHEF-PRO";
     const REMOTE_PRICES_URL = "https://raw.githubusercontent.com/datasets/market-prices-es/main/prices.json";
 
     const DEFAULT_BASE_PRICES = {
@@ -147,13 +147,30 @@
             baseKcal: 739,
             variants: [
               {
-                title: "Gachas Clásicas de Avena",
+                title: "Gachas Clásicas de Avena (Porridge)",
                 foods: [
                   { id: "v3_d1", name: "Avena", baseAmount: 130, unit: "g", group: "carbs" },
                   { id: "v3_d2", name: "Leche semidescremada", baseAmount: 300, unit: "ml", group: "dairy" },
                   { id: "v3_d3", name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", group: "fats" }
                 ],
-                steps: ["Calentar leche 2 min.", "Añadir avena y remover.", "Integrar crema de cacahuete."]
+                steps: [
+                  "Calentar la leche en un bol apto para microondas durante 2 minutos.",
+                  "Añadir la avena en copos y remover enérgicamente para evitar grumos.",
+                  "Integrar la crema de cacahuete templada por encima hasta que se funda y disfrutar."
+                ]
+              },
+              {
+                title: "Pancakes Proteicos de Avena & Cacao",
+                foods: [
+                  { id: "v3_d1", name: "Avena", baseAmount: 130, unit: "g", group: "carbs" },
+                  { id: "v3_d2", name: "Leche semidescremada", baseAmount: 300, unit: "ml", group: "dairy" },
+                  { id: "v3_d3", name: "Crema de cacahuete 100%", baseAmount: 20, unit: "g", group: "fats" }
+                ],
+                steps: [
+                  "Batir en vaso americano la avena, la leche y un toque de edulcorante o canela.",
+                  "Verter porciones en una sartén antiadherente caliente previamente engrasada.",
+                  "Dorar 2 minutos por lado y salsear con la crema de cacahuete diluida con unas gotas de agua templada."
+                ]
               }
             ]
           },
@@ -165,14 +182,32 @@
             baseKcal: 728,
             variants: [
               {
-                title: "Arroz con Pollo y Ensalada",
+                title: "Arroz Salteado con Pollo al Wok y Ensalada",
                 foods: [
                   { id: "v3_c1", name: "Pechuga de pollo", baseAmount: 200, unit: "g", group: "protein" },
                   { id: "v3_c2", name: "Arroz", baseAmount: 120, unit: "g", group: "carbs" },
                   { id: "v3_c3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" },
                   { id: "v3_c4", name: "Ensalada bolsa", baseAmount: 100, unit: "g", group: "veg" }
                 ],
-                steps: ["Cocinar arroz y pollo a la plancha.", "Mezclar con aceite y ensalada."]
+                steps: [
+                  "Hervir el arroz en abundante agua con sal hasta que esté en su punto.",
+                  "Cortar la pechuga de pollo en dados y saltear en una sartén amplia con el aceite de oliva a fuego vivo.",
+                  "Mezclar el arroz con el pollo especiado y servir acompañado de la ensalada fresca crujiente."
+                ]
+              },
+              {
+                title: "Bowl Estilo Poke de Pollo, Arroz y Aguacate",
+                foods: [
+                  { id: "v3_c1", name: "Pechuga de pollo", baseAmount: 200, unit: "g", group: "protein" },
+                  { id: "v3_c2", name: "Arroz", baseAmount: 120, unit: "g", group: "carbs" },
+                  { id: "v3_c3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" },
+                  { id: "v3_c4", name: "Ensalada bolsa", baseAmount: 100, unit: "g", group: "veg" }
+                ],
+                steps: [
+                  "Disponer una base de arroz cocido frío en un bol hondo.",
+                  "Colocar encima tiras de pollo a la plancha marinadas con ajo y pimentón.",
+                  "Añadir la ensalada y aliñar con el aceite de oliva virgen extra y un toque de salsa de soja."
+                ]
               }
             ]
           },
@@ -184,14 +219,18 @@
             baseKcal: 560,
             variants: [
               {
-                title: "Batido Energético de Avena y Whey",
+                title: "Batido Cremoso Energético Post-Entreno",
                 foods: [
                   { id: "v3_me1", name: "Batido proteína whey", baseAmount: 30, unit: "g", group: "protein" },
                   { id: "v3_me2", name: "Leche semidescremada", baseAmount: 300, unit: "ml", group: "dairy" },
                   { id: "v3_me3", name: "Avena", baseAmount: 80, unit: "g", group: "carbs" },
                   { id: "v3_me4", name: "Miel", baseAmount: 20, unit: "g", group: "carbs" }
                 ],
-                steps: ["Pulverizar avena en batidora.", "Añadir leche, whey y miel. Batir."]
+                steps: [
+                  "Pulverizar la avena en seco dentro de la batidora durante 30 segundos para obtener harina fina.",
+                  "Añadir la leche fría, el cazo de proteína whey y la cucharada de miel.",
+                  "Batir a máxima potencia durante 1 minuto hasta conseguir una textura de batido de heladería."
+                ]
               }
             ]
           },
@@ -203,7 +242,7 @@
             baseKcal: 659,
             variants: [
               {
-                title: "Sartén de Carne, Patata y Huevos",
+                title: "Sartén Rústica de Carne, Patata y Huevos",
                 foods: [
                   { id: "v3_ce1", name: "Carne picada vacuno 5%", baseAmount: 150, unit: "g", group: "protein" },
                   { id: "v3_ce2", name: "Huevos L", baseAmount: 3, unit: "uds", group: "protein" },
@@ -211,7 +250,11 @@
                   { id: "v3_ce4", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" },
                   { id: "v3_ce5", name: "Verdura congelada", baseAmount: 100, unit: "g", group: "veg" }
                 ],
-                steps: ["Cocinar patata al microondas.", "Marcar carne con verdura.", "Añadir huevos y patata."]
+                steps: [
+                  "Cortar la patata en dados pequeños y cocinar en microondas tapada 6 minutos.",
+                  "Marcar la carne picada con las verduras congeladas y la cucharada de aceite en una sartén.",
+                  "Agregar las patatas y cascar los huevos encima, removiendo hasta cuajar al gusto."
+                ]
               }
             ]
           }
@@ -233,13 +276,17 @@
             baseKcal: 420,
             variants: [
               {
-                title: "Porridge Ligero de Avena",
+                title: "Porridge Cremoso con Yogur Griego 0%",
                 foods: [
                   { id: "v2_d1", name: "Avena", baseAmount: 60, unit: "g", group: "carbs" },
                   { id: "v2_d2", name: "Leche semidescremada", baseAmount: 250, unit: "ml", group: "dairy" },
                   { id: "v2_d3", name: "Yogur griego 0%", baseAmount: 120, unit: "g", group: "protein" }
                 ],
-                steps: ["Mezclar avena con leche en caliente.", "Añadir yogur griego al servir."]
+                steps: [
+                  "Cocinar la avena junto con la leche a fuego medio durante 3 minutos hasta espesar.",
+                  "Retirar del fuego y dejar templar ligeramente.",
+                  "Incorporar el yogur griego 0% batiendo enérgicamente para lograr una textura sedosa tipo mousse."
+                ]
               }
             ]
           },
@@ -251,14 +298,18 @@
             baseKcal: 580,
             variants: [
               {
-                title: "Pollo con Arroz Basmati y Brócoli",
+                title: "Pollo Aromático con Arroz Basmati y Brócoli al Vapor",
                 foods: [
                   { id: "v2_c1", name: "Pechuga de pollo", baseAmount: 200, unit: "g", group: "protein" },
                   { id: "v2_c2", name: "Arroz", baseAmount: 60, unit: "g", group: "carbs" },
                   { id: "v2_c3", name: "Aceite de oliva", baseAmount: 8, unit: "ml", group: "fats" },
                   { id: "v2_c4", name: "Verdura congelada", baseAmount: 200, unit: "g", group: "veg" }
                 ],
-                steps: ["Hervir arroz basmati.", "Hacer pollo a la plancha con brócoli al vapor."]
+                steps: [
+                  "Hervir el arroz basmati con un toque de jengibre o laurel.",
+                  "Hacer la pechuga a la plancha dorándola con hierbas provenzales.",
+                  "Cocinar el brócoli/verdura congelada al vapor o microondas y aliñar todo con el aceite de oliva."
+                ]
               }
             ]
           },
@@ -270,12 +321,15 @@
             baseKcal: 390,
             variants: [
               {
-                title: "Batido Whey con Crema de Cacahuete",
+                title: "Batido Whey con Topping de Crema de Cacahuete",
                 foods: [
                   { id: "v2_me1", name: "Batido proteína whey", baseAmount: 35, unit: "g", group: "protein" },
                   { id: "v2_me2", name: "Crema de cacahuete 100%", baseAmount: 15, unit: "g", group: "fats" }
                 ],
-                steps: ["Tomar batido acompañado de crema de cacahuete."]
+                steps: [
+                  "Disolver la proteína whey en agua fría en el shaker.",
+                  "Tomar acompañada de la crema de cacahuete tomada directamente con una cuchara o diluida."
+                ]
               }
             ]
           },
@@ -287,14 +341,18 @@
             baseKcal: 610,
             variants: [
               {
-                title: "Merluza al Vapor con Patata Cocida",
+                title: "Merluza al Horno con Patata Panadera Ligera",
                 foods: [
                   { id: "v2_ce1", name: "Merluza / Pescado blanco", baseAmount: 250, unit: "g", group: "protein" },
                   { id: "v2_ce2", name: "Patata", baseAmount: 180, unit: "g", group: "carbs" },
                   { id: "v2_ce3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" },
                   { id: "v2_ce4", name: "Ensalada bolsa", baseAmount: 150, unit: "g", group: "veg" }
                 ],
-                steps: ["Cocer patata y pescado.", "Aliñar con ensalada y aceite."]
+                steps: [
+                  "Cortar la patata en rodajas finas y hornear con un chorrito de agua y aceite durante 15 minutos.",
+                  "Colocar los lomos de merluza encima, salpimentar y hornear 8 minutos más.",
+                  "Servir caliente con una guarnición de ensalada fresca."
+                ]
               }
             ]
           }
@@ -316,14 +374,18 @@
             baseKcal: 620,
             variants: [
               {
-                title: "Tostadas Integrales con Huevo y Aguacate",
+                title: "Tostadas Gourmet Integrales con Huevo Poché y Aguacate",
                 foods: [
                   { id: "v4_d1", name: "Pan integral", baseAmount: 120, unit: "g", group: "carbs" },
                   { id: "v4_d2", name: "Huevos L", baseAmount: 2, unit: "uds", group: "protein" },
                   { id: "v4_d3", name: "Aguacate", baseAmount: 70, unit: "g", group: "fats" },
                   { id: "v4_d4", name: "Leche semidescremada", baseAmount: 250, unit: "ml", group: "dairy" }
                 ],
-                steps: ["Tostar pan, untar aguacate y poner huevos encima."]
+                steps: [
+                  "Tostar las rebanadas de pan integral en tostadora.",
+                  "Macerar el aguacate con sal, limón y untarlo generosamente sobre el pan.",
+                  "Colocar los huevos cocinados o a la plancha encima y acompañar con un vaso de leche."
+                ]
               }
             ]
           },
@@ -335,14 +397,18 @@
             baseKcal: 650,
             variants: [
               {
-                title: "Lomo de Cerdo con Arroz y Verdura",
+                title: "Lomo de Cerdo Jugoso con Arroz Salteado y Verduras",
                 foods: [
                   { id: "v4_c1", name: "Lomo magro de cerdo", baseAmount: 180, unit: "g", group: "protein" },
                   { id: "v4_c2", name: "Arroz", baseAmount: 100, unit: "g", group: "carbs" },
                   { id: "v4_c3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" },
                   { id: "v4_c4", name: "Verdura congelada", baseAmount: 150, unit: "g", group: "veg" }
                 ],
-                steps: ["Cocinar lomo a la plancha con arroz y verduras."]
+                steps: [
+                  "Hervir el arroz blanco o integral.",
+                  "Cocinar el lomo de cerdo a la plancha con la mitad del aceite de oliva para mantener su jugosidad.",
+                  "Saltear las verduras en la sartén y mezclar todo con un toque de salsa de soja o especias."
+                ]
               }
             ]
           },
@@ -354,13 +420,15 @@
             baseKcal: 500,
             variants: [
               {
-                title: "Batido de Avena y Frutos Secos",
+                title: "Batido Nutricional con Avena y Leche",
                 foods: [
                   { id: "v4_me1", name: "Batido proteína whey", baseAmount: 25, unit: "g", group: "protein" },
                   { id: "v4_me2", name: "Avena", baseAmount: 70, unit: "g", group: "carbs" },
                   { id: "v4_me3", name: "Leche semidescremada", baseAmount: 300, unit: "ml", group: "dairy" }
                 ],
-                steps: ["Batir todos los ingredientes."]
+                steps: [
+                  "Licuar todos los ingredientes juntos hasta conseguir una textura fina y homogénea."
+                ]
               }
             ]
           },
@@ -372,14 +440,18 @@
             baseKcal: 580,
             variants: [
               {
-                title: "Pechuga de Pavo con Patata al Horno",
+                title: "Pechuga de Pavo Asada con Bastones de Patata al Horno",
                 foods: [
                   { id: "v4_ce1", name: "Pechuga de pavo", baseAmount: 190, unit: "g", group: "protein" },
                   { id: "v4_ce2", name: "Patata", baseAmount: 200, unit: "g", group: "carbs" },
                   { id: "v4_ce3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" },
                   { id: "v4_ce4", name: "Ensalada bolsa", baseAmount: 100, unit: "g", group: "veg" }
                 ],
-                steps: ["Hornear patata y pavo."]
+                steps: [
+                  "Cortar la patata en bastones, añadir pimentón, sal y aceite, y hornear a 200°C.",
+                  "Marcar la pechuga de pavo en la sartén con unas gotas de aceite.",
+                  "Servir acompañado de una ensalada fresca."
+                ]
               }
             ]
           }
@@ -401,13 +473,16 @@
             baseKcal: 590,
             variants: [
               {
-                title: "Tortilla de 3 Huevos con Aguacate",
+                title: "Tortilla Keto de 3 Huevos con Aguacate y AOVE",
                 foods: [
                   { id: "v5_d1", name: "Huevos L", baseAmount: 3, unit: "uds", group: "protein" },
                   { id: "v5_d2", name: "Aguacate", baseAmount: 120, unit: "g", group: "fats" },
                   { id: "v5_d3", name: "Aceite de oliva", baseAmount: 10, unit: "ml", group: "fats" }
                 ],
-                steps: ["Preparar tortilla francesa y acompañar de aguacate troceado."]
+                steps: [
+                  "Batir los huevos y cuajar una tortilla jugosa en la sartén con aceite de oliva.",
+                  "Servir acompañada de medio aguacate en láminas aliñado con sal y aceite."
+                ]
               }
             ]
           },
@@ -419,13 +494,16 @@
             baseKcal: 680,
             variants: [
               {
-                title: "Salmón o Carne Grasa con Espinacas",
+                title: "Salteado Keto de Carne con Espinacas y Aceite de Oliva",
                 foods: [
                   { id: "v5_c1", name: "Lomo magro de cerdo", baseAmount: 200, unit: "g", group: "protein" },
                   { id: "v5_c2", name: "Aceite de oliva", baseAmount: 20, unit: "ml", group: "fats" },
                   { id: "v5_c3", name: "Verdura congelada", baseAmount: 200, unit: "g", group: "veg" }
                 ],
-                steps: ["Cocinar carne con abundante aceite de oliva y verduras salteadas."]
+                steps: [
+                  "Dorar el lomo en cubos con abundante aceite de oliva.",
+                  "Añadir las verduras (espinacas o mezcla keto) y saltear hasta integrar los jugos."
+                ]
               }
             ]
           },
@@ -437,12 +515,14 @@
             baseKcal: 450,
             variants: [
               {
-                title: "Frutos Secos y Queso",
+                title: "Mix de Almendras y Yogur Griego Cremoso",
                 foods: [
                   { id: "v5_me1", name: "Almendras", baseAmount: 50, unit: "g", group: "fats" },
                   { id: "v5_me2", name: "Yogur griego 0%", baseAmount: 150, unit: "g", group: "dairy" }
                 ],
-                steps: ["Consumir como snack proteico-graso."]
+                steps: [
+                  "Mezclar el yogur griego con las almendras tostadas troceadas."
+                ]
               }
             ]
           },
@@ -454,13 +534,16 @@
             baseKcal: 680,
             variants: [
               {
-                title: "Pescado Blanco con Aceite y Ensalada",
+                title: "Pescado Blanco al Horno Bañado en Aceite y Ensalada Verde",
                 foods: [
                   { id: "v5_ce1", name: "Merluza / Pescado blanco", baseAmount: 250, unit: "g", group: "protein" },
                   { id: "v5_ce2", name: "Aceite de oliva", baseAmount: 25, unit: "ml", group: "fats" },
                   { id: "v5_ce3", name: "Ensalada bolsa", baseAmount: 150, unit: "g", group: "veg" }
                 ],
-                steps: ["Hornear pescado con aceite de oliva y guarnición de ensalada."]
+                steps: [
+                  "Hornear el pescado bañado con el aceite de oliva virgen extra y especias.",
+                  "Acompañar con ensalada fresca verde."
+                ]
               }
             ]
           }
@@ -482,14 +565,17 @@
             baseKcal: 580,
             variants: [
               {
-                title: "Porridge Proteico con Soja y Crema de Cacahuete",
+                title: "Porridge Vegano Cremoso con Soja y Crema de Cacahuete",
                 foods: [
                   { id: "v6_d1", name: "Avena", baseAmount: 100, unit: "g", group: "carbs" },
                   { id: "v6_d2", name: "Bebida de soja", baseAmount: 300, unit: "ml", group: "dairy" },
                   { id: "v6_d3", name: "Crema de cacahuete 100%", baseAmount: 25, unit: "g", group: "fats" },
                   { id: "v6_d4", name: "Yogur de soja natural", baseAmount: 120, unit: "g", group: "protein" }
                 ],
-                steps: ["Cocer la avena en la bebida de soja.", "Mezclar el yogur vegetal y la crema de cacahuete al servir."]
+                steps: [
+                  "Cocer la avena en la bebida de soja hasta espesar.",
+                  "Añadir el yogur de soja y la crema de cacahuete fuera del fuego para una textura cremosa."
+                ]
               }
             ]
           },
@@ -501,14 +587,17 @@
             baseKcal: 680,
             variants: [
               {
-                title: "Bowl de Tofu Firme, Arroz y Aguacate",
+                title: "Bowl Plant-Based de Tofu Marinado, Arroz y Aguacate",
                 foods: [
                   { id: "v6_c1", name: "Tofu firme", baseAmount: 220, unit: "g", group: "protein" },
                   { id: "v6_c2", name: "Arroz", baseAmount: 110, unit: "g", group: "carbs" },
                   { id: "v6_c3", name: "Aguacate", baseAmount: 80, unit: "g", group: "fats" },
                   { id: "v6_c4", name: "Verdura congelada", baseAmount: 150, unit: "g", group: "veg" }
                 ],
-                steps: ["Marcar el tofu a la plancha con especias.", "Servir sobre base de arroz, verdura salteada y aguacate."]
+                steps: [
+                  "Marcar el tofu en cubos con salsa de soja y especias en la sartén.",
+                  "Montar el bol con base de arroz, verduras salteadas y aguacate fresco."
+                ]
               }
             ]
           },
@@ -520,13 +609,15 @@
             baseKcal: 480,
             variants: [
               {
-                title: "Batido de Bebida de Soja y Plátano",
+                title: "Batido Energético de Soja y Plátano con Almendras",
                 foods: [
                   { id: "v6_me1", name: "Bebida de soja", baseAmount: 350, unit: "ml", group: "dairy" },
                   { id: "v6_me2", name: "Plátano", baseAmount: 130, unit: "g", group: "carbs" },
                   { id: "v6_me3", name: "Almendras", baseAmount: 30, unit: "g", group: "fats" }
                 ],
-                steps: ["Triturar la bebida vegetal con el plátano maduro.", "Acompañar con almendras crudas."]
+                steps: [
+                  "Licuar la bebida de soja con el plátano maduro y acompañar con almendras."
+                ]
               }
             ]
           },
@@ -538,14 +629,17 @@
             baseKcal: 620,
             variants: [
               {
-                title: "Salteado de Heura / Tempeh con Patata",
+                title: "Salteado de Heura y Patata al Horno con Ensalada",
                 foods: [
                   { id: "v6_ce1", name: "Heura / Proteína vegetal", baseAmount: 200, unit: "g", group: "protein" },
                   { id: "v6_ce2", name: "Patata", baseAmount: 220, unit: "g", group: "carbs" },
                   { id: "v6_ce3", name: "Aceite de oliva", baseAmount: 12, unit: "ml", group: "fats" },
                   { id: "v6_ce4", name: "Ensalada bolsa", baseAmount: 120, unit: "g", group: "veg" }
                 ],
-                steps: ["Cocer la patata al microondas.", "Saltear la proteína vegetal con aceite y servir con ensalada."]
+                steps: [
+                  "Hornear la patata y saltear la heura con aceite de oliva.",
+                  "Servir junto con la ensalada fresca."
+                ]
               }
             ]
           }
@@ -732,21 +826,21 @@
 
       const [pricesDatabase, setPricesDatabase] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_auto_prices_v73");
+          const saved = localStorage.getItem("dieta_auto_prices_v74");
           return saved ? JSON.parse(saved) : DEFAULT_BASE_PRICES;
         } catch { return DEFAULT_BASE_PRICES; }
       });
 
       const [googleUser, setGoogleUser] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_google_user_v73");
+          const saved = localStorage.getItem("dieta_google_user_v74");
           return saved ? JSON.parse(saved) : null;
         } catch { return null; }
       });
 
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v73");
+          const saved = localStorage.getItem("dieta_profiles_v74");
           return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         } catch {
           return [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
@@ -798,7 +892,7 @@
               const remoteData = await res.json();
               if (remoteData && typeof remoteData === 'object') {
                 setPricesDatabase(remoteData);
-                localStorage.setItem("dieta_auto_prices_v73", JSON.stringify(remoteData));
+                localStorage.setItem("dieta_auto_prices_v74", JSON.stringify(remoteData));
                 setSyncPricesStatus("Precios de mercado al día ✓");
                 return;
               }
@@ -813,15 +907,15 @@
       }, []);
 
       React.useEffect(() => {
-        try { localStorage.setItem("dieta_profiles_v73", JSON.stringify(profiles)); } catch {}
+        try { localStorage.setItem("dieta_profiles_v74", JSON.stringify(profiles)); } catch {}
       }, [profiles]);
 
       React.useEffect(() => {
         try { 
           if (googleUser) {
-            localStorage.setItem("dieta_google_user_v73", JSON.stringify(googleUser));
+            localStorage.setItem("dieta_google_user_v74", JSON.stringify(googleUser));
           } else {
-            localStorage.removeItem("dieta_google_user_v73");
+            localStorage.removeItem("dieta_google_user_v74");
           }
         } catch {}
       }, [googleUser]);
@@ -1104,12 +1198,12 @@
             {activeTab === "dieta" && (
               <>
                 <section>
-                  <div className="bg-white p-4.5 rounded-3xl border border-[#e2e6e0] shadow-card flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                    <span className="text-xs font-bold text-black/60 uppercase tracking-wide">Plan Nutricional:</span>
+                  <div className="bg-white p-5 rounded-3xl border border-[#e2e6e0] shadow-card space-y-2">
+                    <label className="block text-xs font-bold text-black/60 uppercase tracking-wide">Plan Nutricional:</label>
                     <select 
                       value={currentDietKey}
                       onChange={(e) => handleDietChange(e.target.value)}
-                      className="bg-[#f8faf8] border border-[#e2e6e0] text-sm font-bold text-[#0b1e14] px-4 py-3 rounded-2xl focus:outline-none focus:border-[#0b1e14] shadow-2xs w-full sm:w-auto"
+                      className="bg-[#f8faf8] border border-[#e2e6e0] text-sm font-bold text-[#0b1e14] px-4 py-3 rounded-2xl focus:outline-none focus:border-[#0b1e14] shadow-2xs w-full"
                     >
                       {Object.keys(DIET_CATALOG).map(k => (
                         <option key={k} value={k}>{DIET_CATALOG[k].name}</option>
@@ -1501,15 +1595,15 @@
             {activeTab === "logistica" && (
               <section className="space-y-5 fade-in">
                 <div className="mb-2 px-1">
-                  <h2 className="text-xl font-bold text-[#0b1e14]">Recetario Dinámico Activo</h2>
-                  <p className="text-sm text-black/70 mt-0.5">Paso a paso para las variantes e ingredientes elegidos.</p>
+                  <h2 className="text-xl font-bold text-[#0b1e14]">Chef Pro: Recetario Dinámico</h2>
+                  <p className="text-sm text-black/70 mt-0.5">Selecciona diferentes preparaciones gourmet para tus ingredientes exactos.</p>
                 </div>
 
-                <div className="space-y-3.5">
+                <div className="space-y-4">
                   {activeDiet.meals.map((meal, idx) => {
                     const isOpen = openRecipe === idx;
                     const vIdx = activeVariants[meal.id] || 0;
-                    const vData = meal.variants[vIdx] || meal.variants[0];
+                    const currentVariant = meal.variants[vIdx] || meal.variants[0];
 
                     return (
                       <div key={idx} className={`rounded-3xl border transition-all bg-white overflow-hidden shadow-card ${isOpen ? 'border-[#0b1e14] ring-2 ring-[#0b1e14]/10' : 'border-[#e2e6e0]'}`}>
@@ -1519,17 +1613,34 @@
                         >
                           <div className="space-y-1.5">
                             <span className="inline-block text-xs font-bold text-[#0b1e14] uppercase tracking-wider bg-[#eef4f0] px-3 py-1 rounded-lg">{meal.label} ({meal.time})</span>
-                            <h4 className="text-base font-bold text-[#1a2b1f] block">{vData.title}</h4>
+                            <h4 className="text-base font-bold text-[#1a2b1f] block">{currentVariant.title}</h4>
                           </div>
                           <span className={`w-7 h-7 rounded-full bg-[#f4f6f4] flex items-center justify-center text-xs text-black/60 transition-transform duration-200 shrink-0 ml-3 ${isOpen ? 'rotate-180 bg-[#0b1e14] text-white' : ''}`}>▼</span>
                         </button>
 
                         {isOpen && (
                           <div className="px-5 pb-5 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-4 fade-in">
+                            {meal.variants.length > 1 && (
+                              <div className="bg-white p-3.5 rounded-2xl border border-[#e2e6e0] space-y-2 shadow-2xs">
+                                <span className="text-xs font-bold text-black/60 uppercase">Elige el estilo de receta:</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  {meal.variants.map((v, altIdx) => (
+                                    <button
+                                      key={altIdx}
+                                      onClick={() => setVariantForMeal(meal.id, altIdx)}
+                                      className={`p-3 rounded-xl text-left text-xs font-bold transition border ${vIdx === altIdx ? 'bg-[#0b1e14] text-white border-[#0b1e14]' : 'bg-[#f8faf8] text-black/80 border-[#e2e6e0] hover:bg-[#eef2ec]'}`}
+                                    >
+                                      ✨ {v.title}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
                             <div>
-                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-2.5">Ingredientes Adaptados:</h5>
+                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-2.5">Ingredientes Adaptados (Macros Exactos):</h5>
                               <div className="flex flex-wrap gap-2">
-                                {vData.foods.map((ing, i) => {
+                                {currentVariant.foods.map((ing, i) => {
                                   const sub = foodSubstitutions[ing.id];
                                   const ingName = sub ? sub.name : ing.name;
                                   const factor = sub ? sub.factor : 1.0;
@@ -1545,9 +1656,9 @@
                               </div>
                             </div>
                             <div className="border-t border-[#f0f3ef] pt-3.5">
-                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-2.5">Paso a paso:</h5>
+                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-2.5">Paso a paso Culinario:</h5>
                               <ol className="space-y-3 text-sm text-black/85 pl-4 list-decimal">
-                                {vData.steps.map((step, sIdx) => (
+                                {currentVariant.steps.map((step, sIdx) => (
                                   <li key={sIdx} className="leading-relaxed font-medium">{step}</li>
                                 ))}
                               </ol>
