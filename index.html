@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Mi Dieta Hipertrofia & Seguimiento - V7.0</title>
+  <title>Mi Dieta Hipertrofia & Seguimiento - V7.2 Premium</title>
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <meta name="theme-color" content="#0f2a1d">
+  <meta name="theme-color" content="#0b1e14">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="./manifest.json">
@@ -27,15 +27,17 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap');
     * { font-family: 'Instrument Sans', ui-sans-system, sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: #f8faf8; color: #111c14; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
-    header { background-color: #0f2a1d; color: #ffffff; position: sticky; top: 0; z-index: 20; }
+    body { background-color: #f4f6f4; color: #111c14; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+    header { background-color: #0b1e14; color: #ffffff; position: sticky; top: 0; z-index: 20; }
     .max-w { max-width: 680px; margin: 0 auto; }
-    .pb-safe { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
-    .fade-in { animation: fadeIn 0.2s ease-in-out forwards; }
+    .pb-safe { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+    .fade-in { animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .shadow-card { box-shadow: 0 4px 20px -2px rgba(11, 30, 20, 0.05), 0 2px 6px -1px rgba(11, 30, 20, 0.03); }
+    .shadow-nav { box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.06); }
   </style>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -43,11 +45,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<body class="bg-[#f8faf8] pb-safe">
+<body class="bg-[#f4f6f4] pb-safe">
   <div id="root"></div>
 
   <script type="text/babel">
-    const APP_VERSION = "v7.0-MOBILE-UI-PLANB-PRO";
+    const APP_VERSION = "v7.2-UI-PREMIUM";
     const REMOTE_PRICES_URL = "https://raw.githubusercontent.com/datasets/market-prices-es/main/prices.json";
 
     const DEFAULT_BASE_PRICES = {
@@ -91,8 +93,8 @@
     };
 
     const SUPERMARKET_INDEX = {
-      mercadona: { name: "Mercadona", factor: 1.00, color: "bg-[#e8f5e6] text-[#0f2a1d]" },
-      lidl: { name: "Lidl", factor: 0.96, color: "bg-[#fff4d6] text-[#5a4100]" },
+      mercadona: { name: "Mercadona", factor: 1.00, color: "bg-[#e8f5e6] text-[#0b1e14]" },
+      lidl: { name: "Lidl", factor: 0.96, color: "bg-[#fff8e1] text-[#795548]" },
       hiperdino: { name: "Hiperdino", factor: 0.98, color: "bg-[#e3f2fd] text-[#0d47a1]" },
       carrefour: { name: "Carrefour", factor: 1.03, color: "bg-[#ffebee] text-[#b71c1c]" }
     };
@@ -666,7 +668,7 @@
 
     function WeightChart({ logs }) {
       if (!logs || logs.length < 2) {
-        return <div className="p-4 text-center text-sm text-black/60 bg-[#f8faf8] rounded-xl border border-[#f0f3ef]">Registra al menos 2 pesajes para ver la tendencia y media móvil.</div>;
+        return <div className="p-5 text-center text-sm text-black/50 bg-[#fafcf9] rounded-2xl border border-[#e2e6e0]">Registra al menos 2 pesajes para ver la tendencia y media móvil.</div>;
       }
       const sortedLogs = [...logs].reverse();
       
@@ -682,7 +684,7 @@
       const maxW = Math.max(...weights) + 0.5;
       const range = maxW - minW || 1;
 
-      const height = 130;
+      const height = 140;
       const width = 300;
       const padding = 20;
 
@@ -697,24 +699,24 @@
       const maPath = points.reduce((acc, p, i) => i === 0 ? `M ${p.x} ${p.yMA}` : `${acc} L ${p.x} ${p.yMA}`, "");
 
       return (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs font-semibold text-black/60">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-xs font-bold text-black/60">
             <span>Mín: {minW.toFixed(1)} kg</span>
-            <span className="text-[#0f2a1d] font-bold">Tendencia y Media Móvil (7d)</span>
+            <span className="text-[#0b1e14] bg-[#eef4f0] px-2.5 py-1 rounded-lg">Tendencia y Media Móvil (7d)</span>
             <span>Máx: {maxW.toFixed(1)} kg</span>
           </div>
-          <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-32 overflow-visible">
-            <path d={rawPath} fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="3 3" />
-            <path d={maPath} fill="none" stroke="#0f2a1d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-36 overflow-visible">
+            <path d={rawPath} fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="4 4" />
+            <path d={maPath} fill="none" stroke="#0b1e14" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
             {points.map((p, i) => (
               <g key={i}>
-                <circle cx={p.x} cy={p.yMA} r="3.5" fill="#0f2a1d" />
+                <circle cx={p.x} cy={p.yMA} r="4.5" fill="#0b1e14" stroke="#ffffff" strokeWidth="2" />
               </g>
             ))}
           </svg>
-          <div className="flex justify-center gap-4 text-xs text-black/60">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#cbd5e1]"></span> Peso Diario</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#0f2a1d]"></span> Media Móvil 7d</span>
+          <div className="flex justify-center gap-6 text-xs text-black/60 pt-2">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#cbd5e1]"></span> Peso Diario</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#0b1e14]"></span> Media Móvil 7d</span>
           </div>
         </div>
       );
@@ -730,21 +732,21 @@
 
       const [pricesDatabase, setPricesDatabase] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_auto_prices_v70");
+          const saved = localStorage.getItem("dieta_auto_prices_v72");
           return saved ? JSON.parse(saved) : DEFAULT_BASE_PRICES;
         } catch { return DEFAULT_BASE_PRICES; }
       });
 
       const [googleUser, setGoogleUser] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_google_user_v70");
+          const saved = localStorage.getItem("dieta_google_user_v72");
           return saved ? JSON.parse(saved) : null;
         } catch { return null; }
       });
 
       const [profiles, setProfiles] = React.useState(() => {
         try {
-          const saved = localStorage.getItem("dieta_profiles_v70");
+          const saved = localStorage.getItem("dieta_profiles_v72");
           return saved ? JSON.parse(saved) : [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
         } catch {
           return [{ id: "gabriel", name: "Gabriel", dietKey: "volumen_3000", customKcal: 3000, activeVariants: {}, foodSubstitutions: {} }];
@@ -796,7 +798,7 @@
               const remoteData = await res.json();
               if (remoteData && typeof remoteData === 'object') {
                 setPricesDatabase(remoteData);
-                localStorage.setItem("dieta_auto_prices_v70", JSON.stringify(remoteData));
+                localStorage.setItem("dieta_auto_prices_v72", JSON.stringify(remoteData));
                 setSyncPricesStatus("Precios de mercado al día ✓");
                 return;
               }
@@ -811,11 +813,17 @@
       }, []);
 
       React.useEffect(() => {
-        try { localStorage.setItem("dieta_profiles_v70", JSON.stringify(profiles)); } catch {}
+        try { localStorage.setItem("dieta_profiles_v72", JSON.stringify(profiles)); } catch {}
       }, [profiles]);
 
       React.useEffect(() => {
-        try { if (googleUser) localStorage.setItem("dieta_google_user_v70", JSON.stringify(googleUser)); } catch {}
+        try { 
+          if (googleUser) {
+            localStorage.setItem("dieta_google_user_v72", JSON.stringify(googleUser));
+          } else {
+            localStorage.removeItem("dieta_google_user_v72");
+          }
+        } catch {}
       }, [googleUser]);
 
       React.useEffect(() => {
@@ -893,20 +901,21 @@
           setGoogleUser(userInfo);
           const folderName = `Mi_Dieta_PWA_${userInfo.given_name || userInfo.name || 'Usuario'}`;
           const profileId = `user_${userInfo.sub || Date.now()}`;
+          
           const newProfile = {
             id: profileId,
             name: userInfo.name || userInfo.email,
             email: userInfo.email,
             folderName: folderName,
-            dietKey: "volumen_3000",
-            customKcal: 3000,
-            activeVariants: {},
-            foodSubstitutions: {}
+            dietKey: currentProfile.dietKey || "volumen_3000",
+            customKcal: currentProfile.customKcal || 3000,
+            activeVariants: currentProfile.activeVariants || {},
+            foodSubstitutions: currentProfile.foodSubstitutions || {}
           };
 
-          setProfiles([newProfile]);
+          setProfiles(prev => [...prev.filter(p => p.id !== profileId), newProfile]);
           setActiveProfileId(profileId);
-          setSyncStatus(`Conectado: ${userInfo.email}`);
+          setSyncStatus(`Sincronizado: ${userInfo.email}`);
 
           await DriveService.syncCloudProfile(token, folderName, {
             user: userInfo,
@@ -917,6 +926,12 @@
             pantry: pantryItems
           });
         });
+      };
+
+      const handleGoogleLogout = () => {
+        localStorage.removeItem("google_access_token");
+        setGoogleUser(null);
+        setSyncStatus("Modo Local (Datos intactos)");
       };
 
       const handleAddWeight = async (e) => {
@@ -1066,35 +1081,35 @@
       }, [weightLogs, currentDietKey]);
 
       return (
-        <div className="min-h-screen bg-[#f8faf8] text-[#111c14] selection:bg-[#0f2a1d] selection:text-white">
+        <div className="min-h-screen bg-[#f4f6f4] text-[#111c14] selection:bg-[#0b1e14] selection:text-white pb-12">
           
-          <header className="w-full bg-[#0f2a1d] text-white sticky top-0 z-20 shadow-md">
-            <div className="max-w mx-auto px-4 py-3.5 flex items-center justify-between">
+          <header className="w-full bg-[#0b1e14] text-white sticky top-0 z-20 shadow-md">
+            <div className="max-w mx-auto px-5 py-4 flex items-center justify-between">
               <div>
-                <div className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-[#a8e6a0]">
+                <div className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase text-[#a8e6a0]">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#a8e6a0] animate-pulse"></span>
                   {googleUser ? googleUser.name : currentProfile.name} • ({APP_VERSION})
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">Ecosistema Nutricional Móvil</h1>
+                <h1 className="text-xl font-bold tracking-tight mt-0.5">Ecosistema Nutricional</h1>
               </div>
               <div>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/15 text-white">
-                  {syncStatus || (googleUser ? "Conectado" : "Local")}
+                <span className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 text-white shadow-inner">
+                  {syncStatus || (googleUser ? "Drive Activo" : "Modo Local")}
                 </span>
               </div>
             </div>
           </header>
 
-          <main className="max-w mx-auto px-4 pt-5 pb-16 fade-in">
+          <main className="max-w mx-auto px-4 pt-6 pb-16 fade-in space-y-5">
             {activeTab === "dieta" && (
               <>
-                <section className="mb-4">
-                  <div className="bg-white p-4 rounded-2xl border border-[#e2e6e0] flex items-center justify-between gap-3 shadow-2xs">
-                    <span className="text-xs font-bold text-black/70 uppercase">Plan Nutricional:</span>
+                <section>
+                  <div className="bg-white p-4.5 rounded-3xl border border-[#e2e6e0] shadow-card flex items-center justify-between gap-3">
+                    <span className="text-xs font-bold text-black/60 uppercase tracking-wide">Plan Nutricional:</span>
                     <select 
                       value={currentDietKey}
                       onChange={(e) => handleDietChange(e.target.value)}
-                      className="bg-[#f8faf8] border border-[#e2e6e0] text-sm font-bold text-[#0f2a1d] px-3.5 py-2.5 rounded-xl focus:outline-none"
+                      className="bg-[#f8faf8] border border-[#e2e6e0] text-sm font-bold text-[#0b1e14] px-4 py-2.5 rounded-2xl focus:outline-none focus:border-[#0b1e14] shadow-2xs"
                     >
                       {Object.keys(DIET_CATALOG).map(k => (
                         <option key={k} value={k}>{DIET_CATALOG[k].name}</option>
@@ -1103,52 +1118,62 @@
                   </div>
                 </section>
 
-                <section className="mb-5">
-                  <div className="flex items-center justify-between mb-2.5">
+                <section>
+                  <div className="flex items-center justify-between mb-3 px-1">
                     <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Escalador Calórico Diario</h2>
                     <div className="flex items-center gap-2">
-                      <button onClick={() => updateKcal(-50)} className="w-8 h-8 rounded-xl bg-[#eef2ec] font-bold text-sm text-[#0f2a1d] flex items-center justify-center active:scale-95">-50</button>
-                      <button onClick={() => updateKcal(50)} className="w-8 h-8 rounded-xl bg-[#eef2ec] font-bold text-sm text-[#0f2a1d] flex items-center justify-center active:scale-95">+50</button>
+                      <button onClick={() => updateKcal(-50)} className="w-9 h-9 rounded-2xl bg-white border border-[#e2e6e0] font-bold text-sm text-[#0b1e14] flex items-center justify-center active:scale-95 shadow-2xs hover:bg-[#fafcf9]">-50</button>
+                      <button onClick={() => updateKcal(50)} className="w-9 h-9 rounded-2xl bg-white border border-[#e2e6e0] font-bold text-sm text-[#0b1e14] flex items-center justify-center active:scale-95 shadow-2xs hover:bg-[#fafcf9]">+50</button>
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 shadow-sm space-y-3">
-                    <div className="rounded-xl bg-[#0f2a1d] text-white p-4 flex items-center justify-between">
+                  <div className="rounded-3xl border border-[#e2e6e0] bg-white p-5 shadow-card space-y-4">
+                    <div className="rounded-2xl bg-gradient-to-br from-[#0b1e14] to-[#143825] text-white p-5 flex items-center justify-between shadow-md">
                       <div>
-                        <span className="text-xs font-medium text-white/70">Aporte Calórico Objetivo</span>
-                        <div className="text-2xl font-bold">{targetKcal} <span className="text-sm font-normal text-white/80">kcal / día</span></div>
+                        <span className="text-xs font-medium text-white/70 uppercase tracking-wider">Aporte Calórico Objetivo</span>
+                        <div className="text-3xl font-bold tracking-tight mt-0.5">{targetKcal} <span className="text-sm font-normal text-white/80">kcal / día</span></div>
                       </div>
-                      <div className="text-2xl">⚡</div>
+                      <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl">⚡</div>
                     </div>
 
-                    <div className="p-3.5 rounded-xl bg-[#f4f7f3] border border-[#e2e6e0] text-xs font-semibold text-[#0f2a1d]">
+                    <div className="p-4 rounded-2xl bg-[#f4f8f5] border border-[#e2e6e0] text-xs font-semibold text-[#0b1e14] leading-relaxed">
                       {tdeeAdvice}
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2.5">
-                      <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
-                        <span className="block text-xs font-semibold text-black/50">Proteína</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{currentProtein}g</span>
+                    {/* Barras de macronutrientes visuales con diseño Apple Health */}
+                    <div className="grid grid-cols-3 gap-3 pt-1">
+                      <div className="rounded-2xl bg-[#f8faf8] p-3.5 text-center border border-[#e2e6e0] space-y-1">
+                        <span className="block text-[11px] font-bold text-black/50 uppercase">Proteína</span>
+                        <span className="text-lg font-bold text-[#0b1e14]">{currentProtein}g</span>
+                        <div className="w-full bg-[#e2e6e0] h-1.5 rounded-full overflow-hidden mt-1">
+                          <div className="bg-[#0b1e14] h-full rounded-full" style={{ width: '100%' }}></div>
+                        </div>
                       </div>
-                      <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
-                        <span className="block text-xs font-semibold text-black/50">Grasas</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{currentFats}g</span>
+                      <div className="rounded-2xl bg-[#f8faf8] p-3.5 text-center border border-[#e2e6e0] space-y-1">
+                        <span className="block text-[11px] font-bold text-black/50 uppercase">Grasas</span>
+                        <span className="text-lg font-bold text-[#0b1e14]">{currentFats}g</span>
+                        <div className="w-full bg-[#e2e6e0] h-1.5 rounded-full overflow-hidden mt-1">
+                          <div className="bg-[#2e7d32] h-full rounded-full" style={{ width: '80%' }}></div>
+                        </div>
                       </div>
-                      <div className="rounded-xl bg-[#f4f7f3] p-3 text-center border border-[#e2e6e0]">
-                        <span className="block text-xs font-semibold text-black/50">Carbos</span>
-                        <span className="text-base font-bold text-[#0f2a1d]">{currentCarbs}g</span>
+                      <div className="rounded-2xl bg-[#f8faf8] p-3.5 text-center border border-[#e2e6e0] space-y-1">
+                        <span className="block text-[11px] font-bold text-black/50 uppercase">Carbos</span>
+                        <span className="text-lg font-bold text-[#0b1e14]">{currentCarbs}g</span>
+                        <div className="w-full bg-[#e2e6e0] h-1.5 rounded-full overflow-hidden mt-1">
+                          <div className="bg-[#66bb6a] h-full rounded-full" style={{ width: '90%' }}></div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </section>
 
-                <section className="mb-5">
-                  <div className="flex items-center justify-between mb-2.5">
+                <section>
+                  <div className="flex items-center justify-between mb-3 px-1">
                     <h2 className="text-xs font-bold tracking-wider text-black/50 uppercase">Menú Diario de Ingredientes</h2>
                     <span className="text-xs text-black/50">Toca para sustituir</span>
                   </div>
 
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-3.5">
                     {activeDiet.meals.map((meal) => {
                       const isOpen = openMeal === meal.id;
                       const currentVariantIndex = activeVariants[meal.id] || 0;
@@ -1157,40 +1182,40 @@
                       const mealProt = Math.round(meal.baseProtein * scaleFactor);
 
                       return (
-                        <div key={meal.id} className={`rounded-2xl border transition-all bg-white overflow-hidden ${isOpen ? 'border-[#0f2a1d] shadow-sm ring-1 ring-[#0f2a1d]/15' : 'border-[#e2e6e0]'}`}>
+                        <div key={meal.id} className={`rounded-3xl border transition-all bg-white overflow-hidden shadow-card ${isOpen ? 'border-[#0b1e14] ring-2 ring-[#0b1e14]/10' : 'border-[#e2e6e0]'}`}>
                           <button 
                             onClick={() => setOpenMeal(isOpen ? null : meal.id)}
-                            className="w-full flex items-center justify-between px-4 py-4 text-left active:bg-black/5 transition"
+                            className="w-full flex items-center justify-between p-4.5 text-left active:bg-black/5 transition"
                           >
-                            <div className="flex items-center gap-3.5">
-                              <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold font-mono transition ${isOpen ? 'bg-[#0f2a1d] text-white' : 'bg-[#eef2ec] text-[#0f2a1d]'}`}>
+                            <div className="flex items-center gap-4">
+                              <div className={`w-13 h-13 rounded-2xl flex items-center justify-center text-sm font-bold font-mono transition shadow-2xs ${isOpen ? 'bg-[#0b1e14] text-white' : 'bg-[#eef4f0] text-[#0b1e14]'}`}>
                                 {meal.time}
                               </div>
                               <div>
                                 <div className="text-base font-bold leading-tight">{meal.label}: <span className="font-normal text-black/70 text-sm">{selectedVariant.title}</span></div>
-                                <div className="text-xs text-black/50 mt-0.5">{selectedVariant.foods.length} ingredientes</div>
+                                <div className="text-xs text-black/50 mt-1 font-medium">{selectedVariant.foods.length} ingredientes configurados</div>
                               </div>
                             </div>
                             <div className="flex items-center gap-3">
                               <div className="text-right">
-                                <div className="text-sm font-bold text-[#0f2a1d]">{mealProt}g P</div>
-                                <div className="text-xs font-medium text-black/60">{mealKcal} kcal</div>
+                                <div className="text-sm font-bold text-[#0b1e14]">{mealProt}g P</div>
+                                <div className="text-xs font-semibold text-black/60">{mealKcal} kcal</div>
                               </div>
-                              <span className={`text-xs text-black/40 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+                              <span className={`w-7 h-7 rounded-full bg-[#f4f6f4] flex items-center justify-center text-xs text-black/60 transition-transform duration-200 ${isOpen ? 'rotate-180 bg-[#0b1e14] text-white' : ''}`}>▼</span>
                             </div>
                           </button>
 
                           {isOpen && (
-                            <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-3.5 fade-in">
+                            <div className="px-5 pb-5 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-4 fade-in">
                               {meal.variants.length > 1 && (
-                                <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-[#e2e6e0]">
+                                <div className="flex items-center justify-between bg-white p-3.5 rounded-2xl border border-[#e2e6e0] shadow-2xs">
                                   <span className="text-xs font-bold text-black/60 uppercase">Variante:</span>
-                                  <div className="flex gap-1.5">
+                                  <div className="flex gap-2">
                                     {meal.variants.map((v, vIdx) => (
                                       <button
                                         key={vIdx}
                                         onClick={() => setVariantForMeal(meal.id, vIdx)}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${currentVariantIndex === vIdx ? 'bg-[#0f2a1d] text-white' : 'bg-[#f4f7f3] text-black/70 hover:bg-[#eef2ec]'}`}
+                                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-2xs ${currentVariantIndex === vIdx ? 'bg-[#0b1e14] text-white' : 'bg-[#f4f6f4] text-black/70 hover:bg-[#eef2ec]'}`}
                                       >
                                         Opción {vIdx + 1}
                                       </button>
@@ -1199,7 +1224,7 @@
                                 </div>
                               )}
 
-                              <div className="space-y-2 text-sm">
+                              <div className="space-y-2.5 text-sm">
                                 {selectedVariant.foods.map((food) => {
                                   const activeSub = foodSubstitutions[food.id];
                                   const displayName = activeSub ? activeSub.name : food.name;
@@ -1211,16 +1236,16 @@
                                     <div 
                                       key={food.id} 
                                       onClick={() => setSubstitutionModal({ food, activeSub })}
-                                      className="flex items-center justify-between p-3 rounded-xl border border-[#e2e6e0] bg-white cursor-pointer hover:bg-[#f4f7f3] transition active:scale-[0.99]"
+                                      className="flex items-center justify-between p-3.5 rounded-2xl border border-[#e2e6e0] bg-white cursor-pointer hover:border-[#0b1e14]/40 transition shadow-2xs active:scale-[0.99]"
                                     >
-                                      <div className="flex items-center gap-2.5">
-                                        <span className="text-sm">🔄</span>
-                                        <span className="text-[#1a2b1f] font-semibold text-sm">
+                                      <div className="flex items-center gap-3">
+                                        <span className="w-8 h-8 rounded-xl bg-[#f4f6f4] flex items-center justify-center text-xs">🔄</span>
+                                        <span className="text-[#1a2b1f] font-bold text-sm">
                                           {displayName}
-                                          {activeSub && <span className="ml-1.5 text-[10px] font-bold text-[#0f2a1d] bg-[#eef2ec] px-2 py-0.5 rounded-md">Sustituido</span>}
+                                          {activeSub && <span className="ml-2 text-[10px] font-bold text-[#0b1e14] bg-[#eef4f0] px-2.5 py-1 rounded-lg">Sustituido</span>}
                                         </span>
                                       </div>
-                                      <span className="font-mono text-sm font-bold bg-[#f8faf8] px-3 py-1 rounded-md border border-[#e2e6e0] text-black/90">
+                                      <span className="font-mono text-sm font-bold bg-[#f8faf8] px-3.5 py-1.5 rounded-xl border border-[#e2e6e0] text-[#0b1e14]">
                                         {scaledAmount}{displayUnit}
                                       </span>
                                     </div>
@@ -1239,22 +1264,22 @@
 
             {substitutionModal && (
               <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4 fade-in">
-                <div className="bg-white rounded-3xl w-full max-w-md p-5 space-y-4 shadow-xl">
-                  <div className="flex items-center justify-between border-b border-[#f0f3ef] pb-3">
+                <div className="bg-white rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-[#e2e6e0]">
+                  <div className="flex items-center justify-between border-b border-[#f0f3ef] pb-3.5">
                     <div>
-                      <h3 className="text-base font-bold text-[#0f2a1d]">Sustituir Alimento</h3>
-                      <p className="text-xs text-black/60">Equivalente para: <span className="font-bold">{substitutionModal.food.name}</span></p>
+                      <h3 className="text-lg font-bold text-[#0b1e14]">Sustituir Alimento</h3>
+                      <p className="text-xs text-black/60 mt-0.5">Equivalente directo para: <span className="font-bold text-[#0b1e14]">{substitutionModal.food.name}</span></p>
                     </div>
-                    <button onClick={() => setSubstitutionModal(null)} className="text-sm font-bold text-black/40 hover:text-black">✕</button>
+                    <button onClick={() => setSubstitutionModal(null)} className="w-8 h-8 rounded-full bg-[#f4f6f4] flex items-center justify-center text-sm font-bold text-black/50 hover:text-black">✕</button>
                   </div>
 
-                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                  <div className="space-y-2.5 max-h-64 overflow-y-auto pr-1">
                     <button
                       onClick={() => handleSubstituteFood(substitutionModal.food.id, null)}
-                      className={`w-full text-left p-3 rounded-xl border text-sm font-semibold flex items-center justify-between transition ${!substitutionModal.activeSub ? 'border-[#0f2a1d] bg-[#eef2ec] text-[#0f2a1d]' : 'border-[#e2e6e0] bg-white'}`}
+                      className={`w-full text-left p-3.5 rounded-2xl border text-sm font-semibold flex items-center justify-between transition shadow-2xs ${!substitutionModal.activeSub ? 'border-[#0b1e14] bg-[#eef4f0] text-[#0b1e14]' : 'border-[#e2e6e0] bg-white'}`}
                     >
                       <span>Original: {substitutionModal.food.name}</span>
-                      <span>✓ Default</span>
+                      <span className="text-xs font-bold">✓ Default</span>
                     </button>
 
                     {(FOOD_SUBSTITUTES[substitutionModal.food.group] || []).map((sub, idx) => {
@@ -1265,42 +1290,41 @@
                         <button
                           key={idx}
                           onClick={() => handleSubstituteFood(substitutionModal.food.id, sub)}
-                          className={`w-full text-left p-3 rounded-xl border text-sm flex items-center justify-between transition ${isSelected ? 'border-[#0f2a1d] bg-[#0f2a1d] text-white' : 'border-[#e2e6e0] bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
+                          className={`w-full text-left p-3.5 rounded-2xl border text-sm flex items-center justify-between transition shadow-2xs ${isSelected ? 'border-[#0b1e14] bg-[#0b1e14] text-white' : 'border-[#e2e6e0] bg-[#fafcf9] hover:bg-[#f0f3ef]'}`}
                         >
                           <div className="font-bold">{sub.name}</div>
-                          <span className="font-mono font-bold text-sm">{calculatedQty}{sub.unit}</span>
+                          <span className="font-mono font-bold text-sm px-2.5 py-1 rounded-xl bg-white/10">{calculatedQty}{sub.unit}</span>
                         </button>
                       );
                     })}
                   </div>
 
-                  <button onClick={() => setSubstitutionModal(null)} className="w-full py-3.5 rounded-xl bg-[#eef2ec] text-[#0f2a1d] text-sm font-bold">
+                  <button onClick={() => setSubstitutionModal(null)} className="w-full py-3.5 rounded-2xl bg-[#eef4f0] text-[#0b1e14] text-sm font-bold hover:bg-[#e2e6e0] transition">
                     Cerrar
                   </button>
                 </div>
               </div>
             )}
 
-            {/* SECCIÓN PLAN B PRO AMPLIADA */}
             {activeTab === "alternativas" && (
               <section className="space-y-4 fade-in">
-                <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Plan B: Soluciones Pro & Emergencia</h2>
-                  <p className="text-sm text-black/70">Estrategias exhaustivas para imprevistos, viajes y comidas fuera.</p>
+                <div className="mb-2 px-1">
+                  <h2 className="text-xl font-bold text-[#0b1e14]">Plan B: Soluciones Pro & Emergencia</h2>
+                  <p className="text-sm text-black/70 mt-0.5">Estrategias exhaustivas para imprevistos, viajes y comidas fuera.</p>
                 </div>
 
                 {PLAN_B_PRO_DATA.map((plan) => (
-                  <div key={plan.id} className="rounded-2xl border border-[#e2e6e0] bg-white p-5 shadow-2xs space-y-3.5">
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-xl">⚡</span>
-                      <h3 className="text-base font-bold text-[#0f2a1d]">{plan.title}</h3>
+                  <div key={plan.id} className="rounded-3xl border border-[#e2e6e0] bg-white p-5.5 shadow-card space-y-4">
+                    <div className="flex items-center gap-3">
+                      <span className="w-10 h-10 rounded-2xl bg-[#eef4f0] flex items-center justify-center text-lg">⚡</span>
+                      <h3 className="text-base font-bold text-[#0b1e14]">{plan.title}</h3>
                     </div>
                     <p className="text-sm text-black/70 leading-relaxed">{plan.desc}</p>
                     
-                    <div className="space-y-2.5 border-t border-[#f0f3ef] pt-3">
+                    <div className="space-y-3 border-t border-[#f0f3ef] pt-3.5">
                       {plan.options.map((opt, oIdx) => (
-                        <div key={oIdx} className="p-3 rounded-xl bg-[#f8faf8] border border-[#f0f3ef] text-sm">
-                          <span className="font-bold text-[#0f2a1d] block mb-1">• {opt.name}</span>
+                        <div key={oIdx} className="p-3.5 rounded-2xl bg-[#f8faf8] border border-[#f0f3ef] text-sm shadow-2xs">
+                          <span className="font-bold text-[#0b1e14] block mb-1">• {opt.name}</span>
                           <span className="text-black/85 leading-relaxed">{opt.detail}</span>
                         </div>
                       ))}
@@ -1310,35 +1334,34 @@
               </section>
             )}
 
-            {/* SECCIÓN COMPRA CON TIPOGRAFÍA MÓVIL MEJORADA */}
             {activeTab === "compra" && (
               <section className="space-y-4 fade-in">
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-1 px-1">
                   <div>
-                    <h2 className="text-xl font-bold text-[#0f2a1d]">Cesta & Despensa Óptima</h2>
-                    <p className="text-xs text-[#0f2a1d] font-semibold">{syncPricesStatus}</p>
+                    <h2 className="text-xl font-bold text-[#0b1e14]">Cesta & Despensa Óptima</h2>
+                    <p className="text-xs text-[#0b1e14] font-semibold mt-0.5">{syncPricesStatus}</p>
                   </div>
-                  <button onClick={resetShoppingList} className="text-xs font-semibold text-[#0f2a1d] underline bg-[#eef2ec] px-3.5 py-2 rounded-xl">
+                  <button onClick={resetShoppingList} className="text-xs font-bold text-[#0b1e14] underline bg-[#eef4f0] px-3.5 py-2 rounded-xl">
                     Desmarcar
                   </button>
                 </div>
 
-                <div className="rounded-2xl border border-[#0f2a1d] bg-[#0f2a1d] text-white p-4 space-y-3.5 shadow-md">
+                <div className="rounded-3xl border border-[#0b1e14] bg-gradient-to-br from-[#0b1e14] to-[#143825] text-white p-5 space-y-4 shadow-lg">
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-xs text-white/75 uppercase font-bold tracking-wider">Cesta Óptima (Smart Split)</span>
-                      <div className="text-2xl font-bold text-[#a8e6a0]">
+                      <div className="text-3xl font-bold text-[#a8e6a0] tracking-tight mt-0.5">
                         {computedCostEngine.smartSplitTotalCost.toFixed(2)} € <span className="text-xs text-white/80 font-normal">/ semana</span>
                       </div>
                     </div>
                     {computedCostEngine.estimatedSavings > 0 && (
-                      <div className="bg-[#a8e6a0] text-[#0f2a1d] px-3 py-1.5 rounded-xl text-xs font-bold">
+                      <div className="bg-[#a8e6a0] text-[#0b1e14] px-3.5 py-2 rounded-2xl text-xs font-bold shadow-sm">
                         Ahorras ~{computedCostEngine.estimatedSavings.toFixed(2)} €
                       </div>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/15">
+                  <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-white/15">
                     {Object.keys(SUPERMARKET_INDEX).map(supKey => {
                       const sup = SUPERMARKET_INDEX[supKey];
                       const totalCost = computedCostEngine.totalsBySup[supKey];
@@ -1348,10 +1371,10 @@
                         <button
                           key={supKey}
                           onClick={() => setSelectedSupermarket(supKey)}
-                          className={`p-3 rounded-xl text-left border transition ${isSelected ? 'bg-white text-[#0f2a1d] border-white font-bold' : 'bg-white/10 text-white border-white/15 hover:bg-white/20'}`}
+                          className={`p-3 rounded-2xl text-left border transition shadow-2xs ${isSelected ? 'bg-white text-[#0b1e14] border-white font-bold' : 'bg-white/10 text-white border-white/15 hover:bg-white/20'}`}
                         >
                           <div className="text-xs font-medium">{sup.name} (Total)</div>
-                          <div className="text-sm font-bold font-mono">{totalCost.toFixed(2)} €</div>
+                          <div className="text-sm font-bold font-mono mt-0.5">{totalCost.toFixed(2)} €</div>
                         </button>
                       );
                     })}
@@ -1359,7 +1382,7 @@
 
                   <button
                     onClick={() => setSelectedSupermarket("smart_split")}
-                    className={`w-full py-3 rounded-xl text-xs font-bold transition ${selectedSupermarket === "smart_split" ? 'bg-[#a8e6a0] text-[#0f2a1d]' : 'bg-white/20 text-white hover:bg-white/30'}`}
+                    className={`w-full py-3.5 rounded-2xl text-xs font-bold transition shadow-sm ${selectedSupermarket === "smart_split" ? 'bg-[#a8e6a0] text-[#0b1e14]' : 'bg-white/20 text-white hover:bg-white/30'}`}
                   >
                     💡 Ver Recomendación Smart Split con Despensa
                   </button>
@@ -1373,15 +1396,15 @@
                       if (items.length === 0) return null;
 
                       return (
-                        <div key={supKey} className="rounded-2xl border border-[#e2e6e0] bg-white p-4.5 shadow-2xs space-y-3.5 fade-in">
-                          <div className="flex items-center justify-between pb-2.5 border-b border-[#f0f3ef]">
+                        <div key={supKey} className="rounded-3xl border border-[#e2e6e0] bg-white p-5 shadow-card space-y-3.5 fade-in">
+                          <div className="flex items-center justify-between pb-3 border-b border-[#f0f3ef]">
                             <div className="flex items-center gap-2.5">
-                              <span className={`px-3 py-1 rounded-lg text-xs font-bold ${supInfo.color}`}>
+                              <span className={`px-3.5 py-1.5 rounded-xl text-xs font-bold ${supInfo.color} shadow-2xs`}>
                                 {supInfo.name}
                               </span>
                               <span className="text-xs text-black/60 font-semibold">Oferta más barata hoy:</span>
                             </div>
-                            <span className="text-xs font-mono font-bold text-[#0f2a1d]">
+                            <span className="text-xs font-mono font-bold text-[#0b1e14]">
                               Subtotal: {items.reduce((a, b) => a + b.itemCost, 0).toFixed(2)} €
                             </span>
                           </div>
@@ -1392,10 +1415,10 @@
                               return (
                                 <div
                                   key={item.id}
-                                  className={`flex items-center justify-between p-3.5 rounded-xl transition ${isChecked ? 'bg-[#f4f4f0] opacity-50' : 'bg-[#fafcf9]'}`}
+                                  className={`flex items-center justify-between p-3.5 rounded-2xl border transition shadow-2xs ${isChecked ? 'bg-[#f4f4f0] border-transparent opacity-50' : 'bg-[#fafcf9] border-[#e2e6e0]'}`}
                                 >
                                   <div className="flex items-center gap-3.5 cursor-pointer flex-1" onClick={() => toggleCheck(item.id)}>
-                                    <span className={`w-6 h-6 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>
+                                    <span className={`w-6 h-6 rounded-lg border flex items-center justify-center text-xs font-bold transition ${isChecked ? 'bg-[#0b1e14] border-[#0b1e14] text-white' : 'border-black/30 bg-white'}`}>
                                       {isChecked ? '✓' : ''}
                                     </span>
                                     <div>
@@ -1407,12 +1430,12 @@
                                   <div className="flex items-center gap-3">
                                     <button
                                       onClick={() => togglePantry(item.id)}
-                                      className={`text-xs font-bold px-2.5 py-2 rounded-xl border transition ${item.isInPantry ? 'bg-[#0f2a1d] text-white border-[#0f2a1d]' : 'bg-white text-black/70 border-[#e2e6e0]'}`}
+                                      className={`text-xs font-bold px-3 py-2 rounded-xl border transition shadow-2xs ${item.isInPantry ? 'bg-[#0b1e14] text-white border-[#0b1e14]' : 'bg-white text-black/70 border-[#e2e6e0]'}`}
                                     >
                                       {item.isInPantry ? '🏠 En Casa' : '📦 Comprar'}
                                     </button>
                                     <div className="text-right">
-                                      <div className="font-mono text-sm font-bold text-[#0f2a1d]">{item.qtyText}</div>
+                                      <div className="font-mono text-sm font-bold text-[#0b1e14]">{item.qtyText}</div>
                                       <div className="font-mono text-xs font-bold text-black/60">~{item.itemCost.toFixed(2)} €</div>
                                     </div>
                                   </div>
@@ -1425,12 +1448,12 @@
                     })}
                   </div>
                 ) : (
-                  <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4.5 shadow-2xs space-y-3.5">
-                    <div className="flex items-center justify-between pb-2.5 border-b border-[#f0f3ef]">
-                      <span className="text-sm font-bold text-[#0f2a1d]">
+                  <div className="rounded-3xl border border-[#e2e6e0] bg-white p-5 shadow-card space-y-3.5">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#f0f3ef]">
+                      <span className="text-sm font-bold text-[#0b1e14]">
                         Compra en {SUPERMARKET_INDEX[selectedSupermarket].name}
                       </span>
-                      <span className="text-sm font-mono font-bold text-[#0f2a1d]">
+                      <span className="text-sm font-mono font-bold text-[#0b1e14]">
                         Total: {computedCostEngine.totalsBySup[selectedSupermarket].toFixed(2)} €
                       </span>
                     </div>
@@ -1443,10 +1466,10 @@
                         return (
                           <div
                             key={item.id}
-                            className={`flex items-center justify-between p-3.5 rounded-xl transition ${isChecked ? 'bg-[#f4f4f0] opacity-50' : 'bg-[#fafcf9]'}`}
+                            className={`flex items-center justify-between p-3.5 rounded-2xl border transition shadow-2xs ${isChecked ? 'bg-[#f4f4f0] border-transparent opacity-50' : 'bg-[#fafcf9] border-[#e2e6e0]'}`}
                           >
                             <div className="flex items-center gap-3.5 cursor-pointer flex-1" onClick={() => toggleCheck(item.id)}>
-                              <span className={`w-6 h-6 rounded-md border flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-[#0f2a1d] border-[#0f2a1d] text-white' : 'border-black/30 bg-white'}`}>
+                              <span className={`w-6 h-6 rounded-lg border flex items-center justify-center text-xs font-bold transition ${isChecked ? 'bg-[#0b1e14] border-[#0b1e14] text-white' : 'border-black/30 bg-white'}`}>
                                 {isChecked ? '✓' : ''}
                               </span>
                               <div>
@@ -1458,12 +1481,12 @@
                             <div className="flex items-center gap-3">
                               <button
                                 onClick={() => togglePantry(item.id)}
-                                className={`text-xs font-bold px-2.5 py-2 rounded-xl border transition ${item.isInPantry ? 'bg-[#0f2a1d] text-white border-[#0f2a1d]' : 'bg-white text-black/70 border-[#e2e6e0]'}`}
+                                className={`text-xs font-bold px-3 py-2 rounded-xl border transition shadow-2xs ${item.isInPantry ? 'bg-[#0b1e14] text-white border-[#0b1e14]' : 'bg-white text-black/70 border-[#e2e6e0]'}`}
                               >
                                 {item.isInPantry ? '🏠 En Casa' : '📦 Comprar'}
                               </button>
                               <div className="text-right">
-                                <div className="font-mono text-sm font-bold text-[#0f2a1d]">{item.qtyText}</div>
+                                <div className="font-mono text-sm font-bold text-[#0b1e14]">{item.qtyText}</div>
                                 <div className="font-mono text-xs font-bold text-black/60">~{itemCostInSup.toFixed(2)} €</div>
                               </div>
                             </div>
@@ -1478,34 +1501,34 @@
 
             {activeTab === "logistica" && (
               <section className="space-y-5 fade-in">
-                <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Recetario Dinámico Activo</h2>
-                  <p className="text-sm text-black/70">Paso a paso para las variantes e ingredientes elegidos.</p>
+                <div className="mb-2 px-1">
+                  <h2 className="text-xl font-bold text-[#0b1e14]">Recetario Dinámico Activo</h2>
+                  <p className="text-sm text-black/70 mt-0.5">Paso a paso para las variantes e ingredientes elegidos.</p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {activeDiet.meals.map((meal, idx) => {
                     const isOpen = openRecipe === idx;
                     const vIdx = activeVariants[meal.id] || 0;
                     const vData = meal.variants[vIdx] || meal.variants[0];
 
                     return (
-                      <div key={idx} className={`rounded-2xl border transition-all bg-white overflow-hidden ${isOpen ? 'border-[#0f2a1d] shadow-sm ring-1 ring-[#0f2a1d]/15' : 'border-[#e2e6e0]'}`}>
+                      <div key={idx} className={`rounded-3xl border transition-all bg-white overflow-hidden shadow-card ${isOpen ? 'border-[#0b1e14] ring-2 ring-[#0b1e14]/10' : 'border-[#e2e6e0]'}`}>
                         <button
                           onClick={() => setOpenRecipe(isOpen ? null : idx)}
-                          className="w-full flex items-center justify-between p-4 text-left active:bg-black/5 transition"
+                          className="w-full flex items-center justify-between p-4.5 text-left active:bg-black/5 transition"
                         >
                           <div>
-                            <span className="text-xs font-bold text-[#0f2a1d] uppercase tracking-wider bg-[#eef2ec] px-3 py-1 rounded-md">{meal.label} ({meal.time})</span>
+                            <span className="text-xs font-bold text-[#0b1e14] uppercase tracking-wider bg-[#eef4f0] px-3 py-1 rounded-lg">{meal.label} ({meal.time})</span>
                             <h4 className="text-base font-bold text-[#1a2b1f] mt-2">{vData.title}</h4>
                           </div>
-                          <span className={`text-xs text-black/40 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+                          <span className={`w-7 h-7 rounded-full bg-[#f4f6f4] flex items-center justify-center text-xs text-black/60 transition-transform duration-200 ${isOpen ? 'rotate-180 bg-[#0b1e14] text-white' : ''}`}>▼</span>
                         </button>
 
                         {isOpen && (
-                          <div className="px-4 pb-4 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-3.5 fade-in">
+                          <div className="px-5 pb-5 pt-2 border-t border-[#f0f3ef] bg-[#fafcf9] space-y-4 fade-in">
                             <div>
-                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-2">Ingredientes Adaptados:</h5>
+                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-2.5">Ingredientes Adaptados:</h5>
                               <div className="flex flex-wrap gap-2">
                                 {vData.foods.map((ing, i) => {
                                   const sub = foodSubstitutions[ing.id];
@@ -1515,18 +1538,18 @@
                                   const qty = Math.round(ing.baseAmount * factor * scaleFactor);
 
                                   return (
-                                    <span key={i} className="bg-white border border-[#e2e6e0] text-xs font-semibold text-[#1a2b1f] px-3 py-1.5 rounded-xl">
+                                    <span key={i} className="bg-white border border-[#e2e6e0] text-xs font-bold text-[#1a2b1f] px-3 py-2 rounded-xl shadow-2xs">
                                       {ingName} ({qty}{unit})
                                     </span>
                                   );
                                 })}
                               </div>
                             </div>
-                            <div className="border-t border-[#f0f3ef] pt-3">
-                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-2">Paso a paso:</h5>
-                              <ol className="space-y-2.5 text-sm text-black/85 pl-4 list-decimal">
+                            <div className="border-t border-[#f0f3ef] pt-3.5">
+                              <h5 className="text-xs font-bold text-black/50 uppercase tracking-wider mb-2.5">Paso a paso:</h5>
+                              <ol className="space-y-3 text-sm text-black/85 pl-4 list-decimal">
                                 {vData.steps.map((step, sIdx) => (
-                                  <li key={sIdx} className="leading-relaxed">{step}</li>
+                                  <li key={sIdx} className="leading-relaxed font-medium">{step}</li>
                                 ))}
                               </ol>
                             </div>
@@ -1541,77 +1564,82 @@
 
             {activeTab === "peso" && (
               <section className="space-y-4 fade-in">
-                <div className="mb-2">
-                  <h2 className="text-xl font-bold text-[#0f2a1d]">Vinculación Gmail & Google Drive</h2>
-                  <p className="text-sm text-black/70">Sincronización en tiempo real con tu carpeta personal.</p>
+                <div className="mb-2 px-1">
+                  <h2 className="text-xl font-bold text-[#0b1e14]">Vinculación Gmail & Google Drive</h2>
+                  <p className="text-sm text-black/70 mt-0.5">Tus datos se guardan de forma segura en tu dispositivo y opcionalmente en Drive.</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3 shadow-2xs">
-                  <h3 className="text-sm font-bold text-[#0f2a1d]">Cuenta de Google Activa</h3>
+                <div className="rounded-3xl border border-[#e2e6e0] bg-white p-5 shadow-card space-y-3.5">
+                  <h3 className="text-sm font-bold text-[#0b1e14]">Estado de Cuenta Google</h3>
                   {googleUser ? (
-                    <div className="p-3.5 bg-[#f4f7f3] rounded-xl border border-[#e2e6e0] flex items-center gap-3.5">
-                      <div className="w-11 h-11 rounded-full bg-[#0f2a1d] text-white font-bold flex items-center justify-center text-base">
-                        {googleUser.given_name ? googleUser.given_name[0] : 'G'}
+                    <div className="p-4 bg-[#f4f8f5] rounded-2xl border border-[#e2e6e0] space-y-3.5 shadow-2xs">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-12 h-12 rounded-2xl bg-[#0b1e14] text-white font-bold flex items-center justify-center text-lg shadow-sm">
+                          {googleUser.given_name ? googleUser.given_name[0] : 'G'}
+                        </div>
+                        <div>
+                          <div className="text-base font-bold text-[#0b1e14]">{googleUser.name}</div>
+                          <div className="text-xs text-black/65">{googleUser.email}</div>
+                          <div className="text-xs text-[#0b1e14] font-bold mt-0.5">Carpeta: Mi_Dieta_PWA_{googleUser.given_name || 'Personal'}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-base font-bold">{googleUser.name}</div>
-                        <div className="text-xs text-black/65">{googleUser.email}</div>
-                        <div className="text-xs text-[#0f2a1d] font-semibold mt-0.5">Carpeta: Mi_Dieta_PWA_{googleUser.given_name || 'Personal'}</div>
-                      </div>
+                      <button onClick={handleGoogleLogout} className="w-full py-3 rounded-xl bg-white border border-[#0b1e14] text-[#0b1e14] text-xs font-bold hover:bg-[#fafcf9] transition shadow-2xs">
+                        Desconectar Google (Mantener datos locales)
+                      </button>
                     </div>
                   ) : (
-                    <button onClick={handleGoogleLogin} className="w-full py-4 rounded-xl bg-[#0f2a1d] text-white text-sm font-semibold hover:bg-black transition flex items-center justify-center gap-2">
+                    <button onClick={handleGoogleLogin} className="w-full py-4 rounded-2xl bg-[#0b1e14] text-white text-sm font-bold hover:bg-black transition flex items-center justify-center gap-2.5 shadow-sm">
                       <span>🔑</span>
                       <span>Vincular con Cuenta de Google / Gmail</span>
                     </button>
                   )}
                 </div>
 
-                <form onSubmit={handleAddWeight} className="rounded-2xl border border-[#e2e6e0] bg-white p-4 space-y-3.5 shadow-2xs">
-                  <h3 className="text-sm font-bold">Registrar Peso Diario</h3>
-                  <div className="grid grid-cols-2 gap-3">
+                <form onSubmit={handleAddWeight} className="rounded-3xl border border-[#e2e6e0] bg-white p-5 shadow-card space-y-4">
+                  <h3 className="text-sm font-bold text-[#0b1e14]">Registrar Peso Diario</h3>
+                  <div className="grid grid-cols-2 gap-3.5">
                     <div>
-                      <label className="block text-xs font-semibold text-black/70 uppercase mb-1.5">Peso (kg)</label>
+                      <label className="block text-xs font-bold text-black/60 uppercase mb-1.5">Peso (kg)</label>
                       <input 
                         type="number" 
                         step="0.1" 
                         placeholder="74.5"
                         value={currentWeightInput}
                         onChange={(e) => setCurrentWeightInput(e.target.value)}
-                        className="w-full rounded-xl border border-[#e2e6e0] px-3.5 py-3 text-base font-mono focus:outline-none focus:border-[#0f2a1d]"
+                        className="w-full rounded-2xl border border-[#e2e6e0] px-4 py-3 text-base font-mono focus:outline-none focus:border-[#0b1e14] bg-[#f8faf8]"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-black/70 uppercase mb-1.5">Notas</label>
+                      <label className="block text-xs font-bold text-black/60 uppercase mb-1.5">Notas</label>
                       <input 
                         type="text" 
                         placeholder="Sensaciones..."
                         value={weightNote}
                         onChange={(e) => setWeightNote(e.target.value)}
-                        className="w-full rounded-xl border border-[#e2e6e0] px-3.5 py-3 text-sm focus:outline-none focus:border-[#0f2a1d]"
+                        className="w-full rounded-2xl border border-[#e2e6e0] px-4 py-3 text-sm focus:outline-none focus:border-[#0b1e14] bg-[#f8faf8]"
                       />
                     </div>
                   </div>
-                  <button type="submit" className="w-full py-4 rounded-xl bg-[#0f2a1d] text-white text-sm font-semibold hover:bg-black transition">
-                    Guardar y Sincronizar en Drive Personal
+                  <button type="submit" className="w-full py-4 rounded-2xl bg-[#0b1e14] text-white text-sm font-bold hover:bg-black transition shadow-sm">
+                    Guardar Registro en Dispositivo y Drive
                   </button>
                 </form>
 
-                <div className="rounded-2xl border border-[#e2e6e0] bg-white p-4.5 space-y-4 shadow-2xs">
-                  <h3 className="text-sm font-bold">Evolución y Tendencia</h3>
+                <div className="rounded-3xl border border-[#e2e6e0] bg-white p-5 shadow-card space-y-4">
+                  <h3 className="text-sm font-bold text-[#0b1e14]">Evolución y Tendencia</h3>
                   <WeightChart logs={weightLogs} />
                   {weightLogs.length === 0 ? (
-                    <p className="text-sm text-black/50 text-center py-3">Sin registros aún.</p>
+                    <p className="text-sm text-black/50 text-center py-4">Sin registros aún.</p>
                   ) : (
-                    <div className="space-y-2.5 border-t border-[#f0f3ef] pt-3.5">
+                    <div className="space-y-3 border-t border-[#f0f3ef] pt-4">
                       {weightLogs.map((log) => (
-                        <div key={log.id} className="flex items-center justify-between p-3.5 rounded-xl bg-[#f8faf8] border border-[#f0f3ef] text-sm">
+                        <div key={log.id} className="flex items-center justify-between p-3.5 rounded-2xl bg-[#f8faf8] border border-[#f0f3ef] text-sm shadow-2xs">
                           <div>
-                            <span className="font-bold text-base">{log.date}</span>
+                            <span className="font-bold text-base text-[#0b1e14]">{log.date}</span>
                             <p className="text-black/65 text-xs mt-0.5">{log.note}</p>
                           </div>
-                          <span className="font-mono font-bold text-base text-[#0f2a1d]">{log.weight} kg</span>
+                          <span className="font-mono font-bold text-base text-[#0b1e14]">{log.weight} kg</span>
                         </div>
                       ))}
                     </div>
@@ -1621,21 +1649,21 @@
             )}
           </main>
 
-          <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#e2e6e0] z-30">
-            <div className="max-w mx-auto px-1 py-2 flex items-center justify-around">
-              <button onClick={() => setActiveTab("dieta")} className={`flex flex-col items-center gap-1 text-xs font-semibold transition py-1.5 px-3 rounded-xl ${activeTab === "dieta" ? 'text-[#0f2a1d] bg-[#f0f3ef]' : 'text-black/50'}`}>
+          <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#e2e6e0] z-30 shadow-nav">
+            <div className="max-w mx-auto px-2 py-2 flex items-center justify-around">
+              <button onClick={() => setActiveTab("dieta")} className={`flex flex-col items-center gap-1 text-xs font-bold transition py-2 px-3.5 rounded-2xl ${activeTab === "dieta" ? 'text-[#0b1e14] bg-[#eef4f0]' : 'text-black/50 hover:text-black'}`}>
                 <span className="text-xl">🍱</span><span>Menú</span>
               </button>
-              <button onClick={() => setActiveTab("alternativas")} className={`flex flex-col items-center gap-1 text-xs font-semibold transition py-1.5 px-3 rounded-xl ${activeTab === "alternativas" ? 'text-[#0f2a1d] bg-[#f0f3ef]' : 'text-black/50'}`}>
+              <button onClick={() => setActiveTab("alternativas")} className={`flex flex-col items-center gap-1 text-xs font-bold transition py-2 px-3.5 rounded-2xl ${activeTab === "alternativas" ? 'text-[#0b1e14] bg-[#eef4f0]' : 'text-black/50 hover:text-black'}`}>
                 <span className="text-xl">⚡</span><span>Plan B</span>
               </button>
-              <button onClick={() => setActiveTab("compra")} className={`flex flex-col items-center gap-1 text-xs font-semibold transition py-1.5 px-3 rounded-xl ${activeTab === "compra" ? 'text-[#0f2a1d] bg-[#f0f3ef]' : 'text-black/50'}`}>
+              <button onClick={() => setActiveTab("compra")} className={`flex flex-col items-center gap-1 text-xs font-bold transition py-2 px-3.5 rounded-2xl ${activeTab === "compra" ? 'text-[#0b1e14] bg-[#eef4f0]' : 'text-black/50 hover:text-black'}`}>
                 <span className="text-xl">🛒</span><span>Compra</span>
               </button>
-              <button onClick={() => setActiveTab("logistica")} className={`flex flex-col items-center gap-1 text-xs font-semibold transition py-1.5 px-3 rounded-xl ${activeTab === "logistica" ? 'text-[#0f2a1d] bg-[#f0f3ef]' : 'text-black/50'}`}>
+              <button onClick={() => setActiveTab("logistica")} className={`flex flex-col items-center gap-1 text-xs font-bold transition py-2 px-3.5 rounded-2xl ${activeTab === "logistica" ? 'text-[#0b1e14] bg-[#eef4f0]' : 'text-black/50 hover:text-black'}`}>
                 <span className="text-xl">🍳</span><span>Cocina</span>
               </button>
-              <button onClick={() => setActiveTab("peso")} className={`flex flex-col items-center gap-1 text-xs font-semibold transition py-1.5 px-3 rounded-xl ${activeTab === "peso" ? 'text-[#0f2a1d] bg-[#0f2a1d]/10' : 'text-black/50'}`}>
+              <button onClick={() => setActiveTab("peso")} className={`flex flex-col items-center gap-1 text-xs font-bold transition py-2 px-3.5 rounded-2xl ${activeTab === "peso" ? 'text-[#0b1e14] bg-[#eef4f0]' : 'text-black/50 hover:text-black'}`}>
                 <span className="text-xl">📈</span><span>Drive</span>
               </button>
             </div>
